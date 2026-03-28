@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>share/images/ballscrew.png</file>
+        <file>share/images/ballscrew-mirrored.png</file>
+        <file>qml/MainForm.qml</file>
     </qresource>
 </RCC>

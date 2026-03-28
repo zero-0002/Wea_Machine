@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 
-import com.wearily.WeaQuick 1.0 as WeaQuick
+import "qml"
 
 Window {
     width: 640
@@ -9,21 +9,28 @@ Window {
     visible: true
     title: qsTr("Hello World")
 
-    WeaQuick.Pane {
-        id: pane
-        anchors {
-            fill: parent
-            margins: 15
-        }
-        level: 1
+    property string mainFormPath: "qml/MainForm.qml"
 
-        WeaQuick.Button {
-            anchors.centerIn: parent
-            text: "Click Me"
-        }
+    Component {
+        id: compMainForm
+
+        MainForm {}
     }
 
-    WeaQuick.GlobalContext {
-        id: wQuick
+    Loader {
+        id: appLoader
+        anchors.fill: parent
+        sourceComponent: compMainForm
+    }
+
+    function doReload() {
+        appLoader.sourceComponent = undefined;
+        _engine.clearCache();
+        appLoader.sourceComponent = Qt.createComponent(mainFormPath);
+    }
+
+    Shortcut {
+        sequence: "`"
+        onActivated: doReload()
     }
 }
