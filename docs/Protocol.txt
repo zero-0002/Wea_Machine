@@ -1,0 +1,756 @@
+=============================================
+
+Servo Communication config:
+
+=============================================
+
+\ X axis Servo COM:
+    Mode: RTU
+    Baud rate: 115200
+    Data bits: 8
+    Parity: Odd
+    Stop bits: 1
+    Slave address: 2
+
+\ Y axis Servo COM:
+    Mode: RTU
+    Baud rate: 115200
+    Data bits: 8
+    Parity: Odd
+    Stop bits: 1
+    Slave address: 3
+
+---------------------------------------------
+
+
+=============================================
+
+Digital IO
+
+=============================================
+
+\ Names: 
+
+1. DI:
+    - DI1 [0x01] Servo On -- SON (NO) -- Software --> P2-10
+    - DI2 [0x11] Internal Position command -- POS0 (NO) -- Software --> P2-11
+    - DI3 [0x12] Internal Position command -- POS1 (NO) -- Software --> P2-12
+    - DI4 [0x08] Command Trigger -- CTRG (NO) -- Software --> P2-13
+    - DI5 [0x24] Homing Origin -- ORGP (NO) -- Hardware --> P2-14
+    - DI6 [0x22] Reverse Inhibit Limit -- NL (NC) -- Hardware --> P2-15
+    - DI7 [0x23] Forward Inhibit Limit -- PL (NC) -- Hardware --> P2-16
+    - DI8 [0x21] Emergency -- EMGS (NC) -- Hardware --> P2-17
+    - DI9 [0x37] Forward JOG input -- JOG FWD (NO) -- Software --> P2-36
+    - DI10 [0x38] Reverse JOG input -- JOG REV (NO) -- Software --> P2-37
+    - DI11 [0x16] Internal torque command -- TCM0 (NC) -- Software --> P2-38
+    - DI12 [0x13] Internal Position command -- POS2 (NO) -- Software --> P2-39
+    - DI13 [0x1A] Internal Position command -- POS3 (NO) -- Software --> P2-40
+    - DI14 [0x1B] Internal Position command -- POS4 (NO) -- Software --> P2-41
+2. DO:
+    - DO1 [0x01] Servo Ready -- SRDY (NO) --> P2-18
+    - DO2 [0x03] Motor is at zero Speed -- ZSPD (NO) --> P2-19
+    - DO3 [0x09] Homing completed -- HOME (NO) --> P2-20
+    - DO4 [0x05] Target position completed -- TPOS (NO) --> P2-21
+    - DO5 [0x07] Servo Alarm -- ALRM (NC) --> P2-22
+
+
+
+\ DI Activation using Serial/Software usage -- 03/10H:
+
+NOTE: Send this command after `Servo Power On`. This command confirms the specifics DI can be change from serial communication.
+    
+    Address: 30C~30B
+        - bit0 = DI1
+        - bit1 = DI2
+        - bit2 = DI3
+        - bit3 = DI4
+        - bit4 = DI5
+        - bit5 = DI6
+        - bit6 = DI7
+        - bit7 = DI8
+        - bit8 = DI9
+        - bit9 = DI10
+        - bit10 = DI11
+        - bit11 = DI12
+        - bit12 = DI13
+        - bit13 = DI14
+        - bit14 = Reserved
+        - bit15 = Reserved
+    Range:
+        0x00~0x3FFF
+
+    Example:
+        Hardware only = HRD
+        Software only = SFT
+        3B0FH == [ POS4=SFT, POS3=SFT, POS2=SFT, TCM0=SFT, JOG-REV=SFT, JOG-FWD=SFT, EMGS=HRD, PL=HRD, NL=HRD, ORGP=HRD, CTRG=SFT, POS1=SFT, POS0=SFT, SON=SFT ]
+
+    Servo Parameter:
+        P3-06
+
+
+\ DI Read/Write -- 03/10H: 
+
+    Address: 40E~40F
+        - bit0 = DI1
+        - bit1 = DI2
+        - bit2 = DI3
+        - bit3 = DI4
+        - bit4 = DI5
+        - bit5 = DI6
+        - bit6 = DI7
+        - bit7 = DI8
+        - bit8 = DI9
+        - bit9 = DI10
+        - bit10 = DI11
+        - bit11 = DI12
+        - bit12 = DI13
+        - bit13 = DI14
+        - bit14 = Reserved
+        - bit15 = Reserved
+
+    Range:
+        0x00~0x3FFF
+
+    Example:
+        407H == [ POS4=OFF, POS3=OFF, POS2=OFF, TCM0=ON, JOG-REV=OFF, JOG-FWD=OFF, EMGS=OFF, PL=OFF, NL=OFF, ORGP=OFF, CTRG=OFF, POS1=ON, POS0=ON, SON=ON ]
+
+    Servo Parameter:
+        P4-07
+
+\ DO Read -- 03H:
+    
+    Address: 412~413
+        - bit0 = DO1
+        - bit1 = DO2
+        - bit2 = DO3
+        - bit3 = DO4
+        - bit4 = DO5
+        - bit5 = Reserved
+        - bit6 = Reserved
+        - bit7 = Reserved
+
+    Range:
+        0x00~0x1F
+
+    Example:
+        13H == [ ALRM=ON (NC), TPOS=OFF, HOME=OFF, ZSPD=ON, SRDY=ON ]
+
+    Servo Parameter:
+        P4-09
+
+---------------------------------------------
+
+
+=============================================
+
+Monitoring variables and status
+
+=============================================
+
+\ Default variables:
+    1- Encoder PUU
+    2- Speed (rpm)
+    3- Torque (%)
+    4- Average Load (%)
+    5- Peak Load (%)
+
+
+\ Encoder PUU Read -- 03H:
+
+    Address: 12~13
+        -
+
+    Data size:
+        32-bit
+
+    Example:
+
+    Servo Parameter:
+        P0-09 & P0-17
+
+
+\ Speed Read -- 03H:
+
+    Address: 14~15
+        -
+
+    Data size:
+        32-bit
+
+    Example:
+
+    Servo Parameter:
+        P0-10 & P0-18
+
+
+\ Torque Read -- 03H:
+
+    Address: 16~17
+        -
+
+    Data size:
+        32-bit
+
+    Example:
+
+    Servo Parameter:
+        P0-11 & P0-19
+
+
+\ Average Load Read -- 03H:
+
+    Address: 18~19
+        -
+
+    Data size:
+        32-bit
+
+    Example:
+
+    Servo Parameter:
+        P0-12 & P0-20
+
+
+\ Peak Load Read -- 03H:
+
+    Address: 1A~1B
+        -
+
+    Data size:
+        32-bit
+
+    Example:
+
+    Servo Parameter:
+        P0-13 & P0-21
+
+
+
+NOTE: These Addresses can be read with single request instead of 5 request. example:
+    Instead of:
+        Tx: 02 03 00 12 00 02 64 3D  (From PC)
+        Rx: 02 03 04 82 ED FF F1 F1 0A  (From Servo)
+        // Now it means requesting for 2 addresses and servo sent 4 bytes
+        // Encoder PUU is: FFF182ED == -949523 pulse
+
+    Use this: 
+        Tx: 02 03 00 12 00 0A 65 FB  (From PC)
+        Rx: 02 03 14 45 83 FF F1 00 00 00 00 00 00 00 00 00 00 00 00 00 06 00 00 AD 04  ( From Servo)
+        // Now it means requesting for 10 addresses and servo sent 20 bytes
+
+---------------------------------------------
+
+
+
+=============================================
+
+Alarms
+
+=============================================
+
+\ Alarms Code:
+    001：Over current  
+    002：Over voltage 
+    003：Under voltage (In default setting, the alarm occurs only when the voltage is not enough in Servo ON status; In Servo ON status, when it applies to power R, S, T, the alarm still will not be cleared.  Please refer to P2-66.) 
+    004：Motor combination error (The drive corresponds to the wrong motor) 
+    005：Regeneration error 
+    006：Over load 
+    007：Over speed 
+    008：Abnormal pulse command 
+    009：Excessive deviation of position command 
+    010：Reserved 
+    011：Encoder error (The servo drive cannot connect to the encoder because of disconnection or abnormal wiring) 
+    012：Adjustment error 
+    013：Emergency stop 
+    014：Reverse limit error 
+    015：Forward limit error 
+    016：IGBT overheat
+    017：Abnormal EEPROM 
+    018：Abnormal signal output 
+    019：Serial communication error 
+    020：Serial communication time out 
+    021：Reserved 
+    022：Main circuit power lack phase 
+    023：Early warning for overload 
+    024：Encoder initial magnetic field error (The magnetic field of the encoder U,V, W signal is in error)  
+    025：The internal of the encoder is in error. (The internal memory of the encoder and the internal counter are in error) 
+    026：Unreliable internal data of the encoder 
+    027：Encoder reset error 
+    028：The encoder is over voltage or the internal of the encoder is in error 
+    029：Gray code error 
+    030：Motor crash error 
+    031：Incorrect wiring of the motor power line U, V, W (Incorrect wiring of the motor power line U, V, W, GND) 
+    034：Internal communication of the encoder is in error 
+    040：Excessive deviation of full closed-loop position control 
+    041：Communication of CN5 is breakdown 
+    042：Analog input voltage error 
+    044：Warning of servo drive function overload 
+    060：The absolute position is lost 
+    061：Encoder under voltage 
+    062： The multi-turn of absolute encoder overflows 
+    068：Absolute data transmitted via I/O is in error 
+    069：Wrong motor type 
+    099：DSP firmware upgrade Alarm of CANopen Communication 
+    111：CANopen SDO receives buffer overflow 
+    112：CANopen PDO receives buffer overflow 
+    121：Index err
+    122：Sub-Index error occurs when accessing CANopen PDO     
+    123：Data size error occurs when accessing CANopen PDO  
+    124：Data range error occurs when accessing CANopen PDO 
+    125: CANopen PDO mapping object is read-only and write-protected. 
+    126：CANopen PDO mapping object is not allowed in PDO 
+    127：CANopen PDO mapping object is write-protected when Servo ON  
+    128：Error occurs when reading CANopen PDO mapping object via EEPROM 
+    129：Error occurs when writing CANopen PDO mapping object via EEPROM 
+    130：The accessing address of EEPROM is out of range when using CANopen PDO mapping object 
+    131：CRC of EEPROM calculation error occurs when using CANopen PDO mapping object 
+    132：Enter the incorrect password when using CANopen PDO mapping object 
+    185：Abnormal CAN Bus hardware Alarm of Motion 
+    201：An error occurs when loading CANopen data 
+    207：Parameter group of PR#8 is out of range 
+    209：Parameter number of PR#8 is out of range 
+    213 ~ 219：An error occurs when writing parameter via PR procedure. Please refer to Chapter 11 of the manual for further information. 
+    231：The setting of monitor item of PR#8 is out of range 
+    235：PR command overflows 
+    237：Indexing coordinate is undefined 
+    245 ~ 277：Reserved 
+    283：Forward software limit 
+    285：Reverse software limit 
+    289：Feedback position counter overflows 
+    291：Servo OFF error  
+    301：CANopen fails to synchronize 
+    302：The synchronized signal of CANopen is sent too fast  
+    303：The synchronized signal of CANopen is sent too slow 
+    304：CANopen IP command is failed or occurs when accessing CANopen PDO
+    305：SYNC Period is in error 
+    380：Position Deviation Alarm of DO.MC_OK. Please refer to parameter P1-48. 
+
+\ Alarm Read -- 03H:
+
+    Address: 02~03
+        -
+
+    Range:
+        0x0~0xFFFF
+
+    Data size:
+        16-bit
+
+    Servo Parameter:
+        P0-01
+
+
+\ Alarm Reset -- 10H:
+
+    Address: 02~03
+        -
+
+    Data size:
+        16-bit
+
+    Example:
+        Send: 0x0000 to specific adress to reset alarm
+        Tx: 02 10 00 02 00 01 02 00 00 B3 42
+
+    Servo Parameter:
+        P0-01
+
+---------------------------------------------
+
+
+=============================================
+
+Homing Speed
+
+=============================================
+
+\ Home First Speed 03/10H:
+
+    Address: 50A~50B
+        -
+    Range:
+        0~20000 decimals
+
+    Data size:
+        32-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P5-05
+
+
+\ Home Second Speed 03/10H:
+
+    Address: 50C~50D
+        -
+
+    Range:
+        0~20000 decimals
+
+    Example:
+        -
+
+    Servo Parameter:
+        P5-06
+
+Note: See P5-04 & P6-00 to modifying homing method and homing definition.
+
+---------------------------------------------
+
+
+
+=============================================
+
+PATHS
+
+=============================================
+
+\ PATH#1 Definition 03/10H:
+
+    Address: 604~605
+        -
+    Range:
+        0x00000000 ~ 0xFFFFFFFF 
+
+    Data size:
+        32-bit
+
+    default request:
+        // Use ACC/DEC#0, SPD#0, DLY#0 + Single Position stop when compeleted + Absolute Position
+        0x00000002 
+        // Use ACC#5 for ACC, ACC#4 for DEC, SPD#3 for Speed, DLY#0 for DLY + Single Position stop when compeleted + Absolute Position
+        0x00034502
+
+    Servo Parameter:
+        P6-02
+\ PATH#1 Data 03/10H
+
+    Address: 606~607:
+        -
+
+    Range:
+        // Position of servo referer PATH#1 Definition
+        -2147483648 ~ +2147483647 
+
+    Data size:
+        32-bit
+
+    Servo Parameter:
+        P6-03
+
+
+\ PATH#2 Definition 03/10H:
+
+    Address: 608~609
+        -
+    Range:
+        0x00000000 ~ 0xFFFFFFFF 
+
+    Data size:
+        32-bit
+
+    default request:
+        // Use ACC/DEC#0, SPD#0, DLY#0 + Single Position stop when compeleted + Absolute Position
+        0x00000002 
+        // Use ACC#5 for ACC, ACC#4 for DEC, SPD#3 for Speed, DLY#0 for DLY + Single Position stop when compeleted + Absolute Position
+        0x00034502
+
+    Servo Parameter:
+        P6-04
+\ PATH#2 Data 03/10H
+
+    Address: 60A~60B:
+        -
+
+    Range:
+        // Position of servo referer PATH#1 Definition
+        -2147483648 ~ +2147483647 
+
+    Data size:
+        32-bit
+
+    Servo Parameter:
+        P6-05
+
+...
+...
+
+\ PATH#63 Definition 03/10H:
+
+    Address: 734~735
+        -
+    Range:
+        0x00000000 ~ 0xFFFFFFFF 
+
+    Data size:
+        32-bit
+
+    default request:
+        // Use ACC/DEC#0, SPD#0, DLY#0 + Single Position stop when compeleted + Absolute Position
+        0x00000002 
+        // Use ACC#5 for ACC, ACC#4 for DEC, SPD#3 for Speed, DLY#0 for DLY + Single Position stop when compeleted + Absolute Position
+        0x00034502
+
+    Servo Parameter:
+        P7-26
+\ PATH#1 Data 03/10H
+
+    Address: 736~737
+        -
+
+    Range:
+        // Position of servo referer PATH#1 Definition
+        -2147483648 ~ +2147483647 
+
+    Data size:
+        32-bit
+
+    Servo Parameter:
+        P7-27
+
+
+
+Note: See P6-03 description of PATH definitions.
+
+---------------------------------------------
+
+
+
+=============================================
+
+PATHS Speeds
+
+=============================================
+
+\ Speed#0 03/10H:
+
+    Address: 578~579
+        -
+    Range:
+        0~60000 decimals
+
+    Units:
+        1 r/min  |  0.1 r/min
+
+    Data size:
+        16-bit
+
+    Example:
+        15 == 1.5 r/min
+
+    Servo Parameter:
+        P5-60
+
+
+\ Speed#1 03/10H:
+
+    Address: 57A~57B
+        -
+    Range:
+        0~60000 decimals
+
+    Units:
+        1 r/min  |  0.1 r/min
+
+    Data size:
+        16-bit
+
+    Example:
+        15 == 1.5 r/min
+
+    Servo Parameter:
+        P5-61
+
+...
+...
+
+\ Speed#15 03/10H:
+
+    Address: 596~597
+        -
+    Range:
+        0~60000 decimals
+
+    Units:
+        1 r/min  |  0.1 r/min
+
+    Data size:
+        16-bit
+
+    Example:
+        15 == 1.5 r/min
+
+    Servo Parameter:
+        P5-75
+
+---------------------------------------------
+
+
+
+=============================================
+
+PATHS Accelerations/Decelerations
+
+=============================================
+
+\ ACC#0 03/10H:
+
+    Address: 528~529
+        -
+    Range:
+        1~65500 decimal
+
+    Units:
+        millisecond
+
+    Data size:
+        16-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P5-20
+
+\ ACC#0 03/10H:
+
+    Address: 52A~52B
+        -
+    Range:
+        1~65500 decimal
+
+    Units:
+        millisecond
+
+    Data size:
+        16-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P5-21
+...
+...
+
+\ ACC#0 03/10H:
+
+    Address: 546~547
+        -
+    Range:
+        1~65500 decimal
+
+    Units:
+        millisecond
+
+    Data size:
+        16-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P5-35
+
+---------------------------------------------
+
+
+
+=============================================
+
+JOG (Manual Control) 
+
+=============================================
+
+\ JOG Speed 03/10H:
+
+    Address: 40A~40B
+        -
+    Range:
+        1~5000 decimal
+
+    Units:
+        1  | 1 r/min
+
+    Data size:
+        16-bit
+
+    Servo Parameter:
+        P4-05
+
+\ JOG Acceleration (S-Curve) 03/10H:
+
+    Address: 144~145
+        -
+    Range:
+        1~65500 decimal
+
+    Units:
+        millisecond
+
+    Data size:
+        16-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P1-34
+
+\ JOG Deceleration (S-Curve) 03/10H:
+
+    Address: 146~147
+        -
+    Range:
+        1~65500 decimal
+
+    Units:
+        millisecond
+
+    Data size:
+        16-bit
+
+    Example:
+        -
+
+    Servo Parameter:
+        P1-35
+
+NOTE: to enable JOG FWD/REV -> make DI9 or DI10 bit true.
+
+---------------------------------------------
+
+
+
+=============================================
+
+Torque Limit
+
+=============================================
+
+
+\ Torque Limit value 03/10H:
+
+    Address: 118~119
+        -
+    Range:
+        -300~300 decimal
+
+    Units:
+        %
+
+    Data size:
+        16-bit
+
+    Servo Parameter:
+        P1-12
+
+
+NOTE: Make sure that DI11 (TCM0) is TRUE, otherwise the Torque limit will be read from Analog input (means 0%)
+NOTE: If Torque Limit is too low Alarm-09 will occure at Position commands.
+NOTE: Make sure Torque limit bit at P1-02 parameter is 1.
+
+---------------------------------------------
+

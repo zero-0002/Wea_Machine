@@ -1,0 +1,149 @@
+Servo Config
+
+1- JOG (Speed & ACC/DEC) ---Done
+2- Check Gear Ratio ---Done
+3- Test in PR Mode with Software ---Done
+4- Test in Torque Mode with Software
+5- Test in PR + Torque Mode with Software
+6- Config DI/DO s for PR and Torque mode
+7- Use RS485 cable with software ---Done
+8- Check The Scope with software ---Done
+
+--------------------------------------------------
+
+Communication Config
+
+Find these parameters address (Modbus Poll):
+
+// DI ---Done
+1- SON
+2- CTRG
+3- EMGS
+4- NL
+5- PL
+6- ORGP
+7- POS0~POSXX
+8- ARST (P0-01 -> 0 Read/Write)
+9- JOG FWD
+10- JOG REV
+
+// DO ---Done
+1- TPOS
+2- HOME
+3- ALRM
+4- ZSPD
+5- SRDY
+
+// Monitoring ---Done
+1- Speed
+2- Torque (%)
+3- Amp (A) ---> Calc from Average Load
+4- Volt (V) ---> X
+5- Encoder PUU Scaled
+6- Encoder Pulse Counter ---> X
+7- Inertia Ratio (Optional) ---> X
+8- Current PATH (Optional) ---> X
+9- Avg Load
+10- Peak Load
+
+// Alarms ---Done
+1- Under Voltage
+2- Over Voltage
+3- Overload
+4- Emergency
+5- PL Alarm
+6- NL Alarm
+7- Encoder Alarm
+8- and all others
+
+// PATHS
+1- Homing method ---> X
+2- Homing First Speed ---Done
+3- Homing Secondary Speed ---Done
+4- #PATH0 ~ #PATHXX (methods)
+5- #PATH0 ~ #PATHXX (position) ---Done
+6- PATHS Speeds ---Done
+7- PATHS Acceleration ---Done
+8- PATHS Deceleration ---Done
+9- Index of PR command ---> X
+
+// Torque
+1- Torque Limits
+
+// JOG (using for manual)
+1- JOG FWD (DI JOG FWD) ---Done
+2- JOG Rev (DI JOG REV) ---Done
+3- JOG Speed ---Done
+4- JOG Acceleration (Internal ACC may help) ---Done
+5- JOG Deceleration (Internal DEC may help) ---Done
+6- JOG Torque (if exists)
+
+Config these:
+
+1- Config DI / DO using Modbus poll ---Done
+2- Read all above parameters ---Done
+3- Write all writable on above parameters --Done
+4- Apply Communication Timeout method ---Done
+5- Apply Communication fault method ---Done
+
+--------------------------------------------------------
+
+PLC & IO
+
+1- Read PLC X hex address
+2- Read PLC Y hex address
+3- Write PLC X hex address
+4- Write PLC Y hex address
+5- Apply Communication Timeout for signal at PLC when RS485 of PLC has disconnected.
+
+
+---------------------------------------------------------
+
+
+Check List & Hints
+
+1- P1-32 Motor Stop Mode
+2- P1-34 & P1-35 & P1-36 S-Curve (JOG ACC/DEC)
+3- P1-87 Homing Torque Limit
+4- P4-07 and P4-09 for DI/DO Read and write
+5- P3-06 for DI from software (RS485)  --> 3B0F (EMGS, NL, PL, ORGP hardware, other software)
+
+
+
+---------------------------------------------------------
+
+
+NOTES
+
+1- ALARM-09 occurs when the Torque limit value is too small
+
+---------------------------------------------------------
+
+
+Parameters Hex Address: (Big Endian)
+
+1- DI Read/Write 03/10H --> 40E-40F  DI1~DI14 (bit0=DI1 and bit13=DI14, 1 == enabled, 0 === disable)
+2- DO Read 03 --> 03H --> 412-413 (bit0=DO1, bit4=DO5, 1 == enabled, 0 === disable)
+3- Monitor Status 03H (Encode PUU (Scaled), Speed (rpm), Torque %, Average Load %, Peak Load %) --> 12-13, 14-15, 16-17, 18-19, 1A-1B
+4- Alarms (referrer P0-01) 03H ---> 02-03 Displays Hex Alarm Code seven segment (for detail see P0-01)
+5- Home First Speed 03/10H ---> 50A-50B 0~20000 (r/min but 2000.0) 32 bit decimals
+6- Home Secondary Speed 03/10H ---> 50C-50D 0~20000 (r/min but 2000.0) 32 bit decimals
+7- PATH#1 Data 03/10H --> 606-607 (32 signed bit decimal)
+8- PATH#2 Data 03/10H --> 60A-60B (32 signed bit decimal)
+...
+9- PATH#63 Data 03/10H --> 737-738 (32 signed bit decimal)
+10- Speed#0 03/10H --> 578-579 0~60000 0~60000 (r/min but 6000.0)  (16 bit decimal unsigned)
+11- Speed#1 03/10H --> 57A-57B 0~60000 0~60000 (r/min but 6000.0)  (16 bit decimal unsigned)
+...
+12- Speed#15 03/10H --> 596-597 0~60000 0~60000 (r/min but 6000.0)  (16 bit decimal unsigned)
+13- ACC/DEC#0 03/10H --> 528-529 1~65500 (millisecond 16 bit decimals)
+14- ACC/DEC#1 03/10H --> 52A-52B 1~65500 (millisecond 16 bit decimals)
+...
+15- ACC/DEC#15 03/10H --> 546-547 1~65500 (millisecond 16 bit decimals)
+
+16- P3-06 Enabling DI1~14 to software 03/10H --> 30C-30D (bit0=DI1 and bit13=DI14, 1 == software, 0 == hardware)  (default = 3B0F) NOTE: send it when Servo drive power on
+17- JOG Speed 03/10H --> 40A-40B (0~5000 r/min) 20 means 20rpm
+18- JOG ACC 03/10H --> 144-145 (1~65500) millisecond
+19- JOG DEC 03/10H --> 146-147 (1~65500) millisecond
+
+20- Torque Limit Register 03/10H --> 118-119 (-300~300 %) Torque percent

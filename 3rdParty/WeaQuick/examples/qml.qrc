@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Gallery.qml</file>
+        <file>ExamplesPages/ButtonPage.qml</file>
+        <file>ExamplesPages/FontAwesomePage.qml</file>
+        <file>ExamplesPages/PanePage.qml</file>
+        <file>ExamplesPages/LineEditPage.qml</file>
+        <file>ExamplesPages/SearchEditPage.qml</file>
+        <file>ExamplesPages/LabelPage.qml</file>
+        <file>ExamplesPages/CheckBoxPage.qml</file>
+        <file>ExamplesPages/SpinBoxPage.qml</file>
+        <file>ExamplesPages/EditBoxPage.qml</file>
+        <file>ExamplesPages/WaveTextPage.qml</file>
+        <file>ExamplesPages/GradientTextPage.qml</file>
+        <file>ExamplesPages/OutlineTextPage.qml</file>
+        <file>ExamplesPages/ShadowTextPage.qml</file>
+        <file>ExamplesPages/SliderPage.qml</file>
+        <file>ExamplesPages/RipplePage.qml</file>
+        <file>ExamplesPages/RangeSliderPage.qml</file>
+        <file>ExamplesPages/SwitchPage.qml</file>
+        <file>ExamplesPages/StatusIndicatorPage.qml</file>
+        <file>ExamplesPages/SunkenPage.qml</file>
+        <file>ExamplesPages/BarIndicatorPage.qml</file>
+    </qresource>
+    <qresource prefix="/common">
+        <file>ExamplePane.qml</file>
+    </qresource>
+</RCC>

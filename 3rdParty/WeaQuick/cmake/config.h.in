@@ -1,0 +1,6 @@
+#pragma once
+
+/// @brief CMake assign this macro with {CMAKE_INSTALL_PREFIX}/qml/
+#define @MODULE_NAME@_INSTALL_QML_IMPORT_PATH "${QML_INSTALL_DEST}"
+
+#define @MODULE_NAME@_SOURCE_QML_IMPORT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/qml/"

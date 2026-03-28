@@ -1,0 +1,35 @@
+import QtQuick 2.12
+
+import com.wearily.WeaQuick 1.0 as WeaQuick
+// Including ExamplePane
+import "../"
+
+ExamplePane {
+    id: root
+
+    title: "Labels Default font is FiraCode"
+    spacing: 25
+
+    contentItem: Column {
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 20
+
+        Repeater {
+            model: wQuick.theme.textColor.length // All Available textColors
+
+            // WeaQuick Label
+            WeaQuick.Label {
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Qt.AlignHCenter
+
+                level: index
+                // fontLevel: index % arrayTextFont.length
+                font {
+                    pixelSize: (1.25 + (index * index / (arrayTextColor.length * 3))) * 15
+                    italic: index < 4
+                }
+                text: "WeaQuick"
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+#ifndef WEAQUICK_H
+#define WEAQUICK_H
+
+#include "initialize.h"
+
+#endif // WEAQUICK_H

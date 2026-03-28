@@ -1,0 +1,4 @@
+R & D:
+
+	1- QSerialPortInfo + static methods
+	2- QModbusRtuSerialMaster

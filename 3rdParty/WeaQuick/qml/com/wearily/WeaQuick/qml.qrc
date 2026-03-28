@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Button.qml</file>
+        <file>plugins.qmltypes</file>
+        <file>qmldir</file>
+        <file>Theme.qml</file>
+        <file>GlobalContext.qml</file>
+        <file>ThemeLight.qml</file>
+        <file>Pane.qml</file>
+        <file>DropShadowObject.qml</file>
+        <file>DropShadowBinder.qml</file>
+        <file>Label.qml</file>
+        <file>ToolTip.qml</file>
+        <file>js/FontAwesome.js</file>
+        <file>IconFont.qml</file>
+        <file>js/WeaQuickUtils.js</file>
+        <file>LineEdit.qml</file>
+        <file>RectangleControl.qml</file>
+        <file>SearchEdit.qml</file>
+        <file>CheckBox.qml</file>
+        <file>WaveText.qml</file>
+        <file>SpinBox.qml</file>
+        <file>EditBox.qml</file>
+        <file>GradientText.qml</file>
+        <file>OutlineText.qml</file>
+        <file>ShadowText.qml</file>
+        <file>Slider.qml</file>
+        <file>Handle.qml</file>
+        <file>CircularRipple.qml</file>
+        <file>SmoothRectangle.qml</file>
+        <file>RangeSlider.qml</file>
+        <file>IconButton.qml</file>
+        <file>Switch.qml</file>
+        <file>StatusIndicator.qml</file>
+        <file>Sunken.qml</file>
+        <file>BarIndicator.qml</file>
+        <file>AbstractBar.qml</file>
+    </qresource>
+</RCC>

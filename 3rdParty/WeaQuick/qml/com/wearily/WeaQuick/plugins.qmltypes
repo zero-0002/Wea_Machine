@@ -1,0 +1,24 @@
+{
+    "module": "com.wearily.WeaQuick",
+    "version": "1.0",
+    "classes": [
+        {
+            "name": "Theme",
+            "extends": "QQuick.Item",
+            "file": "Theme.qml",
+            "decription": "Base Singleton Theme QtObject"
+        },
+        {
+            "name": "Pane",
+            "extends": "QQuick.Item",
+            "file": "Pane.qml",
+            "decription": "WeaQuick Complete Frame"
+        },
+        {
+            "name": "Button",
+            "extends": "QQuick.Item",
+            "file": "Button.qml",
+            "decription": "Simple Button of WeaQuick"
+        }
+    ]
+}
