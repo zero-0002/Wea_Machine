@@ -13,5 +13,27 @@
         <file>qml/ComPopup.qml</file>
         <file>qml/BackgroundOverlay.qml</file>
         <file>qml/CusPopup.qml</file>
+        <file>qml/SerialConfig.qml</file>
+        <file>qml/CusComboBox.qml</file>
+        <file>qml/AppStatusIndicators.qml</file>
+        <file>qml/ShineLine.qml</file>
+        <file>qml/CircularGaugeDarkStyle.qml</file>
+        <file>share/images/background.png</file>
+        <file>share/images/background-light.png</file>
+        <file>share/images/center.png</file>
+        <file>share/images/center-light.png</file>
+        <file>share/images/needle.png</file>
+        <file>share/images/needle-light.png</file>
+        <file>qml/CusCircularGauge.qml</file>
+        <file>qml/StepBar.qml</file>
+        <file>qml/StepItem.qml</file>
+        <file>qml/StepTools.qml</file>
+        <file>qml/ServoGauges.qml</file>
+        <file>qml/GaugePane.qml</file>
+        <file>qml/BorderRectangle.qml</file>
+        <file>qml/SpeedGauge.qml</file>
+        <file>qml/TorqueGauge.qml</file>
+        <file>qml/ItemGauge.qml</file>
+        <file>qml/DigitalIndicators.qml</file>
     </qresource>
 </RCC>

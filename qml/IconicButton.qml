@@ -7,6 +7,7 @@ WeaQuick.Button {
     height: 27
 
     iconColor: "orange"
+    flat: false
 
     arrayBorderColor: arrayBackgroundColor
     arraySelectedBorderColor: ["orange", "orange", "orange"]

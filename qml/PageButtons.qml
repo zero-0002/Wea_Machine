@@ -15,6 +15,7 @@ Item {
     signal popUpRequest(var index)
 
     implicitWidth: pageButtons.length * (30 + layout.spacing)
+    implicitHeight: 30
 
     Row {
         id: layout

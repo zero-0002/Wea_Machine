@@ -20,12 +20,19 @@ Item {
 
         onPageChanged: {
             // NOTE: Check this memory leakage
-            stackView.pop();
             stackView.push(pageItems[index]);
         }
 
         onOpenPopUp: {
             comPopup.open();
+        }
+
+        ShineLine {
+            id: headerLine
+            x: 20
+            y: parent.height + 4
+            width: parent.width - x * 2
+            color: "orange"
         }
     }
 
@@ -37,10 +44,10 @@ Item {
             right: parent.right
             left: parent.left
             bottom: parent.bottom
+            topMargin: headerLine.height + 5
         }
 
         initialItem: compHomePage
-        // currentItem: pageItems[appHeader.pageButtonsItem.currentIndex]
 
         pushEnter: Transition {
             PropertyAnimation {
@@ -101,6 +108,17 @@ Item {
     // Popups
     ComPopup {
         id: comPopup
+        model: [
+            {
+                title: "PLC Serial"
+            },
+            {
+                title: "Servo X-Axis"
+            },
+            {
+                title: "Servo Y-Axis"
+            }
+        ]
     }
 
     // Overlay (Pop-up will enable this)

@@ -12,7 +12,7 @@ QtObject {
     property var backgroundColor: ["#000000"]
 
     /** Panes **/
-    property var paneBackgroundColor: ["#000000", "#222", "#333", "#444", "#555", "#666", "#777", "#888"]
+    property var paneBackgroundColor: ["#000000", "#FF111111", "#222", "#333", "#444", "#555", "#666", "#777", "#888"]
     property var paneBorderColor: WeaQuickUtils.darker(paneBackgroundColor, 1.7)
 
     /** Controls **/

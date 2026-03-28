@@ -1,25 +1,52 @@
 import QtQuick 2.12
+import com.wearily.WeaQuick 1.0 as WeaQuick
 
 Item {
     id: root
 
     implicitHeight: 35
 
+    property alias title: appTitle.text
+
+    property alias appTitle: appTitle
     property alias pageButtonsItem: pageButtonsItem
 
     signal pageChanged(var index)
     signal openPopUp(var index)
 
+    // Left
+    WeaQuick.WaveText {
+        id: appTitle
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            leftMargin: 10
+        }
+
+        font {
+            pixelSize: 16
+            italic: true
+        }
+
+        text: "wearily"
+        frequency: 95
+        amplitude: 0.01
+    }
+
+    // H-Center
     PageButtons {
         id: pageButtonsItem
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            verticalCenter: parent.verticalCenter
+            horizontalCenter: parent.horizontalCenter
+        }
 
         pageButtons: [
             {
                 iconName: "house"
             },
             {
-                iconName: "joystick"
+                iconName: "gamepad-modern"
             },
             {
                 iconName: "gear"
@@ -39,5 +66,46 @@ Item {
         onPopUpRequest: {
             openPopUp(index);
         }
+    }
+
+    // Right
+    AppStatusIndicators {
+        id: right
+        anchors {
+            verticalCenter: parent.verticalCenter
+            right: parent.right
+            rightMargin: 10
+        }
+
+        model: [
+            {
+                iconName: "warning",
+                levelActive: 1 // yellow
+                             ,
+                active: true,
+                blinking: true
+            },
+            {
+                iconName: "plug-circle-check",
+                levelActive: 0 // red
+                             ,
+                active: true,
+                blinking: false
+            },
+            {
+                iconName: "plug-circle-exclamation",
+                levelActive: 3 // orange
+                             ,
+                active: true,
+                blinking: false
+            },
+            {
+                iconName: "plug-circle-xmark",
+                levelActive: 2 // green
+                             ,
+                active: true,
+                blinking: false
+            },
+        ]
     }
 }

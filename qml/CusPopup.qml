@@ -21,7 +21,7 @@ Popup {
     // closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
     background: WeaQuick.Pane {
-        level: 3
+        level: 1
         flat: false
         width: root.width
         height: root.height

@@ -1,4 +1,5 @@
 #include <QGuiApplication>
+#include <QSettings>
 
 #include <WeaQuick/initialize.h>
 
@@ -17,6 +18,12 @@ int main(int argc, char* argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
     QGuiApplication app(argc, argv);
+    QGuiApplication::setOrganizationName("WeaProject");
+    QGuiApplication::setOrganizationDomain("com.wearily");
+    QGuiApplication::setApplicationName("InjectionMolding");
+    QSettings settings;
+    qDebug() << "Settings: " << settings.applicationName()
+             << settings.organizationName();
 
     const QString projectSourceDir(PROJECT_SOURCE_DIR);
     const QString mainQmlPath(projectSourceDir + "/main.qml");
