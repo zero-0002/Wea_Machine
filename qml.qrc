@@ -4,5 +4,14 @@
         <file>share/images/ballscrew.png</file>
         <file>share/images/ballscrew-mirrored.png</file>
         <file>qml/MainForm.qml</file>
+        <file>qml/AppHeader.qml</file>
+        <file>qml/HomePage.qml</file>
+        <file>qml/ManualPage.qml</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/PageButtons.qml</file>
+        <file>qml/IconicButton.qml</file>
+        <file>qml/ComPopup.qml</file>
+        <file>qml/BackgroundOverlay.qml</file>
+        <file>qml/CusPopup.qml</file>
     </qresource>
 </RCC>

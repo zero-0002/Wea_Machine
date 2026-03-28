@@ -4,10 +4,13 @@ import QtQuick.Window 2.12
 import "qml"
 
 Window {
+    id: appWindow
     width: 640
     height: 480
     visible: true
-    title: qsTr("Hello World")
+    visibility: Window.FullScreen
+    title: qsTr("Injection Molding")
+    color: "black"
 
     property string mainFormPath: "qml/MainForm.qml"
 

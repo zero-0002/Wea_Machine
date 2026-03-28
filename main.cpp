@@ -7,8 +7,10 @@
 int main(int argc, char* argv[])
 {
     qputenv("QT_ENABLE_HIGHDPI_SCALING", "1");
-    // qputenv("QT_SCALE_FACTOR", "1.25");
     qputenv("QT_FONT_DPI", "96");
+    // qputenv("QT_SCALE_FACTOR", "1.25");
+
+    // qputenv("QT_ASSUME_STDERR_HAS_CONSOLE", "1");
     // qputenv("QSG_INFO", "1");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -37,8 +39,11 @@ int main(int argc, char* argv[])
     },
     Qt::QueuedConnection);
 
+    // 3rdParty initializing
     WeaQuick::initialize(&engine);
 
+
+    // Engine Property Contexts
     engine.addEngineContextProperty();
 
     engine.load(url);
