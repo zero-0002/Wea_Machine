@@ -26,21 +26,146 @@ Item {
         level: root.level
         // flat: false
 
+        // Component {
+        //     id: highlight
+        //     Rectangle {
+        //         width: 180
+        //         height: 40
+        //         color: "lightsteelblue"
+        //         radius: 5
+        //         y: listView.currentItem.y
+        //         Behavior on y {
+        //             SpringAnimation {
+        //                 spring: 3
+        //                 damping: 0.2
+        //             }
+        //         }
+        //     }
+        // }
+
         ListView {
             id: listView
+
             anchors {
                 fill: parent
                 margins: 10
             }
 
+            // highlight: highlight
+            // highlightFollowsCurrentItem: false
+            focus: true
+
             clip: true
+            currentIndex: -1
             boundsBehavior: Flickable.StopAtBounds
             spacing: 10
-            model: 5
+            model: ListModel {
+                ListElement {
+                    title: "Step No.1"
+                    active: false
+                    running: false
+                }
+                ListElement {
+                    title: "Step No.2"
+                    active: false
+                    running: false
+                }
+                ListElement {
+                    title: "Step No.3"
+                    active: true
+                    running: false
+                }
+                ListElement {
+                    title: "Step No.4"
+                    active: false
+                    running: true
+                }
+                ListElement {
+                    title: "Step No.5"
+                    active: false
+                    running: false
+                }
+            }
 
             delegate: StepItem {
                 width: listView.width
-                height: 300
+
+                title: model.title
+                running: model.running
+                readyIndicator.active: model.active
+                autoDeselectSibling: true
+                onSelectedChanged: {
+                    if (selected) {
+                        listView.currentIndex = index;
+                    } else {
+                        if (listView.currentIndex === index) {
+                            listView.currentIndex = -1;
+                        }
+                    }
+                }
+            }
+
+            /** Animation && Transitions **/
+            moveDisplaced: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 150
+                }
+            }
+
+            move: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 150
+                }
+            }
+
+            removeDisplaced: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 1000
+                    easing.type: Easing.InOutElastic
+                }
+            }
+
+            remove: Transition {
+                ParallelAnimation {
+                    NumberAnimation {
+                        property: "scale"
+                        to: 0
+                        duration: 1000
+                        easing.type: Easing.InBounce
+                    }
+                }
+            }
+
+            /** Objects && Functions **/
+            function moveUp() {
+                if (listView.currentIndex > 0) {
+                    listView.model.move(listView.currentIndex, listView.currentIndex - 1, 1);
+                }
+            }
+
+            function moveDown() {
+                if (listView.currentIndex < listView.count - 1) {
+                    listView.model.move(listView.currentIndex, listView.currentIndex + 1, 1);
+                }
+            }
+
+            function removeCurrent() {
+                removeItem(currentIndex);
+            }
+
+            function removeItem(index) {
+                if (index > listView.count - 1 || index < 0) {
+                    return;
+                }
+
+                if (index === listView.currentIndex) {
+                    listView.currentIndex = -1;
+                }
+
+                listView.model.remove(index, 1);
             }
         }
     }
@@ -56,10 +181,30 @@ Item {
         width: parent.width
         height: 27
 
+        dependentEnabled: listView.currentIndex > -1
+        moveUpButton.enabled: dependentEnabled && listView.currentIndex > 0
+        moveDownButton.enabled: dependentEnabled && listView.currentIndex < listView.count - 1
+
         // Slots
         insertButton.onClicked: {
             stepPopup.open();
-            console.log("Clicked");
+        }
+
+        moveUpButton.onClicked: {
+            listView.moveUp();
+        }
+
+        moveDownButton.onClicked: {
+            listView.moveDown();
+        }
+
+        editButton.onClicked: {
+            // TODO: update Modal with currentItem data
+            stepPopup.open();
+        }
+
+        deleteButton.onClicked: {
+            listView.removeCurrent();
         }
     }
 

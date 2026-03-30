@@ -51,5 +51,10 @@
         <file>qml/RampEditBox.qml</file>
         <file>qml/CoilsStep.qml</file>
         <file>qml/DelayEditBox.qml</file>
+        <file>qml/DropDown.qml</file>
+        <file>qml/IconicToggle.qml</file>
+        <file>qml/RotaryButton.qml</file>
+        <file>qml/StepContentItem.qml</file>
+        <file>qml/StepCoilsGrid.qml</file>
     </qresource>
 </RCC>
