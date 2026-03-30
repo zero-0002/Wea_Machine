@@ -55,5 +55,16 @@ Item {
         }
         width: parent.width
         height: 27
+
+        // Slots
+        insertButton.onClicked: {
+            stepPopup.open();
+            console.log("Clicked");
+        }
+    }
+
+    // Config Popup
+    StepPopup {
+        id: stepPopup
     }
 }

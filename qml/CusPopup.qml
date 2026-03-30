@@ -10,6 +10,7 @@ Popup {
     property alias titleSize: titleLabel.font.pixelSize
     default property alias popUpDelegate: popUpContent.data
 
+    parent: overlay
     padding: 10
     width: 420
     height: 550

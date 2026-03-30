@@ -22,6 +22,7 @@ Rectangle {
 
             delegate: CusDelayButton {
                 anchors.verticalCenter: parent.verticalCenter
+                level: 5
                 height: 40
 
                 text: modelData.name

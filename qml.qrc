@@ -42,5 +42,14 @@
         <file>qml/CusTableView.qml</file>
         <file>qml/AlarmFooter.qml</file>
         <file>qml/CusDelayButton.qml</file>
+        <file>qml/StepPopup.qml</file>
+        <file>qml/StepConfigView.qml</file>
+        <file>qml/IOsCheckBox.qml</file>
+        <file>qml/ServoStep.qml</file>
+        <file>qml/PosEditBox.qml</file>
+        <file>qml/SpdEditBox.qml</file>
+        <file>qml/RampEditBox.qml</file>
+        <file>qml/CoilsStep.qml</file>
+        <file>qml/DelayEditBox.qml</file>
     </qresource>
 </RCC>

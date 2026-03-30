@@ -16,15 +16,18 @@ QtObject {
     property var paneBorderColor: WeaQuickUtils.darker(paneBackgroundColor, 1.7)
 
     /** Controls **/
-    property var controlBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#22FAFAFA"]
-    property var controlHoveredBackgroundColor: ["#88AAAAAA", "#44FAFAFA", "#88000000", "#88000000", "#44FAFAFA"]
-    property var controlSelectedBackgroundColor: ["#22AAAAAA", "#77FAFAFA", "#DD000000", "#DD000000", "#AAFAFAFA"]
-    property var controlCheckedBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#22FAFAFA"]
+    property var controlBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#22FAFAFA", "#111"]
+    property var controlHoveredBackgroundColor: ["#88AAAAAA", "#44FAFAFA", "#88000000", "#88000000", "#44FAFAFA",
+        "#88555555"]
+    property var controlSelectedBackgroundColor: ["#22AAAAAA", "#77FAFAFA", "#DD000000", "#DD000000", "#AAFAFAFA",
+        "#22AAAAAA"]
+    property var controlCheckedBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#22FAFAFA",
+        "#55000000"]
 
-    property var controlBorderColor: ["#66D1D1D1", "#66E1E1E1", "orange", "#AAFF0000", "#AA00FF00"]
+    property var controlBorderColor: ["#66D1D1D1", "#66E1E1E1", "orange", "#AAFF0000", "#AA00FF00", "black"]
     property var controlHoveredBorderColor: WeaQuickUtils.darker(controlBorderColor, 10.0)
     property var controlSelectedBorderColor: controlHoveredBorderColor
-    property var controlBorderWidth: [2, 2, 2, 2, 2, 2]
+    property var controlBorderWidth: [2, 2, 2, 2, 2, 2, 1]
 
     /** Texts **/
     property var textColor: ["#FFFFFFFF", "#FFE1E1E1", "#FFC2C2C2", "#FFA4A4A4", "red", "tomato", "orange", "#FFFFF0000",
@@ -33,14 +36,16 @@ QtObject {
     property var textSelectedColor: textColor
 
     /** Buttons **/
-    property var buttonBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#55FAFAFA"]
-    property var buttonHoveredBackgroundColor: ["#88AAAAAA", "#44FAFAFA", "#88000000", "#88000000", "#44FAFAFA"]
-    property var buttonSelectedBackgroundColor: ["#22AAAAAA", "#77FAFAFA", "#DD000000", "#DD000000", "#AAFAFAFA"]
+    property var buttonBackgroundColor: ["#55444444", "#22FAFAFA", "#55000000", "#55000000", "#55FAFAFA", "#111"]
+    property var buttonHoveredBackgroundColor: ["#88AAAAAA", "#44FAFAFA", "#88000000", "#88000000", "#44FAFAFA",
+        "#88555555"]
+    property var buttonSelectedBackgroundColor: ["#22AAAAAA", "#77FAFAFA", "#DD000000", "#DD000000", "#AAFAFAFA",
+        "#22AAAAAA"]
 
-    property var buttonBorderColor: ["#66D1D1D1", "#66E1E1E1", "orange", "#AAFF0000", "#AA00FF00"]
+    property var buttonBorderColor: ["#66D1D1D1", "#66E1E1E1", "orange", "#AAFF0000", "#AA00FF00", "black"]
     property var buttonHoveredBorderColor: WeaQuickUtils.darker(buttonBorderColor, 10.0)
     property var buttonSelectedBorderColor: buttonHoveredBorderColor
-    property var buttonBorderWidth: [2, 2, 2, 2, 2, 2]
+    property var buttonBorderWidth: [2, 2, 2, 2, 2, 2, 1]
 
     /** Switches **/
     property var switchUncheckedBackgroundColor: ["#55000000", "#55000000", "#55000000", "#55000000", "#55000000",
