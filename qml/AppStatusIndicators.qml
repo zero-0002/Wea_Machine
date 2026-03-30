@@ -50,7 +50,6 @@ Item {
     // FPS Calculator
     Fps {
         id: fpsObject
-
         x: 0
         y: 0
         width: 1

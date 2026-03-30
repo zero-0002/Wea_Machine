@@ -55,7 +55,7 @@ CircularGaugeStyle {
     }
 
     tickmarkLabel: Text {
-        font.pixelSize: Math.max(6, outerRadius * 0.1)
+        font.pixelSize: Math.max(7, outerRadius * 0.1)
         text: styleData.value
         color: "white"
     }

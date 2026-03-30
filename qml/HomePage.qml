@@ -19,17 +19,33 @@ Item {
         ColumnLayout {
             id: vLayout
             anchors.fill: parent
-            spacing: 10
+            spacing: 5
             ServoGauges {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.preferredHeight: 50
             }
 
             // Rectangle {
-            Item {
-                id: statusAndAlarm
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.preferredHeight: 50
+                spacing: 5
+
+                AlarmTable {
+                    id: alaramTable
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 50
+                }
+
+                StatusPane {
+                    id: statusPane
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 50
+                }
             }
         }
     }

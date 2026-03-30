@@ -5,43 +5,32 @@ CircularGauge {
     id: root
 
     property bool accelerating: false
-
-    // property alias minimumValue: minimumValueSlider.value
-    // property alias maximumValue: maximumValueSlider.value
-    // property alias minimumValueAngle: minimumAngleSlider.value
-    // property alias maximumValueAngle: maximumAngleSlider.value
     property int size: 200
-    property int labelStepSize: 100
+
+    property real minimumValueAngle: -90
+    property real maximumValueAngle: 180
+
+    property real tickmarkStepSize: 10
+    property real minorTickmarkCount: 10
+    property real labelStepSize: 20
 
     implicitWidth: size
     implicitHeight: size
 
     minimumValue: 0
-    maximumValue: 1500
+    maximumValue: 100
 
     value: accelerating ? maximumValue : 0
     style: CircularGaugeDarkStyle {
         id: darkStyle
-        minimumValueAngle: -90
-        maximumValueAngle: 180
+        minimumValueAngle: root.minimumValueAngle
+        maximumValueAngle: root.maximumValueAngle
+        tickmarkStepSize: root.tickmarkStepSize
+        minorTickmarkCount: root.minorTickmarkCount
         labelStepSize: root.labelStepSize
     }
 
     // This stops the styles being recreated when a new one is chosen.
-
-    // Called to update the style after the user has edited a property.
-    // Connections {
-    //     target: darkStyle
-    //     function onMinimumValueAngleChanged() {
-    //         __style.minimumValueAngle = customizerItem.minimumValueAngle;
-    //     }
-    //     function onMaximumValueAngleChanged() {
-    //         __style.maximumValueAngle = customizerItem.maximumValueAngle;
-    //     }
-    //     function onLabelStepSizeChanged() {
-    //         __style.tickmarkStepSize = __style.labelStepSize = customizerItem.labelStepSize;
-    //     }
-    // }
     Behavior on value {
         NumberAnimation {
             easing.type: Easing.OutCubic

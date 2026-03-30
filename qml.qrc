@@ -35,5 +35,12 @@
         <file>qml/TorqueGauge.qml</file>
         <file>qml/ItemGauge.qml</file>
         <file>qml/DigitalIndicators.qml</file>
+        <file>qml/StatusPane.qml</file>
+        <file>qml/AnalogStatus.qml</file>
+        <file>qml/PLCIOStatus.qml</file>
+        <file>qml/AlarmTable.qml</file>
+        <file>qml/CusTableView.qml</file>
+        <file>qml/AlarmFooter.qml</file>
+        <file>qml/CusDelayButton.qml</file>
     </qresource>
 </RCC>

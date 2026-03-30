@@ -15,5 +15,10 @@ ItemGauge {
     gaugeItem: CusCircularGauge {
         id: gauge
         anchors.fill: parent
+
+        labelStepSize: 10
+        tickmarkStepSize: 20
+        minimumValueAngle: -135
+        maximumValueAngle: 65
     }
 }

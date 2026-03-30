@@ -38,7 +38,7 @@ Item {
 
         IconicButton {
             id: deleteButton
-            icon: "minus"
+            icon: "trash-can"
         }
 
         IconicButton {
