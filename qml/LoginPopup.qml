@@ -43,6 +43,9 @@ CusPopup {
             textItem.activeFocusOnTab: true
             placeholderText: "Password"
             echoMode: TextInput.Password
+            onAccepted: {
+                login();
+            }
         }
 
         WeaQuick.Button {
@@ -93,7 +96,7 @@ CusPopup {
         }
     }
     onOpened: {
-        usernameEdit.textItem.forceActiveFocus();
+        focusOnUsername();
     }
 
     function login() {
@@ -114,9 +117,14 @@ CusPopup {
         currentFailed = true;
         usernameEdit.clear();
         passwordEdit.clear();
+        focusOnUsername();
     }
 
     function checkLoginCorrect(username, password) {
         return username === "admin" && password === "qazqwe";
+    }
+
+    function focusOnUsername() {
+        usernameEdit.textItem.forceActiveFocus();
     }
 }
