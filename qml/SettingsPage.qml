@@ -1,13 +1,23 @@
 import QtQuick 2.12
-import com.wearily.WeaQuick 1.0 as WeaQuick
+import QtQuick.Layouts 1.12
 
 Item {
     id: root
 
-    WeaQuick.Label {
-        anchors.centerIn: parent
-        font.pixelSize: 20
+    RowLayout {
 
-        text: "SettingsPage"
+        // Side Bar (Pages)
+        SettingSideBar {
+            id: sideBar
+            Layout.preferredWidth: 200
+            Layout.fillHeight: true
+        }
+
+        // Main
+        SettingMainContent {
+            id: mainContent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }

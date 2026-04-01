@@ -11,6 +11,7 @@ DelayButton {
     delay: 1000
 
     contentItem: WeaQuick.Label {
+        id: label
         text: root.text
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -19,10 +20,13 @@ DelayButton {
 
     background: WeaQuick.RectangleControl {
         id: button
+
+        property alias textItem: label
+
         anchors.centerIn: parent
 
         implicitWidth: 100
-        implicitHeight: 35
+        // implicitHeight: 35
         border.width: 1
 
         flat: false

@@ -4,6 +4,9 @@ import QtQuick.Layouts 1.12
 BorderRectangle {
     id: root
 
+    property alias toggleStatusOutput: plcIOStatus.toggleOutput
+    property alias manualActive: plcIOStatus.manualActive
+
     title: "Status"
     level: 0
 

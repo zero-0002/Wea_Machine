@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import Qt.labs.settings 1.1
 import com.wearily.WeaQuick 1.0 as WeaQuick
 
 Item {
@@ -38,10 +39,8 @@ Item {
         }
     }
 
-    // Pages Stack
-    // StackView {
+    // Pages View
     SwipeView {
-        // id: stackView
         id: swipeView
         anchors {
             top: appHeader.bottom
@@ -57,40 +56,6 @@ Item {
             }
         }
 
-        // initialItem: compHomePage
-
-        // pushEnter: Transition {
-        //     PropertyAnimation {
-        //         property: "opacity"
-        //         from: 0
-        //         to: 1
-        //         duration: 200
-        //     }
-        // }
-        // pushExit: Transition {
-        //     PropertyAnimation {
-        //         property: "opacity"
-        //         from: 1
-        //         to: 0
-        //         duration: 200
-        //     }
-        // }
-        // popEnter: Transition {
-        //     PropertyAnimation {
-        //         property: "opacity"
-        //         from: 0
-        //         to: 1
-        //         duration: 200
-        //     }
-        // }
-        // popExit: Transition {
-        //     PropertyAnimation {
-        //         property: "opacity"
-        //         from: 1
-        //         to: 0
-        //         duration: 200
-        //     }
-        // }
         HomePage {
             id: homePage
         }
@@ -103,29 +68,11 @@ Item {
         }
     }
 
-    // Pages Components
-    // Component {
-    //     id: compHomePage
-    //     HomePage {
-    //         id: homePage
-    //     }
-    // }
-
-    // Component {
-    //     id: compManualPage
-    //     ManualPage {
-    //         id: manualPage
-    //     }
-    // }
-
-    // Component {
-    //     id: compSettingsPage
-    //     SettingsPage {
-    //         id: settingsPage
-    //     }
-    // }
-
     // Popups
+    LoginPopup {
+        id: loginPopup
+    }
+
     ComPopup {
         id: comPopup
         model: [
@@ -150,5 +97,12 @@ Item {
     // Objects
     WeaQuick.GlobalContext {
         id: wQuick
+    }
+
+    // AppSetting
+    Settings {
+        id: settings
+
+        property alias currentPageIndex: swipeView.currentIndex
     }
 }

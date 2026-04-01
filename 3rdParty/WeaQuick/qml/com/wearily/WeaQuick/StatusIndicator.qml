@@ -33,6 +33,7 @@ Sunken {
     property alias colorAnimationDuration: colorAnimation.duration
 
     property alias ripple: ripple
+    property alias borderRect: borderRect
     // property alias icon: icon
     property alias activeIndicator: activeIndicator
     property alias colorAnimation: colorAnimation

@@ -8,6 +8,9 @@ Popup {
     property int popUpSpacing: 5 // spacing between Title and popUpContent
     property alias title: titleLabel.text
     property alias titleSize: titleLabel.font.pixelSize
+
+    property alias titleLabel: titleLabel
+
     default property alias popUpDelegate: popUpContent.data
 
     parent: overlay

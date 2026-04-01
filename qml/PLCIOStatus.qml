@@ -5,7 +5,7 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Item {
     id: root
 
-    property int indicatorSize: 22
+    property int indicatorSize: 25
     property bool toggleOutput: false
 
     property alias digitalInputsModel: digitalInput.model
@@ -13,6 +13,8 @@ Item {
 
     property alias gridInputs: gridInputs
     property alias gridOutputs: gridOutputs
+
+    property bool manualActive: false
 
     ColumnLayout {
         id: columnLayout
@@ -80,15 +82,36 @@ Item {
                         title: modelData.title
                         titleHAlignment: Qt.AlignHCenter
                         spacing: 3
-                        WeaQuick.StatusIndicator {
+                        Loader {
+                            property int modelIndex: index
+
                             width: root.indicatorSize
                             height: width
 
-                            borderWidth: 1
-                            outerMargin: 3
+                            sourceComponent: toggleOutput ? compOutputButton : compOutputIndicator
+                        }
+                    }
+                }
+            }
 
-                            levelActive: 2
-                            active: index % 2
+            Component {
+                id: compOutputIndicator
+                WeaQuick.StatusIndicator {
+                    borderWidth: 1
+                    outerMargin: 3
+
+                    levelActive: 2
+                    active: modelIndex % 2
+                }
+            }
+            Component {
+                id: compOutputButton
+                SunkenButton {
+                    enabled: manualActive
+                    checked: modelIndex % 2
+                    onEnabledChanged: {
+                        if (!enabled) {
+                            checked = false;
                         }
                     }
                 }

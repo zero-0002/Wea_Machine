@@ -56,5 +56,29 @@
         <file>qml/RotaryButton.qml</file>
         <file>qml/StepContentItem.qml</file>
         <file>qml/StepCoilsGrid.qml</file>
+        <file>qml/RecordTable.qml</file>
+        <file>qml/RecordFooter.qml</file>
+        <file>qml/ControlPanel.qml</file>
+        <file>qml/PanelView.qml</file>
+        <file>qml/SpeedPanel.qml</file>
+        <file>qml/SpeedControl.qml</file>
+        <file>qml/CusSlider.qml</file>
+        <file>qml/RampPanel.qml</file>
+        <file>qml/RampControl.qml</file>
+        <file>qml/TorquePanel.qml</file>
+        <file>qml/TorqueControl.qml</file>
+        <file>qml/TorqueEditBox.qml</file>
+        <file>qml/CusScrollBar.qml</file>
+        <file>qml/HomingPanel.qml</file>
+        <file>qml/HomingControl.qml</file>
+        <file>qml/GotoPosPanel.qml</file>
+        <file>qml/GotoPosControl.qml</file>
+        <file>qml/AxisControlPanel.qml</file>
+        <file>qml/Joystick.qml</file>
+        <file>qml/JoystickButton.qml</file>
+        <file>qml/LoginPopup.qml</file>
+        <file>qml/SunkenButton.qml</file>
+        <file>qml/SettingSideBar.qml</file>
+        <file>qml/SettingMainContent.qml</file>
     </qresource>
 </RCC>

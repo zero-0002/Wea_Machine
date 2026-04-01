@@ -40,7 +40,7 @@ Q.TableView {
         layer.enabled: false
 
         level: styleData.alternate ? 1 : 0
-        color: styleData.selected ? "orange" : wQuick.theme.paneBackgroundColor[level]
+        color: styleData.row === root.currentRow ? "orange" : wQuick.theme.paneBackgroundColor[level]
     }
 
     itemDelegate: Item {
@@ -52,7 +52,33 @@ Q.TableView {
             verticalAlignment: Qt.AlignVCenter
             elide: styleData.elideMode
             text: styleData.value
-            color: styleData.selected ? "black" : "white"
+            color: styleData.row === root.currentRow ? "black" : "white"
         }
+    }
+
+    /** Objects **/
+    Keys.onEscapePressed: {
+        root.currentRow = -1;
+    }
+
+    /** Functions **/
+    function isSelected(index) {
+        return index === root.currentRow;
+    }
+
+    function removeAll() {
+        root.model.clear();
+    }
+
+    function removeCurrent() {
+        return removeItem(root.currentRow);
+    }
+
+    function removeItem(index) {
+        if (index > root.rowCount - 1 || index < 0) {
+            return;
+        }
+
+        root.model.remove(index);
     }
 }
