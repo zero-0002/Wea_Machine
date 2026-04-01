@@ -6,9 +6,11 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Item {
     id: root
 
-    // property var pageItems: [compHomePage, compManualPage, compSettingsPage]
-    property var pageItems: [homePage, manualPage, settingsPage]
+    property var pageComponents: [compHomePage, compManualPage, compSettingsPage]
+    // property var pageItems: [homePage, manualPage, settingsPage]
     property var popUps: [comPopup]
+
+    property real elapsed: 0.0
 
     // Top Header
     AppHeader {
@@ -20,10 +22,13 @@ Item {
             topMargin: 5
         }
 
+        // onPageChanged: {
+        // if (swipeView.currentIndex !== index) {
+        //     swipeView.currentIndex = index;
+        // }
+
         onPageChanged: {
-            if (swipeView.currentIndex !== index) {
-                swipeView.currentIndex = index;
-            }
+            elapsed = Date.now();
         }
 
         onOpenPopUp: {
@@ -40,8 +45,29 @@ Item {
     }
 
     // Pages View
-    SwipeView {
-        id: swipeView
+    Component {
+        id: compHomePage
+        // id: homePage
+        HomePage {}
+    }
+
+    Component {
+        id: compManualPage
+
+        // id: manualPage
+        ManualPage {}
+    }
+
+    Component {
+        id: compSettingsPage
+
+        // id: settingsPage
+        SettingsPage {}
+    }
+
+    Loader {
+        id: pageLoader
+
         anchors {
             top: appHeader.bottom
             right: parent.right
@@ -49,28 +75,48 @@ Item {
             bottom: parent.bottom
             topMargin: headerLine.height + 5
         }
-
-        onCurrentIndexChanged: {
-            if (currentIndex !== appHeader.pageButtonsItem.currentIndex) {
-                appHeader.pageButtonsItem.currentIndex = currentIndex;
-            }
-        }
-
-        HomePage {
-            id: homePage
-        }
-
-        ManualPage {
-            id: manualPage
-        }
-        SettingsPage {
-            id: settingsPage
+        sourceComponent: pageComponents[appHeader.pageButtonsItem.currentIndex]
+        onLoaded: {
+            console.log("PageLoaded: ", Date.now() - elapsed);
         }
     }
+
+    // SwipeView {
+    //     id: swipeView
+    //     anchors {
+    //         top: appHeader.bottom
+    //         right: parent.right
+    //         left: parent.left
+    //         bottom: parent.bottom
+    //         topMargin: headerLine.height + 5
+    //     }
+
+    //     onCurrentIndexChanged: {
+    //         if (currentIndex !== appHeader.pageButtonsItem.currentIndex) {
+    //             appHeader.pageButtonsItem.currentIndex = currentIndex;
+    //         }
+    //     }
+
+    //     HomePage {
+    //         id: homePage
+    //     }
+
+    //     ManualPage {
+    //         id: manualPage
+    //     }
+    //     SettingsPage {
+    //         id: settingsPage
+    //     }
+    // }
 
     // Popups
     LoginPopup {
         id: loginPopup
+    }
+
+    // Config Popup
+    StepPopup {
+        id: stepPopup
     }
 
     ComPopup {
@@ -103,6 +149,6 @@ Item {
     Settings {
         id: settings
 
-        property alias currentPageIndex: swipeView.currentIndex
+        // property alias currentPageIndex: swipeView.currentIndex
     }
 }

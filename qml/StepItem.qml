@@ -18,7 +18,7 @@ DropDown {
 
     property alias readyIndicator: readyIndicator
 
-    contentHeight: stepContentItem.height + topContentHeight
+    contentHeight: loaderContentItem.height + topContentHeight
 
     level: 1
     flat: false
@@ -63,16 +63,17 @@ DropDown {
     }
 
     // Main Item
-    contentItem: Item {
-        anchors.fill: parent
-
+    loaderContentItem {
+        anchors {
+            left: mainContent.left
+            right: mainContent.right
+            margins: 10
+        }
+    }
+    contentItem: Component {
         StepContentItem {
             id: stepContentItem
-
-            x: 10 // Margin left
-            width: parent.width - x * 2
             shineLineColor: root.shineLine.color
-
             titleSize: root.titleSize
         }
     }

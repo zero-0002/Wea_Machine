@@ -207,9 +207,4 @@ Item {
             listView.removeCurrent();
         }
     }
-
-    // Config Popup
-    StepPopup {
-        id: stepPopup
-    }
 }

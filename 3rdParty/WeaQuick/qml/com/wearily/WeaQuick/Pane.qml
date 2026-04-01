@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.12
 
 Rectangle {
     id: root
@@ -9,6 +9,7 @@ Rectangle {
 
     /** Alias Properties **/
     property alias dropShadow: dropShadow
+    property alias gradientOrientation: gradientItem.orientation
 
     /** Property Assignments **/
     width: 300
@@ -35,6 +36,7 @@ Rectangle {
 
     // Optional Gradient by default disabled (flat property)
     gradient: Gradient {
+        id: gradientItem
         GradientStop {
             color: root.flat ? root.color : Qt.lighter(root.color, 1.75)
             position: 0.0

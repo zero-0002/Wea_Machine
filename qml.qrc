@@ -80,5 +80,10 @@
         <file>qml/SunkenButton.qml</file>
         <file>qml/SettingSideBar.qml</file>
         <file>qml/SettingMainContent.qml</file>
+        <file>qml/SettingPLCInputPage.qml</file>
+        <file>qml/SettingPLCOuputPage.qml</file>
+        <file>qml/PLCDevice.qml</file>
+        <file>qml/PLCDigitalConfigModel.qml</file>
+        <file>qml/PLCDelayConfig.qml</file>
     </qresource>
 </RCC>

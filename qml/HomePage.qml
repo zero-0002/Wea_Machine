@@ -26,7 +26,6 @@ Item {
                 Layout.preferredHeight: 50
             }
 
-            // Rectangle {
             RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true

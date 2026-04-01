@@ -32,7 +32,9 @@ WeaQuick.Pane {
 
     /** Delegate Properties **/
     property alias topDelegate: topDelegate.data
-    property alias contentItem: contentItem.data
+    property alias contentItem: loaderContentItem.sourceComponent
+    readonly property alias mainContent: mainContent
+    property alias loaderContentItem: loaderContentItem
 
     clip: true
 
@@ -109,7 +111,6 @@ WeaQuick.Pane {
 
     Item {
         id: mainContent
-        clip: true
         anchors {
             top: shineLine.bottom
             left: parent.left
@@ -120,9 +121,16 @@ WeaQuick.Pane {
         opacity: height / contentHeight
         height: expanded ? contentHeight : 0
 
-        Item {
-            id: contentItem
-            anchors.fill: parent
+        Component {
+            id: compContentItem
+            Item {}
+        }
+
+        // Lazy loading content only when has expanded
+        Loader {
+            id: loaderContentItem
+            active: expanded
+            sourceComponent: compContentItem
         }
 
         /** Objects **/

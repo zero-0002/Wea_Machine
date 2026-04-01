@@ -5,8 +5,8 @@ Grid {
     id: root
 
     property int fontSize: 13
-    property int maxContentWidth: width
-    property int maxContentHeight: height
+    property int maxContentWidth: 1
+    property int maxContentHeight: 1
 
     property bool activeIndicators: false
     property int activeLevel: 3
@@ -58,7 +58,7 @@ Grid {
 
             // Calculating Item Preferred Height/Width
             Component.onCompleted: {
-                maxContentWidth = Math.max(label.paintedWidth + 1, statusIndicator.width, maxContentWidth);
+                maxContentWidth = Math.max(label.paintedWidth, statusIndicator.width, maxContentWidth);
                 maxContentHeight = Math.max(label.paintedHeight + statusIndicator.height, maxContentHeight);
             }
         }
