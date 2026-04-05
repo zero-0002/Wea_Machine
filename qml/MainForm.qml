@@ -2,12 +2,13 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import Qt.labs.settings 1.1
 import com.wearily.WeaQuick 1.0 as WeaQuick
+import CustomItems 1.0
 
 Item {
     id: root
 
     property var pageComponents: [compHomePage, compManualPage, compSettingsPage]
-    // property var pageItems: [homePage, manualPage, settingsPage]
+    property var pageItems: [homePage, manualPage, settingsPage]
     property var popUps: [comPopup]
 
     property real elapsed: 0.0
@@ -22,14 +23,15 @@ Item {
             topMargin: 5
         }
 
-        // onPageChanged: {
-        // if (swipeView.currentIndex !== index) {
-        //     swipeView.currentIndex = index;
-        // }
-
         onPageChanged: {
-            elapsed = Date.now();
+            if (swipeView.currentIndex !== index) {
+                swipeView.currentIndex = index;
+            }
         }
+
+        // onPageChanged: {
+        //     elapsed = Date.now();
+        // }
 
         onOpenPopUp: {
             comPopup.open();
@@ -65,24 +67,9 @@ Item {
         SettingsPage {}
     }
 
-    Loader {
-        id: pageLoader
+    // Loader {
+    //     id: pageLoader
 
-        anchors {
-            top: appHeader.bottom
-            right: parent.right
-            left: parent.left
-            bottom: parent.bottom
-            topMargin: headerLine.height + 5
-        }
-        sourceComponent: pageComponents[appHeader.pageButtonsItem.currentIndex]
-        onLoaded: {
-            console.log("PageLoaded: ", Date.now() - elapsed);
-        }
-    }
-
-    // SwipeView {
-    //     id: swipeView
     //     anchors {
     //         top: appHeader.bottom
     //         right: parent.right
@@ -90,24 +77,47 @@ Item {
     //         bottom: parent.bottom
     //         topMargin: headerLine.height + 5
     //     }
-
-    //     onCurrentIndexChanged: {
-    //         if (currentIndex !== appHeader.pageButtonsItem.currentIndex) {
-    //             appHeader.pageButtonsItem.currentIndex = currentIndex;
-    //         }
-    //     }
-
-    //     HomePage {
-    //         id: homePage
-    //     }
-
-    //     ManualPage {
-    //         id: manualPage
-    //     }
-    //     SettingsPage {
-    //         id: settingsPage
+    //     sourceComponent: pageComponents[appHeader.pageButtonsItem.currentIndex]
+    //     onLoaded: {
+    //         console.log("PageLoaded: ", Date.now() - elapsed);
     //     }
     // }
+
+    SwipeView {
+        id: swipeView
+        anchors {
+            top: appHeader.bottom
+            right: parent.right
+            left: parent.left
+            bottom: parent.bottom
+            topMargin: headerLine.height + 5
+        }
+
+        onCurrentIndexChanged: {
+            if (currentIndex !== appHeader.pageButtonsItem.currentIndex) {
+                appHeader.pageButtonsItem.currentIndex = currentIndex;
+            }
+        }
+
+        HomePage {
+            id: homePage
+        }
+
+        ManualPage {
+            id: manualPage
+        }
+        SettingsPage {
+            id: settingsPage
+        }
+    }
+
+    // Communications
+    ModbusCom {
+        id: servoModbusCom
+        objectID: 300
+        objectName: "SCOM"
+        serialConn: comPopup.servoSerialConnection
+    }
 
     // Popups
     LoginPopup {
@@ -121,17 +131,21 @@ Item {
 
     ComPopup {
         id: comPopup
-        model: [
-            {
-                title: "PLC Serial"
-            },
-            {
-                title: "Servo X-Axis"
-            },
-            {
-                title: "Servo Y-Axis"
-            }
-        ]
+
+        /** Slots **/
+        onOpened: {
+            serialGlobal.refreshPorts();
+        }
+
+        servoSerialConfig.onOpenConnection: {
+            servoModbusCom.openPort();
+        }
+        servoSerialConfig.onCloseConnection: {
+            servoModbusCom.closePort();
+        }
+
+        plcSerialConfig.onOpenConnection: {}
+        plcSerialConfig.onCloseConnection: {}
     }
 
     // Overlay (Pop-up will enable this)
@@ -141,6 +155,10 @@ Item {
     }
 
     // Objects
+    SerialGlobal {
+        id: serialGlobal
+    }
+
     WeaQuick.GlobalContext {
         id: wQuick
     }
@@ -149,6 +167,7 @@ Item {
     Settings {
         id: settings
 
-        // property alias currentPageIndex: swipeView.currentIndex
+        property alias currentPageIndex: swipeView.currentIndex
+        property alias plcName: appHeader.title
     }
 }

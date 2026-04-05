@@ -79,33 +79,39 @@ Item {
 
         model: [
             {
+                name: "Alarms",
                 iconName: "warning",
                 levelActive: 1 // yellow
                              ,
-                active: true,
+                active: _alarmModel.count > 0,
                 blinking: true
             },
+            // PLC
             {
+                name: "PLC Communication State",
                 iconName: "plug-circle-check",
                 levelActive: 0 // red
                              ,
                 active: true,
                 blinking: false
             },
+            // Servo
             {
-                iconName: "plug-circle-exclamation",
-                levelActive: 3 // orange
-                             ,
+                // iconName: "plug-circle-exclamation",
+                name: "Servo Communication State",
+                iconName: "plug-circle-check",
+                levelActive: servoModbusCom.serialConn.connected ? 2 : 0,
                 active: true,
                 blinking: false
-            },
-            {
-                iconName: "plug-circle-xmark",
-                levelActive: 2 // green
-                             ,
-                active: true,
-                blinking: false
-            },
+            }
+            // {
+            //     iconName: "plug-circle-xmark",
+            //     levelActive: 2 // green
+            //                  ,
+            //     active: true,
+            //     blinking: false
+            // },
+            ,
         ]
     }
 }

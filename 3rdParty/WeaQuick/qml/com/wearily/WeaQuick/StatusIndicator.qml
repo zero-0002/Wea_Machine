@@ -22,8 +22,8 @@ Sunken {
     readonly property bool hasIcon: icon.name.length > 0
 
     /** Alias Properties **/
-    property alias blinking: timerBlink.running
-    property alias blinkInterval: timerBlink.interval
+    property bool blinking: false
+    property int blinkInterval: 250
 
     property alias iconName: icon.name
     property alias iconColor: icon.color
@@ -145,23 +145,36 @@ Sunken {
 
     /** Resources & Objects **/
 
-    Timer {
-        id: timerBlink
-        running: false
-        repeat: true
-        interval: 1000
-        onTriggered: {
-            root.active = !root.active;
-            root.blinked();
-        }
-    }
+    // Timer {
+    //     id: timerBlink
+    //     running: false
+    //     repeat: true
+    //     interval: 1000
+    //     onTriggered: {
+    //         root.active = !root.active;
+    //         root.blinked();
+    //     }
+    // }
 
     /** Animations **/
 
-    Behavior on color {
+    // Behavior on color {
+    SequentialAnimation on color {
+        loops: Animation.Infinite
+        running: false
+
+        ColorAnimation {
+            id: colorAnimationRev
+            from: "transparent"
+            to: arrayActiveColor[levelActive]
+            duration: blinkInterval
+        }
+
         ColorAnimation {
             id: colorAnimation
-            duration: 250
+            from: arrayActiveColor[levelActive]
+            to: "transparent"
+            duration: blinkInterval
         }
     }
 }

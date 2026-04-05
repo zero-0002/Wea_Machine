@@ -1,9 +1,18 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import com.wearily.WeaQuick 1.0 as WeaQuick
+import CustomItems 1.0
 
 Item {
     id: root
+
+    property SerialConnection serialConnection: SerialConnection {
+        portName: cboxPorts.currentText
+        baudRate: serialGlobal.mapToBaudRate(cboxBaudRate.currentValue)
+        parity: serialGlobal.mapToParity(cboxParity.currentValue)
+        stopBits: serialGlobal.mapToStopBits(cboxStopBits.currentValue)
+        dataBits: serialGlobal.mapToDataBits(labelDataBits.text)
+    }
 
     readonly property int controlPreferredWidth: 150
     readonly property int controlPreferredHeight: 27
@@ -11,6 +20,9 @@ Item {
     property int fontSize: 14
 
     property alias title: titleLabel.text
+
+    signal openConnection
+    signal closeConnection
 
     // implicitWidth: 350
     // implicitHeight: 500
@@ -43,7 +55,7 @@ Item {
                 id: cboxPorts
                 anchors.right: parent.right
                 width: controlPreferredWidth
-                model: ["COM1", "COM2", "COM3"]
+                model: serialGlobal.availablePorts
             }
         }
 
@@ -55,7 +67,8 @@ Item {
                 anchors.right: parent.right
                 width: controlPreferredWidth
 
-                model: ["115200", "19700", "9600", "4800", "1912379131873"]
+                model: serialGlobal.baudRates
+                currentIndex: model.length - 1
             }
         }
 
@@ -63,6 +76,7 @@ Item {
             tagName: "DataBits: "
 
             WeaQuick.Label {
+                id: labelDataBits
                 anchors.right: parent.right
                 height: controlPreferredHeight
                 width: controlPreferredWidth
@@ -81,7 +95,8 @@ Item {
                 anchors.right: parent.right
                 width: controlPreferredWidth
 
-                model: ["Odd", "Even", "None"]
+                model: serialGlobal.parities
+                currentIndex: 1
             }
         }
 
@@ -93,29 +108,29 @@ Item {
                 anchors.right: parent.right
                 width: controlPreferredWidth
 
-                model: ["1", "2"]
+                model: serialGlobal.stopBits
             }
         }
 
-        Compact {
-            tagName: "Slave Address: "
+        // Compact {
+        //     tagName: "Slave Address: "
 
-            WeaQuick.EditBox {
-                id: editBoxSlaveAddr
-                anchors.right: parent.right
-                width: controlPreferredWidth
+        //     WeaQuick.EditBox {
+        //         id: editBoxSlaveAddr
+        //         anchors.right: parent.right
+        //         width: controlPreferredWidth
 
-                level: 0
-                flat: false
-                font.pixelSize: root.fontSize
+        //         level: 0
+        //         flat: false
+        //         font.pixelSize: root.fontSize
 
-                from: 1
-                to: 127
-                decimals: 0
-                stepSize: 1
-                value: 1
-            }
-        }
+        //         from: 1
+        //         to: 127
+        //         decimals: 0
+        //         stepSize: 1
+        //         value: 1
+        //     }
+        // }
 
         // Connect/Disconnect Buttons
 
@@ -125,21 +140,33 @@ Item {
             WeaQuick.Button {
                 id: connectButton
 
+                enabled: !serialConnection.connected
+
+                level: 5
                 width: 110
                 flat: false
 
                 text: "Connect"
                 font.pixelSize: root.fontSize
+                onClicked: {
+                    openConnection();
+                }
             }
 
             WeaQuick.Button {
                 id: disconnectButton
 
+                enabled: serialConnection.connected
+
+                level: 5
                 width: 115
                 flat: false
 
                 text: "Disconnect"
                 font.pixelSize: root.fontSize
+                onClicked: {
+                    closeConnection();
+                }
             }
         }
     }

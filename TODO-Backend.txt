@@ -2,3 +2,7 @@ R & D:
 
 	1- QSerialPortInfo + static methods
 	2- QModbusRtuSerialMaster
+	3- Create SerialConnection + ModbusCom as QML Object class.
+	4- Create AbstractModbusDevice and ServoModbusDevice and PLCModbusDevice.
+	5- These can be run multithread + reading them from property + as QML Object Item.
+	6- ModbusCom must be get single 'SerialConnection' + a list of AbstractModbusDevice(must include slaveID).

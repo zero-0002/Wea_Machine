@@ -1,18 +1,22 @@
 import QtQuick 2.12
 import com.wearily.WeaQuick 1.0 as WeaQuick
 
-/// TODO: bind real data with ComPopup model
 CusPopup {
     id: root
 
-    property alias model: listView.model
+    property alias plcSerialConnection: plcSerialConfig.serialConnection
+    property alias servoSerialConnection: servoSerialConfig.serialConnection
+
+    property alias plcSerialConfig: plcSerialConfig
+    property alias servoSerialConfig: servoSerialConfig
 
     title: "Serial Configuration"
     popUpDelegate: Item {
         anchors.fill: parent
 
-        ListView {
-            id: listView
+        Flickable {
+            id: flickable
+
             anchors {
                 fill: parent
                 topMargin: 20
@@ -20,30 +24,64 @@ CusPopup {
 
             clip: true
             boundsBehavior: Flickable.StopAtBounds
-            spacing: 10
+            contentWidth: width
+            contentHeight: layout.height
 
-            delegate: Item {
-                x: 15 // Margin
-                width: listView.width - 15
-                height: 400
+            Column {
+                id: layout
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: 15
+                }
+                spacing: 15
 
-                SerialConfig {
-                    // anchors.fill: parent
+                Item {
                     anchors {
-                        top: parent.top
                         left: parent.left
                         right: parent.right
-                        bottom: line.top
+                    }
+                    height: 400
+
+                    SerialConfig {
+                        id: plcSerialConfig
+                        anchors {
+                            top: parent.top
+                            left: parent.left
+                            right: parent.right
+                            bottom: plcLineFooter.top
+                        }
+
+                        title: "PLC Serial"
                     }
 
-                    title: modelData.title
+                    ShineLine {
+                        id: plcLineFooter
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        y: parent.height - height - 10
+                    }
                 }
 
-                ShineLine {
-                    id: line
-                    y: parent.height - height - 10
-                    width: listView.width - x
-                    visible: index < listView.model.length - 1
+                Item {
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    height: 400
+
+                    SerialConfig {
+                        id: servoSerialConfig
+                        anchors {
+                            top: parent.top
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        title: "Servo Serial"
+                    }
                 }
             }
         }

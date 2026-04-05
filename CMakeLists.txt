@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick Qml QuickControls2)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick Qml QuickControls2)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick Qml QuickControls2 SerialBus SerialPort)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick Qml QuickControls2 SerialBus SerialPort)
 
 # ============================
 # Files
@@ -30,6 +30,8 @@ set(PROJECT_SOURCES
     ${PROJECT_RESOURCES}
 )
 
+find_package(Qt5 REQUIRED COMPONENTS Core)
+
 add_executable(InjectionMolding
     ${PROJECT_SOURCES}
 )
@@ -37,7 +39,7 @@ add_executable(InjectionMolding
 # Adding 3rdParty Libraries
 add_subdirectory(3rdParty/WeaCore)
 add_subdirectory(3rdParty/WeaQuick)
-# add_subdirectory(3rdParty/WeaCore)
+# add_subdirectory(3rdParty/WeaModel)
 
 target_compile_definitions(InjectionMolding PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -46,6 +48,7 @@ target_include_directories(InjectionMolding
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/WeaCore/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/WeaQuick/include
+    # ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/WeaModel
 )
 
 target_link_libraries(InjectionMolding
@@ -54,7 +57,12 @@ target_link_libraries(InjectionMolding
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::QuickControls2
+    Qt${QT_VERSION_MAJOR}::SerialBus
+    Qt${QT_VERSION_MAJOR}::SerialPort
+    ${WeaCore}
+    ${WeaQuick}
 )
+target_link_libraries(InjectionMolding PRIVATE Qt5::Core)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

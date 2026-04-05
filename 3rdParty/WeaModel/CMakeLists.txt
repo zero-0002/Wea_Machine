@@ -7,36 +7,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Core Quick Qml)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 set(HEADERS
-    common/worker.h
     models/IQItemListModel.h
     models/QItemListModel.h
     models/QItemSortFilterProxyModel.h
     models/QItemBase.h
-    models/examples/SortFilterProxy.h
-    models/examples/TargetModel.h
-    models/examples/Target.h
-)
-set(SOURCES
-  main.cpp
-  common/worker.cpp
-
 )
 set(QML_FILES
         resources/qml.qrc
 )
 set(PROJECT_SOURCES
     ${HEADERS}
-    ${SOURCES}
     ${QML_FILES}
-    README.md
-    tree.txt
 )
 
 
-add_executable(appListModel
+add_library(appListModel SHARED
   ${PROJECT_SOURCES})
 
 

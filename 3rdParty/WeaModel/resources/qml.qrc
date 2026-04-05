@@ -1,8 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>common/RadarView.qml</file>
-        <file>common/TargetItem.qml</file>
-        <file>models/ModelTableView.qml</file>
+        <file>ModelTableView.qml</file>
     </qresource>
 </RCC>

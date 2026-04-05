@@ -2,7 +2,22 @@
 #define UTILS_H
 
 #include <QObject>
-#include "init.h"
+
+/*!
+ * \brief WEACORE_NAMESPACE_START: module namespace start
+ */
+#define WEACORE_NAMESPACE_START namespace WeaCore {
+
+/*!
+ * \brief WEACORE_NAMESPACE_END : module namespace end
+ */
+#define WEACORE_NAMESPACE_END };
+
+/*!
+ * \brief USE_NAMESPACE_WEACORE : module namespace using macro.
+ */
+#define USE_NAMESPACE_WEACORE using namespace WeaCore;
+
 
 WEACORE_NAMESPACE_START
 

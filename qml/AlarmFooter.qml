@@ -4,7 +4,7 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Rectangle {
     id: root
 
-    property alias model: repeater.model
+    property alias resetAlarms: buttonResetAlarms
     property alias layout: layout
 
     Row {
@@ -17,16 +17,13 @@ Rectangle {
         layoutDirection: Qt.RightToLeft
         spacing: 10
 
-        Repeater {
-            id: repeater
+        CusDelayButton {
+            id: buttonResetAlarms
+            anchors.verticalCenter: parent.verticalCenter
+            level: 5
+            height: 40
 
-            delegate: CusDelayButton {
-                anchors.verticalCenter: parent.verticalCenter
-                level: 5
-                height: 40
-
-                text: modelData.name
-            }
+            text: "Reset Alarms"
         }
     }
 }

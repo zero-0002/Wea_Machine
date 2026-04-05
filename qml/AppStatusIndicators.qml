@@ -1,5 +1,5 @@
 import QtQuick 2.12
-
+import QtQuick.Controls 2.12 as Q
 import com.wearily.WeaQuick 1.0 as WeaQuick
 import CustomItems 1.0
 
@@ -32,6 +32,18 @@ Item {
                 levelActive: modelData.levelActive
                 active: modelData.active
                 blinking: modelData.blinking
+
+                MouseArea {
+                    id: mouseContains
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+
+                Q.ToolTip {
+                    delay: 500
+                    visible: mouseContains.containsMouse && modelData.name.length > 0
+                    text: modelData.name
+                }
             }
         }
 

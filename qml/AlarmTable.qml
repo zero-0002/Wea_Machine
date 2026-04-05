@@ -47,7 +47,7 @@ BorderRectangle {
             title: "Description"
             width: 250
         }
-        model: libraryModel
+        model: _alarmModel
     }
 
     AlarmFooter {
@@ -60,11 +60,9 @@ BorderRectangle {
             margins: padding
         }
 
-        model: [
-            {
-                name: "Alarm Reset"
-            }
-        ]
+        resetAlarms.onActivated: {
+            _alarmModel.clear();
+        }
     }
 
     ListModel {
