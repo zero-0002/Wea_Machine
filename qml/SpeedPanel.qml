@@ -57,6 +57,7 @@ BorderRectangle {
             x: 10
             width: parent.width - x * 2
             height: controlHeight
+            value: servoXDevice.jogSpeed
         }
 
         // Spacer
@@ -100,6 +101,9 @@ BorderRectangle {
             level: 2
             text: "Submit"
             border.width: 1
+            onClicked: {
+                servoXDevice.pushJogSpeed(speedXControl.value);
+            }
         }
     }
 }

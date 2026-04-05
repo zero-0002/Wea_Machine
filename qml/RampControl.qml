@@ -8,8 +8,8 @@ Item {
     property real fontSize: 13
     property real controlHeight: 27
 
-    property alias accValue: accBox.value
-    property alias decValue: decBox.value
+    property alias accValue: accSlider.value
+    property alias decValue: decSlider.value
 
     property alias accSlider: accSlider
     property alias accBox: accBox
@@ -44,6 +44,15 @@ Item {
                 from: accBox.from
                 to: accBox.to
                 stepSize: accBox.stepSize
+
+                onValueChanged: {
+                    valueModified();
+                }
+
+                Component.onCompleted: {
+                    // Request to update Slider position
+                    valueModified();
+                }
             }
 
             RampEditBox {
@@ -53,11 +62,6 @@ Item {
                 color: "transparent"
                 master: accSlider
                 textItem.horizontalAlignment: Qt.AlignRight
-
-                Component.onCompleted: {
-                    // Request to update Slider position
-                    valueModified();
-                }
             }
         }
 
@@ -78,6 +82,15 @@ Item {
                 from: decBox.from
                 to: decBox.to
                 stepSize: decBox.stepSize
+
+                onValueChanged: {
+                    valueModified();
+                }
+
+                Component.onCompleted: {
+                    // Request to update Slider position
+                    valueModified();
+                }
             }
 
             RampEditBox {
@@ -87,11 +100,6 @@ Item {
                 color: "transparent"
                 master: decSlider
                 textItem.horizontalAlignment: Qt.AlignRight
-
-                Component.onCompleted: {
-                    // Request to update Slider position
-                    valueModified();
-                }
             }
         }
     }

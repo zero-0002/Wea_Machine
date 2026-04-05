@@ -7,7 +7,7 @@ Item {
 
     property real controlHeight: 27
 
-    property alias value: torqueBox.value // is same with torqueSlider.value
+    property alias value: torqueSlider.value // is same with torqueSlider.value
 
     property alias torqueSlider: torqueSlider
     property alias torqueBox: torqueBox
@@ -25,6 +25,15 @@ Item {
             from: torqueBox.from
             to: torqueBox.to
             stepSize: torqueBox.stepSize
+
+            onValueChanged: {
+                valueModified();
+            }
+
+            Component.onCompleted: {
+                // Request to update Slider position
+                valueModified();
+            }
         }
 
         TorqueEditBox {
@@ -34,11 +43,10 @@ Item {
             color: "transparent"
             master: torqueSlider
             textItem.horizontalAlignment: Qt.AlignRight
-
-            Component.onCompleted: {
-                // Request to update Slider position
-                valueModified();
-            }
+            // Component.onCompleted: {
+            // Request to update Slider position
+            // valueModified();
+            // }
         }
     }
 }

@@ -41,6 +41,22 @@ Flickable {
             id: gotoPosPanel
             width: parent.width
             manualActive: root.manualActive
+
+            submitButton.mouseArea.onPressed: {
+                // X Servo Goto Position
+                if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
+                    servoXDevice.pushPathData1(gotoPosPanel.gotoPosXControl.positionValue * 1000);
+                    servoXDevice.pushSpeed0(speedPanel.speedXControl.value * 10);
+                    servoXDevice.pushRamp0(rampPanel.rampXControl.accValue);
+                    servoXDevice.pushDi2(true);
+                }
+            }
+            submitButton.onActivated: {
+                // X Servo Goto Position
+                if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
+                    servoXDevice.triggerCTRG();
+                }
+            }
         }
 
         // ACC/DEC Panel

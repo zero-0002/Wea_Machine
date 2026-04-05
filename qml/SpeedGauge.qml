@@ -3,6 +3,8 @@ import QtQuick 2.12
 ItemGauge {
     id: root
 
+    property alias gauge: gauge
+
     title: "Servo Speed"
     editBoxGauge {
         decimals: 1

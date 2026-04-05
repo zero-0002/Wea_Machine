@@ -1,8 +1,11 @@
 #include "../include/InjectionMolding/modbuscom.h"
 
 #include "../include/InjectionMolding/SerialConnection.h"
+#include "../include/InjectionMolding/abstractmodbusdevice.h"
 #include "../include/InjectionMolding/AlarmModel.h"
 
+#include <QTimerEvent>
+#include <QThread>
 #include <QDebug>
 
 ModbusCom::ModbusCom(QObject* parent)
@@ -13,17 +16,64 @@ ModbusCom::ModbusCom(QObject* parent)
 ModbusCom::~ModbusCom()
 {
     closePort();
+
+    if (m_thread)
+    {
+        m_thread->quit();
+        m_thread->wait();
+        delete m_thread;
+    }
 }
 
 void ModbusCom::classBegin()
 {
+    /** Connections **/
 
+    // Binding Alarm
+    connect(this, &ModbusCom::errorRaised, this, [ = ](int code, QString msg)
+    {
+        addAlarm(code, msg);
+    });
 }
 
 void ModbusCom::componentComplete()
 {
+    if (m_threaded)
+    {
+        m_thread = new QThread(this);
+        this->moveToThread(m_thread);
+        connect(m_thread, &QThread::started, this, [ = ]()
+        {
+            qDebug() << "Thread has started: ";
+        });
+        m_thread->start();
+    }
+
     isSerialConnValid();
     applyConfigs();
+
+    /** Connections **/
+    connect(m_serialConn, &SerialConnection::connectedChanged, this, [ = ]()
+    {
+        if (isConnected())
+        {
+            // Start Refresh Timer
+            m_refreshTmr.start(m_refreshInterval, this);
+        }
+        else
+        {
+            // Stop Refresh Timer
+            m_refreshTmr.stop();
+
+        }
+
+        // Enable/Disable Devices
+        for (int i(0); i < m_devices.size(); ++i)
+        {
+            m_devices[i]->setEnabled(isConnected());
+            m_isFirstFrame[m_devices[i]->slaveAddress()] = true;
+        }
+    });
 }
 
 bool ModbusCom::isSerialConnValid() const
@@ -47,11 +97,24 @@ bool ModbusCom::isConnected() const
     return m_serialConn->connected();
 }
 
+AbstractModbusDevice* ModbusCom::getDevice(int slaveAddress) const
+{
+    for (int i(0); i < m_devices.size(); ++i)
+    {
+        if (m_devices[i]->slaveAddress() == slaveAddress)
+        {
+            return m_devices[i];
+        }
+    }
+
+    return nullptr;
+}
+
 bool ModbusCom::openPort()
 {
     if (isConnected())
     {
-        emit errorRaised("Port is already Open on this Device!");
+        emit errorRaised(1001, "Port is already Open on this Device!");
         return false;
     }
 
@@ -62,7 +125,7 @@ bool ModbusCom::openPort()
 
     if (!connectDevice())
     {
-        emit errorRaised(errorString());
+        emit errorRaised(error(), errorString());
         return false;
     }
 
@@ -80,7 +143,12 @@ void ModbusCom::closePort()
 
 void ModbusCom::addAlarm(int alarmCode)
 {
-    AlarmModel::getInstance().addAlarm(alarmCode, getAlarmDesc(alarmCode), getAlarmCodeStr(alarmCode));
+    addAlarm(alarmCode, getAlarmDesc(alarmCode));
+}
+
+void ModbusCom::addAlarm(int alarmCode, const QString& desc)
+{
+    AlarmModel::getInstance().addAlarm(alarmCode, desc, getAlarmCodeStr(alarmCode));
 }
 
 void ModbusCom::removeAlarm(int alarmCode)
@@ -157,10 +225,8 @@ void ModbusCom::applyConfigs()
     {
         // qCritical() << "Modbus Error: " << errorString() << code;
         // QML signal
-        emit errorRaised(errorString());
+        emit errorRaised(code, errorString());
 
-        /** Binding Alarm **/
-        addAlarm(code);
     });
 
     connect(this, &QModbusClient::stateChanged, [this](int state)
@@ -186,5 +252,202 @@ void ModbusCom::applyConfigs()
 
 void ModbusCom::timerEvent(QTimerEvent* event)
 {
+    if (event->timerId() == m_refreshTmr.timerId())
+    {
+        updateFrame();
+    }
 
+}
+
+void ModbusCom::updateFrame()
+{
+    for (auto& device : qAsConst(m_devices))
+    {
+        int slaveAddress = device->slaveAddress();
+
+        // write Requests
+        for (auto& writeUnit : qAsConst(device->writeBuffer()))
+        {
+            writeRequest(writeUnit, slaveAddress);
+        }
+
+        // ReadOnce Requests (Only when an specified request is raised)
+        if (device->writeBufferSize() > 0 || m_isFirstFrame[slaveAddress])
+        {
+            for (auto& readOnceUnit : qAsConst(device->readOnceBuffer()))
+            {
+                readRequest(readOnceUnit, slaveAddress);
+            }
+        }
+
+        // writeOnce Requests (Right now is write always instead writeOnce)
+        for (auto& writeOnceUnit : qAsConst(device->writeOnceBuffer()))
+        {
+            writeRequest(writeOnceUnit, slaveAddress);
+        }
+
+
+        // read Requests
+        for (auto& readUnit : qAsConst(device->readBuffer()))
+        {
+            readRequest(readUnit, slaveAddress);
+        }
+
+        /** Clearing for next frame **/
+        m_isFirstFrame[slaveAddress] = false;
+        device->clearWriteBuffer();
+    }
+
+}
+
+void ModbusCom::readRequest(const QModbusDataUnit& unit, int slaveAddress)
+{
+
+    if (auto* reply = sendReadRequest(unit, slaveAddress))
+    {
+        if (!reply->isFinished())
+        {
+            connect(reply, &QModbusReply::finished, this, &ModbusCom::readReady);
+        }
+        else
+        {
+            delete reply;    // broadcast replies return immediately
+        }
+    }
+    else
+    {
+        const auto errMsg = QString("Read error at slave: %1  %2").arg(slaveAddress).arg(errorString());
+        emit errorRaised(error(), errMsg);
+    }
+}
+
+void ModbusCom::writeRequest(const QModbusDataUnit& unit, int slaveAddress)
+{
+
+    QModbusDataUnit::RegisterType table = unit.registerType();
+    for (int i = 0, total = int(unit.valueCount()); i < total; ++i)
+    {
+        if (table == QModbusDataUnit::Coils)
+        {
+            // unit.setValue(i, writeModel->m_coils[i + writeUnit.startAddress()]);
+        }
+        else
+        {
+            // writeUnit.setValue(i, writeModel->m_holdingRegisters[i + writeUnit.startAddress()]);
+        }
+    }
+
+    if (auto* reply = sendWriteRequest(unit, slaveAddress))
+    {
+        if (!reply->isFinished())
+        {
+            connect(reply, &QModbusReply::finished, this, [this, reply]()
+            {
+                if (reply->error() == QModbusDevice::ProtocolError)
+                {
+                    const auto errMsg = QString("Write response at slaveAddress %1 error: %2 (Mobus exception: 0x%3)").
+                                        arg(reply->serverAddress()).
+                                        arg(reply->errorString()).
+                                        arg(reply->rawResult().exceptionCode(), -1, 16);
+                    emit errorRaised(reply->error(), errMsg);
+                }
+                else if (reply->error() != QModbusDevice::NoError)
+                {
+                    const auto errMsg = QString("Write response at slaveAddress %1 error: %2 (code: 0x%3)").
+                                        arg(reply->serverAddress()).
+                                        arg(reply->errorString()).
+                                        arg(reply->error(), -1, 16);
+                    emit errorRaised(reply->error(), errMsg);
+                }
+                reply->deleteLater();
+            });
+        }
+        else
+        {
+            // broadcast replies return immediately
+            reply->deleteLater();
+        }
+    }
+    else
+    {
+        const auto errMsg = QString("Write error at slaveAddress %1: %2").
+                            arg(slaveAddress).
+                            arg(errorString());
+        emit errorRaised(error(), errMsg);
+    }
+}
+
+void ModbusCom::readWriteRequest(const QModbusDataUnit& writeUnit, const QModbusDataUnit& readUnit, int slaveAddress)
+{
+
+    QModbusDataUnit::RegisterType table = writeUnit.registerType();
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i)
+    {
+        if (table == QModbusDataUnit::Coils)
+        {
+            // writeUnit.setValue(i, writeModel->m_coils[i + writeUnit.startAddress()]);
+        }
+        else
+        {
+            // writeUnit.setValue(i, writeModel->m_holdingRegisters[i + writeUnit.startAddress()]);
+        }
+    }
+
+    if (auto* reply = sendReadWriteRequest(readUnit, writeUnit, slaveAddress))
+    {
+        if (!reply->isFinished())
+        {
+            connect(reply, &QModbusReply::finished, this, &ModbusCom::readReady);
+        }
+        else
+        {
+            delete reply;    // broadcast replies return immediately
+        }
+    }
+    else
+    {
+        const auto errMsg = QString("Read error at slave: %1  %2").arg(slaveAddress).arg(errorString());
+        emit errorRaised(error(), errMsg);
+    }
+}
+
+void ModbusCom::readReady()
+{
+    auto reply = qobject_cast<QModbusReply*>(sender());
+    if (!reply)
+    {
+        return;
+    }
+
+    int slaveAddress = reply->serverAddress();
+    if (reply->error() == QModbusDevice::NoError)
+    {
+        const QModbusDataUnit unit = reply->result();
+        for (int i = 0, total = int(unit.valueCount()); i < total; ++i)
+        {
+            auto* device = getDevice(slaveAddress);
+            device->writeValuToProperty(unit.startAddress() + i, unit.value(i));
+            // const QString entry = tr("Address: %1, Value: %2").arg(unit.startAddress() + i)
+            //                       .arg(QString::number(unit.value(i),
+            //                               unit.registerType() <= QModbusDataUnit::Coils ? 10 : 16));
+        }
+    }
+    else if (reply->error() == QModbusDevice::ProtocolError)
+    {
+        const auto errMsg = QString("Read response at slaveAdress %1 error: %2 (Mobus exception: 0x%3)").
+                            arg(slaveAddress).
+                            arg(reply->errorString()).
+                            arg(reply->rawResult().exceptionCode(), -1, 16);
+        emit errorRaised(reply->error(), errMsg);
+    }
+    else
+    {
+        const auto errMsg = QString("Read response at slaveAddress %1 error: %2 (code: 0x%3)").
+                            arg(slaveAddress).
+                            arg(reply->errorString()).
+                            arg(reply->error(), -1, 16);
+        emit errorRaised(reply->error(), errMsg);
+    }
+
+    reply->deleteLater();
 }

@@ -8,6 +8,8 @@ DelayButton {
     property alias level: button.level
     property alias flat: button.flat
 
+    property alias mouseArea: button.mouseArea
+
     delay: 1000
 
     contentItem: WeaQuick.Label {

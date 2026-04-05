@@ -27,7 +27,7 @@ Item {
                     id: digitalInput
 
                     delegate: Compact {
-                        title: "DI%1".arg(index)
+                        title: "DI%1".arg(index + 1)
                         spacing: 3
                         WeaQuick.StatusIndicator {
                             width: 18
@@ -36,7 +36,7 @@ Item {
                             borderWidth: 1
                             outerMargin: 3
 
-                            active: index % 2
+                            active: modelData
                             blinking: true
                         }
                     }
@@ -59,7 +59,7 @@ Item {
                     id: digitalOutput
 
                     delegate: Compact {
-                        title: "DO%1".arg(index)
+                        title: "DO%1".arg(index + 1)
                         titleHAlignment: Qt.AlignHCenter
                         spacing: 3
                         WeaQuick.StatusIndicator {
@@ -70,7 +70,7 @@ Item {
                             outerMargin: 3
 
                             levelActive: 1
-                            active: index % 2
+                            active: modelData
                             blinking: true
                         }
                     }

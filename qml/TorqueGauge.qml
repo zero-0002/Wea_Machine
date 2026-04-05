@@ -3,6 +3,8 @@ import QtQuick 2.12
 ItemGauge {
     id: root
 
+    property alias gauge: gauge
+
     layoutSpacing: 15
     title: "Servo Torque"
     editBoxGauge {

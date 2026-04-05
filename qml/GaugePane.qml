@@ -6,6 +6,9 @@ BorderRectangle {
 
     property alias rowLayout: rowLayout
     property alias columnLayout: columnLayout
+    property alias servoIndicators: servoIndicators
+    property alias torqueGauge: torqueGauge
+    property alias speedGauge: speedGauge
 
     clip: true
 

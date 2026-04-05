@@ -74,6 +74,12 @@ Item {
             Layout.leftMargin: 10
             title: "X-Axis Servo ON:"
             homingSwitch.enabled: manualModeControl.enableOther
+
+            homingSwitch.checkable: false
+            homingSwitch.checked: servoXDevice.di1
+            homingSwitch.onPressed: {
+                servoXDevice.pushDi1(!homingSwitch.checked);
+            }
         }
 
         // Servo Y
@@ -100,6 +106,24 @@ Item {
             joystickTopRight.enabled: servoOnXControl.homingActive && servoOnYControl.homingActive
             joystickDownLeft.enabled: servoOnXControl.homingActive && servoOnYControl.homingActive
             joystickDownRight.enabled: servoOnXControl.homingActive && servoOnYControl.homingActive
+
+            /** Slots **/
+            joystickLeft.onPressed: {
+                // Forward
+                servoXDevice.pushDi9(true);
+            }
+            joystickLeft.onReleased: {
+                // Forward
+                servoXDevice.pushDi9(false);
+            }
+            joystickRight.onPressed: {
+                // Reverse
+                servoXDevice.pushDi10(true);
+            }
+            joystickRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+            }
         }
     }
 }

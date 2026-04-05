@@ -28,6 +28,9 @@ BorderRectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredHeight: 25
+
+            // Indices should be same as analogModel
+            values: [servoXDevice.encoderPUU, 0.0, servoXDevice.encoderPUU, 0.0]
             analogModel: [
                 {
                     title: "X-Axis Encoder PUU: ",

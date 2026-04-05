@@ -31,6 +31,7 @@ set(PROJECT_SOURCES
 )
 
 find_package(Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt5 REQUIRED COMPONENTS Core)
 
 add_executable(InjectionMolding
     ${PROJECT_SOURCES}
@@ -62,6 +63,7 @@ target_link_libraries(InjectionMolding
     ${WeaCore}
     ${WeaQuick}
 )
+target_link_libraries(InjectionMolding PRIVATE Qt5::Core)
 target_link_libraries(InjectionMolding PRIVATE Qt5::Core)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

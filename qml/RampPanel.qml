@@ -59,6 +59,9 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.leftMargin: 10
+
+            accValue: servoXDevice.jogAcc
+            decValue: servoXDevice.jogDec
         }
 
         // Servo Y
@@ -89,6 +92,10 @@ Item {
 
             level: 2
             text: "Submit"
+            onClicked: {
+                servoXDevice.pushJogAcc(rampXControl.accValue);
+                servoXDevice.pushJogDec(rampXControl.decValue);
+            }
         }
     }
 }

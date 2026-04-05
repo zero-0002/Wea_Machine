@@ -7,7 +7,7 @@ Item {
 
     property real controlHeight: 27
 
-    property alias value: speedBox.value // is same with speedSlider.value
+    property alias value: speedSlider.value // is same with speedSlider.value
 
     property alias speedSlider: speedSlider
     property alias speedBox: speedBox
@@ -25,6 +25,15 @@ Item {
             from: speedBox.from
             to: speedBox.to
             stepSize: speedBox.stepSize
+
+            onValueChanged: {
+                valueModified();
+            }
+
+            Component.onCompleted: {
+                // Request to update Slider position
+                valueModified();
+            }
         }
 
         SpdEditBox {
@@ -34,11 +43,8 @@ Item {
             color: "transparent"
             master: speedSlider
             textItem.horizontalAlignment: Qt.AlignRight
-
-            Component.onCompleted: {
-                // Request to update Slider position
-                valueModified();
-            }
+            stepSize: 1
+            decimals: 0
         }
     }
 }

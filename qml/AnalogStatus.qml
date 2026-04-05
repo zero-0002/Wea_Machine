@@ -5,6 +5,9 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Item {
     id: root
 
+    // Avoids updating Repeater for each value update
+    property var values: []
+
     property alias title: label.text
     property alias titleSize: label.font.pixelSize
     property alias analogModel: repeater.model
@@ -58,9 +61,9 @@ Item {
                     color: "transparent"
                     font.pixelSize: 12
 
-                    from: -Math.pow(2, 16)
-                    to: Math.pow(2, 16)
-                    value: 22222222
+                    from: intToDouble(-2147483000)
+                    to: intToDouble(2147483000)
+                    textItem.text: "%1".arg(textFromValue(root.values[index], Qt.locale()))
                 }
             }
         }
