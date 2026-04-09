@@ -52,7 +52,7 @@ class ModbusCom : public QModbusRtuSerialMaster, public QQmlParserStatus
         /** Statics **/
         static QString stateString(int state);
     signals:
-        void errorRaised(int errCode, QString erroMsg);
+        void errorRaised(int errCode, QString erroMsg, int slaveAddress = -1);
 
     protected:
         bool applyConnectionSettings();

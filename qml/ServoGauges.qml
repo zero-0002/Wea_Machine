@@ -40,6 +40,18 @@ Item {
 
             rowLayout.layoutDirection: Qt.RightToLeft
             title: "Servo Y-Axis"
+
+            servoIndicators.digitalInputsModel: [servoYDevice.di1, servoYDevice.di2, servoYDevice.di3, servoYDevice.di4,
+                servoYDevice.di5, servoYDevice.di6, servoYDevice.di7, servoYDevice.di8, servoYDevice.di9,
+                servoYDevice.di10, servoYDevice.di11, servoYDevice.di12, servoYDevice.di13, servoYDevice.di14]
+            servoIndicators.digitalOutputModel: [servoYDevice.do1, servoYDevice.do2, servoYDevice.do3, servoYDevice.do4,
+                servoYDevice.do5]
+
+            torqueGauge.gauge.value: servoYDevice.currentTorque
+            torqueGauge.editBoxGauge.textItem.text: "%1 %".arg(servoYDevice.currentTorque)
+
+            speedGauge.gauge.value: servoYDevice.currentSpeed
+            speedGauge.editBoxGauge.textItem.text: "%1 rpm".arg(servoYDevice.currentSpeed)
         }
     }
 }

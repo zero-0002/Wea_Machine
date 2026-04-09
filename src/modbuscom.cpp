@@ -30,9 +30,14 @@ void ModbusCom::classBegin()
     /** Connections **/
 
     // Binding Alarm
-    connect(this, &ModbusCom::errorRaised, this, [ = ](int code, QString msg)
+    connect(this, &ModbusCom::errorRaised, this, [ = ](int code, QString msg, int slaveAddress)
     {
-        addAlarm(code, msg);
+        int errCode = code;
+        if (slaveAddress > -1)
+        {
+            errCode += slaveAddress;
+        }
+        addAlarm(errCode, msg);
     });
 }
 
@@ -297,7 +302,6 @@ void ModbusCom::updateFrame()
         m_isFirstFrame[slaveAddress] = false;
         device->clearWriteBuffer();
     }
-
 }
 
 void ModbusCom::readRequest(const QModbusDataUnit& unit, int slaveAddress)
@@ -317,7 +321,7 @@ void ModbusCom::readRequest(const QModbusDataUnit& unit, int slaveAddress)
     else
     {
         const auto errMsg = QString("Read error at slave: %1  %2").arg(slaveAddress).arg(errorString());
-        emit errorRaised(error(), errMsg);
+        emit errorRaised(error(), errMsg, slaveAddress);
     }
 }
 
@@ -349,7 +353,7 @@ void ModbusCom::writeRequest(const QModbusDataUnit& unit, int slaveAddress)
                                         arg(reply->serverAddress()).
                                         arg(reply->errorString()).
                                         arg(reply->rawResult().exceptionCode(), -1, 16);
-                    emit errorRaised(reply->error(), errMsg);
+                    emit errorRaised(reply->error(), errMsg, reply->serverAddress());
                 }
                 else if (reply->error() != QModbusDevice::NoError)
                 {
@@ -357,7 +361,7 @@ void ModbusCom::writeRequest(const QModbusDataUnit& unit, int slaveAddress)
                                         arg(reply->serverAddress()).
                                         arg(reply->errorString()).
                                         arg(reply->error(), -1, 16);
-                    emit errorRaised(reply->error(), errMsg);
+                    emit errorRaised(reply->error(), errMsg, reply->serverAddress());
                 }
                 reply->deleteLater();
             });
@@ -373,7 +377,7 @@ void ModbusCom::writeRequest(const QModbusDataUnit& unit, int slaveAddress)
         const auto errMsg = QString("Write error at slaveAddress %1: %2").
                             arg(slaveAddress).
                             arg(errorString());
-        emit errorRaised(error(), errMsg);
+        emit errorRaised(error(), errMsg, slaveAddress);
     }
 }
 
@@ -407,7 +411,7 @@ void ModbusCom::readWriteRequest(const QModbusDataUnit& writeUnit, const QModbus
     else
     {
         const auto errMsg = QString("Read error at slave: %1  %2").arg(slaveAddress).arg(errorString());
-        emit errorRaised(error(), errMsg);
+        emit errorRaised(error(), errMsg, slaveAddress);
     }
 }
 
@@ -438,7 +442,7 @@ void ModbusCom::readReady()
                             arg(slaveAddress).
                             arg(reply->errorString()).
                             arg(reply->rawResult().exceptionCode(), -1, 16);
-        emit errorRaised(reply->error(), errMsg);
+        emit errorRaised(reply->error(), errMsg, slaveAddress);
     }
     else
     {
@@ -446,7 +450,7 @@ void ModbusCom::readReady()
                             arg(slaveAddress).
                             arg(reply->errorString()).
                             arg(reply->error(), -1, 16);
-        emit errorRaised(reply->error(), errMsg);
+        emit errorRaised(reply->error(), errMsg, slaveAddress);
     }
 
     reply->deleteLater();

@@ -34,6 +34,29 @@ Flickable {
             id: homingPanel
             width: parent.width
             manualActive: root.manualActive
+
+            submitButton.mouseArea.onPressed: {
+                // X Servo Homing
+                if (homingPanel.homingXControl.homingSwitch.enabled) {
+                    servoXDevice.pushDi2(false);
+                }
+
+                // Y Servo Homing
+                if (homingPanel.homingYControl.homingSwitch.enabled) {
+                    servoYDevice.pushDi2(false);
+                }
+            }
+            submitButton.onActivated: {
+                // X Servo Homing
+                if (homingPanel.homingXControl.homingSwitch.enabled) {
+                    servoXDevice.triggerCTRG();
+                }
+
+                // Y Servo Homing
+                if (homingPanel.homingYControl.homingSwitch.enabled) {
+                    servoYDevice.triggerCTRG();
+                }
+            }
         }
 
         // Goto Position Panel
@@ -50,11 +73,24 @@ Flickable {
                     servoXDevice.pushRamp0(rampPanel.rampXControl.accValue);
                     servoXDevice.pushDi2(true);
                 }
+
+                // Y Servo Goto Position
+                if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled) {
+                    servoYDevice.pushPathData1(gotoPosPanel.gotoPosYControl.positionValue * 1000);
+                    servoYDevice.pushSpeed0(speedPanel.speedYControl.value * 10);
+                    servoYDevice.pushRamp0(rampPanel.rampYControl.accValue);
+                    servoYDevice.pushDi2(true);
+                }
             }
             submitButton.onActivated: {
                 // X Servo Goto Position
                 if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
                     servoXDevice.triggerCTRG();
+                }
+
+                // Y Servo Goto Position
+                if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled) {
+                    servoYDevice.triggerCTRG();
                 }
             }
         }

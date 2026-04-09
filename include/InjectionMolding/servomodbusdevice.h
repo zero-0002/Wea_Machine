@@ -39,6 +39,8 @@ class ServoModbusDevice : public AbstractModbusDevice
         RO_MOD_PROP(bool, di13, m_digitalInputs.di13);
         RO_MOD_PROP(bool, di14, m_digitalInputs.di14);
 
+        RO_MOD_PROP(quint16, alarms, m_alarms);
+
         /** Readonly Variables **/
         RO_MOD_PROP(qint32, encoderPUU, m_encoderPUU.value);
         RO_MOD_PROP(float, currentSpeed, qAbs(static_cast<float>(m_currentSpeed.value) / 10.0f));
@@ -55,6 +57,7 @@ class ServoModbusDevice : public AbstractModbusDevice
         RO_MOD_PROP(bool, do5, m_digitalOutputs.do5);
 
         using TParams = ServoA2Params;
+        using TAlarms = ServoA2Alarms;
     public:
 
         explicit ServoModbusDevice(QObject* parent = nullptr);
@@ -83,7 +86,10 @@ class ServoModbusDevice : public AbstractModbusDevice
         /** Commands **/
         Q_INVOKABLE void applyPos0();
         Q_INVOKABLE void triggerCTRG();
+        Q_INVOKABLE bool resetAlarms();
 
+        /** Utils **/
+        static QString getAlarmDesc(int code);
     protected:
         void emitDigitalInputs();
         void emitDigitalOutputs();
@@ -102,6 +108,8 @@ class ServoModbusDevice : public AbstractModbusDevice
         Ramp m_rampData1;
 
         DigitalInputs m_digitalInputs;
+
+        quint16 m_alarms;
 
         /** Readonly Variables **/
         EncoderPUU m_encoderPUU;

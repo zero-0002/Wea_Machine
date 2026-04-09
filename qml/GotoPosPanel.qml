@@ -72,6 +72,12 @@ Item {
             title: "Y-Axis Servo:"
             controlHeight: root.controlHeight
             positionSwitch.enabled: manualActive
+            /// FIXME:
+            positionValue: servoYDevice.pathData1 / 1000
+            positionEditBox.textItem.onAccepted:
+                // console.log("Accepted: ");
+                // servoXDevice.pushPathData1(12345);
+            {}
         }
 
         // Perform Button

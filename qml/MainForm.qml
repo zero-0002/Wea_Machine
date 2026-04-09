@@ -118,10 +118,15 @@ Item {
         objectName: "SCOM"
         serialConn: comPopup.servoSerialConnection
         threaded: true
-        devices: [servoXDevice]
+        devices: [servoXDevice, servoYDevice]
     }
 
     /** Modbus Devices **/
+    ServoModbusDevice {
+        id: servoYDevice
+        slaveAddress: 3
+    }
+
     ServoModbusDevice {
         id: servoXDevice
         slaveAddress: 2

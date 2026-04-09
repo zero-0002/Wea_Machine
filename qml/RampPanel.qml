@@ -78,6 +78,9 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.leftMargin: 10
+
+            accValue: servoYDevice.jogAcc
+            decValue: servoYDevice.jogDec
         }
 
         // Perform Button
@@ -95,6 +98,9 @@ Item {
             onClicked: {
                 servoXDevice.pushJogAcc(rampXControl.accValue);
                 servoXDevice.pushJogDec(rampXControl.decValue);
+
+                servoYDevice.pushJogAcc(rampYControl.accValue);
+                servoYDevice.pushJogDec(rampYControl.decValue);
             }
         }
     }

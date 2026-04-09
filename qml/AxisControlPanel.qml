@@ -89,6 +89,12 @@ Item {
             Layout.leftMargin: 10
             title: "Y-Axis Servo ON:"
             homingSwitch.enabled: manualModeControl.enableOther
+
+            homingSwitch.checkable: false
+            homingSwitch.checked: servoYDevice.di1
+            homingSwitch.onPressed: {
+                servoYDevice.pushDi1(!homingSwitch.checked);
+            }
         }
 
         Joystick {
@@ -108,6 +114,7 @@ Item {
             joystickDownRight.enabled: servoOnXControl.homingActive && servoOnYControl.homingActive
 
             /** Slots **/
+            // X Axs
             joystickLeft.onPressed: {
                 // Forward
                 servoXDevice.pushDi9(true);
@@ -123,6 +130,71 @@ Item {
             joystickRight.onReleased: {
                 // Reverse
                 servoXDevice.pushDi10(false);
+            }
+
+            // Y Axis
+            joystickTop.onPressed: {
+                // Forward
+                servoYDevice.pushDi9(true);
+            }
+            joystickTop.onReleased: {
+                // Forward
+                servoYDevice.pushDi9(false);
+            }
+            joystickDown.onPressed: {
+                // Reverse
+                servoYDevice.pushDi10(true);
+            }
+            joystickDown.onReleased: {
+                // Reverse
+                servoYDevice.pushDi10(false);
+            }
+
+            // Both Axes
+            joystickTopLeft.onPressed: {
+                // Forward
+                servoXDevice.pushDi9(true);
+                servoYDevice.pushDi9(true);
+            }
+            joystickTopLeft.onReleased: {
+                // Forward
+                servoXDevice.pushDi9(false);
+                servoYDevice.pushDi9(false);
+            }
+            joystickTopRight.onPressed: {
+                // Reverse
+                servoXDevice.pushDi10(true);
+                // Forward
+                servoYDevice.pushDi9(true);
+            }
+            joystickTopRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+                // Forward
+                servoYDevice.pushDi9(false);
+            }
+
+            joystickDownLeft.onPressed: {
+                // Forward
+                servoXDevice.pushDi9(true);
+                // Reverse
+                servoYDevice.pushDi10(true);
+            }
+            joystickDownLeft.onReleased: {
+                // Forward
+                servoXDevice.pushDi9(false);
+                // Reverse
+                servoYDevice.pushDi10(false);
+            }
+            joystickDownRight.onPressed: {
+                // Reverse
+                servoXDevice.pushDi10(true);
+                servoYDevice.pushDi10(true);
+            }
+            joystickDownRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+                servoYDevice.pushDi10(false);
             }
         }
     }

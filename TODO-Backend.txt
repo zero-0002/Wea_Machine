@@ -6,3 +6,13 @@ R & D:
 	4- Create AbstractModbusDevice and ServoModbusDevice and PLCModbusDevice.
 	5- These can be run multithread + reading them from property + as QML Object Item.
 	6- ModbusCom must be get single 'SerialConnection' + a list of AbstractModbusDevice(must include slaveID).
+
+
+	7- Link PLC with Application
+	8- Create Environment file for AppSettings and PLC I/O nums, Each communication init COM number...
+	9- Create General Setting page, which declares Emergency button as ComboBox, Step start button as ComboBox...
+	10- add Optional Clock/onDelay/offDelay for each output in PLC output setting page
+	11- Complete Step model + Step Test for application
+	12- Complete record method for servos + model
+	13- Improve performance + Memory management
+	14- Add multi thread for serial communication

@@ -62,25 +62,28 @@ BorderRectangle {
 
         resetAlarms.onActivated: {
             _alarmModel.clear();
+
+            servoXDevice.resetAlarms();
+            servoYDevice.resetAlarms();
         }
     }
 
-    ListModel {
-        id: libraryModel
-        ListElement {
-            no: "1"
-            code: "AL-011"
-            desc: "Emergency"
-        }
-        ListElement {
-            no: "2"
-            code: "AL-012"
-            desc: "Negative Limit"
-        }
-        ListElement {
-            no: "3"
-            code: "AL-013"
-            desc: "Under voltage"
-        }
-    }
+    // ListModel {
+    //     id: libraryModel
+    //     ListElement {
+    //         no: "1"
+    //         code: "AL-011"
+    //         desc: "Emergency"
+    //     }
+    //     ListElement {
+    //         no: "2"
+    //         code: "AL-012"
+    //         desc: "Negative Limit"
+    //     }
+    //     ListElement {
+    //         no: "3"
+    //         code: "AL-013"
+    //         desc: "Under voltage"
+    //     }
+    // }
 }

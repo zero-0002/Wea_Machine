@@ -1,4 +1,5 @@
 #include "../include/InjectionMolding/servomodbusdevice.h"
+#include "../include/InjectionMolding/AlarmModel.h"
 
 #include <QDebug>
 
@@ -78,6 +79,21 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_DO, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_ALARMS, 2),
     };
+
+    /** Connections **/
+    connect(this, &ServoModbusDevice::alarmsChanged, this, [ = ]()
+    {
+        // If alarm appears
+        if (m_alarms > 0)
+        {
+
+            AlarmModel::getInstance().addAlarm(AlarmItem(m_alarms + slaveAddress(), getAlarmDesc(m_alarms), QString("ServoID%2").arg(slaveAddress())));
+        }
+        else
+        {
+            AlarmModel::getInstance().removeByCodePrefix(QString("ServoID%2").arg(slaveAddress()));
+        }
+    });
 
 }
 
@@ -190,6 +206,15 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
             emit rampData1Changed();
             break;
         case RW_ACC_DEC1 + 1:
+            break;
+
+
+        // Alarms
+        case RW_ALARMS:
+            m_alarms = value;
+            emit alarmsChanged();
+            break;
+        case RW_ALARMS + 1:
             break;
 
         default:
@@ -327,6 +352,85 @@ void ServoModbusDevice::triggerCTRG()
     pushDi4(false);
     pushDi4(true);
     pushDi4(false);
+}
+
+bool ServoModbusDevice::resetAlarms()
+{
+    QVector<quint16> values = {0x00};
+    return pushToWriteBuffer(RW_ALARMS, values);
+}
+
+QString ServoModbusDevice::getAlarmDesc(int code)
+{
+    switch (code)
+    {
+        case TAlarms::OverCurrent:
+            return TO_STR(OverCurrent);
+        case TAlarms::OverVoltage :
+            return TO_STR(OverVoltage);
+        case TAlarms::UnderVoltage :
+            return TO_STR(UnderVoltage);
+        case TAlarms::WrongMotor :
+            return TO_STR(WrongMotor);
+        case TAlarms::RegenerationErr :
+            return TO_STR(RegenerationErr);
+        case TAlarms::Overload :
+            return TO_STR(Overload);
+        case TAlarms::OverSpeed :
+            return TO_STR(OverSpeed);
+        case TAlarms::AbnormalPosCmd :
+            return TO_STR(AbnormalPosCmd);
+        case TAlarms::ExcessivePositionCmd :
+            return TO_STR(ExcessivePositionCmd);
+        case TAlarms::EncoderErr :
+            return TO_STR(EncoderErr);
+        case TAlarms::AdjustmentErr :
+            return TO_STR(AdjustmentErr);
+        case TAlarms::EmergencyStop :
+            return TO_STR(EmergencyStop);
+        case TAlarms::ReverseLimitErr :
+            return TO_STR(ReverseLimitErr);
+        case TAlarms::ForwardLimitErr :
+            return TO_STR(ForwardLimitErr);
+        case TAlarms::IGBTOverheat :
+            return TO_STR(IGBTOverheat);
+        case TAlarms::AbnormalPOM :
+            return TO_STR(AbnormalPOM);
+        case TAlarms::AbnormalSignalOutput :
+            return TO_STR(AbnormalSignalOutput);
+        case TAlarms::SerialComErr :
+            return TO_STR(SerialComErr);
+        case TAlarms::SerialComTimeout :
+            return TO_STR(SerialComTimeout);
+        case TAlarms::MainCircuitPowerLack :
+            return TO_STR(MainCircuitPowerLack);
+        case TAlarms::EearlyWarningForOverload :
+            return TO_STR(EearlyWarningForOverload);
+        case TAlarms::EncoderInitalMagneticFieldErr :
+            return TO_STR(EncoderInitalMagneticFieldErr);
+        case TAlarms::EncoderInternalErr :
+            return TO_STR(EncoderInternalErr);
+        case TAlarms::UnreliableInternalEncoderData :
+            return TO_STR(UnreliableInternalEncoderData);
+        case TAlarms::EncoderResetErr :
+            return TO_STR(EncoderResetErr);
+        case TAlarms::EncoderOverVoltage :
+            return TO_STR(EncoderOverVoltage);
+        case TAlarms::MotorCrashError :
+            return TO_STR(MotorCrashError);
+        case TAlarms::IncorrectMotorWriing :
+            return TO_STR(IncorrectMotorWriing);
+        case TAlarms::InternalComErr :
+            return TO_STR(InternalComErr);
+        case TAlarms::CN5isBreakdown :
+            return TO_STR(CN5isBreakdown);
+        case TAlarms::WarningOfServoDriveOverload :
+            return TO_STR(WarningOfServoDriveOverload);
+        case TAlarms::AbsolutePositionLogs :
+            return TO_STR(AbsolutePositionLogs);
+    }
+
+    return "Unknown Error please referer ASDA-A2 documentation";
 }
 
 void ServoModbusDevice::emitDigitalInputs()

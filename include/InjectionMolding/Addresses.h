@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+// Utillities
+#define TO_STR(x) #x
+
 enum ServoA2Params
 {
     RW_ENABLE_DI_SI = 0x30C, // size 2 (bit0=DI1 and bit13=DI14, 1 == software, 0 == hardware)  (default = 3B0F) NOTE: send it when Servo drive power on
@@ -40,6 +43,44 @@ enum ServoA2Params
     RW_JOG_DEC = 0x146, // size 2 (1~65500 millisecond)
 
     RW_TORQUE_LIMIT_VAL = 0x118 // size 2 (-300~300 %) Torque percent
+};
+
+enum ServoA2Alarms
+{
+    OverCurrent = 0x001,
+    OverVoltage = 0x002,
+    UnderVoltage = 0x003,
+    WrongMotor = 0x004,
+    RegenerationErr = 0x005,
+    Overload = 0x006,
+    OverSpeed = 0x007,
+    AbnormalPosCmd = 0x008,
+    ExcessivePositionCmd = 0x009,
+    // 010：Reserved ,
+    EncoderErr = 0x011,
+    AdjustmentErr = 0x012,
+    EmergencyStop = 0x013,
+    ReverseLimitErr = 0x014,
+    ForwardLimitErr = 0x015,
+    IGBTOverheat = 0x016,
+    AbnormalPOM = 0x017,
+    AbnormalSignalOutput = 0x018,
+    SerialComErr = 0x019,
+    SerialComTimeout = 0x020,
+    // Reserved = 0x021,
+    MainCircuitPowerLack = 0x022,
+    EearlyWarningForOverload = 0x023,
+    EncoderInitalMagneticFieldErr = 0x024,
+    EncoderInternalErr = 0x025,
+    UnreliableInternalEncoderData = 0x026,
+    EncoderResetErr = 0x27,
+    EncoderOverVoltage = 0x028,
+    MotorCrashError = 0x030,
+    IncorrectMotorWriing = 0x031,
+    InternalComErr = 0x034,
+    CN5isBreakdown = 0x41,
+    WarningOfServoDriveOverload = 0x044,
+    AbsolutePositionLogs = 0x060
 };
 
 #endif // ADDRESSES_H
