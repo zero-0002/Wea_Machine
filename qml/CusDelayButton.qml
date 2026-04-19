@@ -9,6 +9,7 @@ DelayButton {
     property alias flat: button.flat
 
     property alias mouseArea: button.mouseArea
+    property alias button: button
 
     delay: 1000
 
