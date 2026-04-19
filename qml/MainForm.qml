@@ -161,6 +161,10 @@ Item {
         id: stepPopup
     }
 
+    InterruptPopup {
+        id: interruptPopup
+    }
+
     ComPopup {
         id: comPopup
 
