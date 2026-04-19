@@ -7,6 +7,7 @@
 
 #include "InjectionMolding/Engine.h"
 #include "InjectionMolding/AlarmModel.h"
+#include "InjectionMolding/plciomodel.h"
 #include "InjectionMolding/Registerations.h"
 
 const char* DEBUG_MESSAGE_PATTERN = "[%{type}][%{threadid}][%{function}:%{line}] - %{message}";
@@ -44,15 +45,6 @@ int main(int argc, char* argv[])
     QGuiApplication::setOrganizationDomain("com.wearily");
     QGuiApplication::setApplicationName("InjectionMolding");
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                       QGuiApplication::organizationName(), QGuiApplication::applicationName());
-    qDebug() << "Settings: " << settings.applicationName()
-             << settings.organizationName();
-
-    QList<QString> inputs = {"X0", "X1", "X2"};
-    settings.setValue("DEVELOPER", "Wearily");
-    qDebug() << "Setting PLC_INPUTS" << settings.value("PLC_INPUTS", QVariant(inputs).toStringList());
-
     const QString projectSourceDir(PROJECT_SOURCE_DIR);
     const QString mainQmlPath(projectSourceDir + "/main.qml");
 
@@ -77,10 +69,12 @@ int main(int argc, char* argv[])
     // 3rdParty initializing
     WeaQuick::initialize(&engine);
 
+    engine.addImportPath(PROJECT_SOURCE_DIR);
 
     // Engine Property Contexts
     engine.addEngineContextProperty();
     engine.rootContext()->setContextProperty("_alarmModel", &AlarmModel::getInstance());
+    engine.rootContext()->setContextProperty("_plcIOModel", &PlcIOModel::getInstance());
 
     engine.load(url);
 
