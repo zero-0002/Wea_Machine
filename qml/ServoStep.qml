@@ -12,6 +12,7 @@ Column {
     property int controlWidth: 150
     property int controlHeight: 33
 
+    property alias servoOnSwitch: swServoOn
     property alias homingSwitch: swHoming
     property alias positionEditBox: editBoxPos
     property alias speedEditBox: editBoxSpd
@@ -19,6 +20,25 @@ Column {
     property alias decelerationEditBox: editBoxDec
 
     spacing: 10
+
+    // ServoON
+    RowCompact {
+        title: "Servo ON: "
+
+        WeaQuick.Switch {
+            id: swServoOn
+            anchors {
+                right: parent.right
+                rightMargin: parent.rightPadding
+            }
+
+            indicatorWidth: 45
+            indicatorHeight: 22
+            handleShape: WeaQuick.Handle.HandleShape.Circular
+            handleSize: 16
+            checked: true
+        }
+    }
 
     // Homing
     RowCompact {
@@ -31,6 +51,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
+            enabled: swServoOn.checked
             indicatorWidth: 45
             indicatorHeight: 22
             handleShape: WeaQuick.Handle.HandleShape.Circular
@@ -49,7 +70,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
-            enabled: !swHoming.checked
+            enabled: !swHoming.checked && swHoming.enabled
             level: controlLevel
             width: controlWidth
             height: controlHeight
@@ -67,7 +88,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
-            enabled: !swHoming.checked
+            enabled: !swHoming.checked && swHoming.enabled
             level: controlLevel
             width: controlWidth
             height: controlHeight
@@ -85,7 +106,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
-            enabled: !swHoming.checked
+            enabled: !swHoming.checked && swHoming.enabled
             level: controlLevel
             width: controlWidth
             height: controlHeight
@@ -103,7 +124,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
-            enabled: !swHoming.checked
+            enabled: !swHoming.checked && swHoming.enabled
             level: controlLevel
             width: controlWidth
             height: controlHeight
