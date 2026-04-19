@@ -4,6 +4,8 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Column {
     id: root
 
+    property bool displayByTag: false
+
     property int titleSize: 17
     property int fontSize: 15
     property int titleVAlignment: Qt.AlignVCenter
@@ -20,7 +22,7 @@ Column {
         id: repeater
 
         delegate: RowCompact {
-            title: "%1:".arg(modelData.name)
+            title: displayByTag ? modelData.displayName : modelData.name
             WeaQuick.Switch {
                 anchors {
                     right: parent.right
