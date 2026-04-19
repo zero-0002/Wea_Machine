@@ -84,7 +84,7 @@
         <file>qml/SettingPLCOuputPage.qml</file>
         <file>qml/PLCDevice.qml</file>
         <file>qml/PLCDigitalConfigModel.qml</file>
-        <file>qml/PLCDelayConfig.qml</file>
+        <file>qml/PLCSettingDelegateConfig.qml</file>
         <file>qml/InterruptPopup.qml</file>
         <file>qml/InterruptConfigView.qml</file>
         <file>qml/GlobalUtils.js</file>
