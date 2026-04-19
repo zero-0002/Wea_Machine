@@ -10,20 +10,27 @@ Column {
 
     Repeater {
         id: repeater
-        model: 28
-        delegate: PLCDelayConfig {
+        model: isOutput ? _plcIOModel.outputs : _plcIOModel.inputs
+        delegate: PLCSettingDelegateConfig {
             width: parent.width
-            digitalName: (isOutput ? "Y%1" : "X%1").arg(index)
-            plcIndicator {
-                active: index % 2 === 0
-                blinking: true
-                blinkInterval: 1000
+            // digitalName: (isOutput ? "Y%1" : "X%1").arg(index)
+            pcIndicator.active: isOutput ? modelData.coilActive : modelData.active
+            blinkEditBox.visible: isOutput
+            modelItem: modelData
+            onWriteRequest: {
+                modelData.writeToSettings();
             }
-            pcIndicator {
-                active: index % 2 === 0
-                blinking: true
-                blinkInterval: 2000
-            }
+
+            // plcIndicator {
+            //     active: index % 2 === 0
+            //     blinking: true
+            //     blinkInterval: 1000
+            // }
+            // pcIndicator {
+            //     active: index % 2 === 0
+            //     blinking: true
+            //     blinkInterval: 2000
+            // }
         }
     }
 }
