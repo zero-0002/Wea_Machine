@@ -18,6 +18,8 @@ WeaQuick.Pane {
     flat: false
     gradientOrientation: Qt.Horizontal
 
+    width: 200
+
     WeaQuick.Label {
         id: titleLabel
 
