@@ -6,6 +6,34 @@
 // Utillities
 #define TO_STR(x) #x
 
+// Modbus declarative read-only property
+#define RO_MOD_PROP(type, name, assignment) \
+    Q_PROPERTY(type name READ name NOTIFY name##Changed) \
+    public: \
+        type name() const { return assignment; } \
+        Q_SIGNAL void name##Changed(); \
+    private:
+
+#define READ_PROP(type, name) \
+    Q_PROPERTY(type name READ name NOTIFY name##Changed) \
+    public: \
+        type name() const { return m_##name; } \
+        Q_SIGNAL void name##Changed(); \
+    private: \
+        type m_##name;
+
+#define UNSAFE_PROP_HDEF(type, name, cname, value) \
+    private: \
+    Q_PROPERTY(type name READ name WRITE set##cname NOTIFY name##Changed) \
+    public: \
+    type name() const { return m_##name; } \
+    void set##cname(type p) { m_##name = p; emit name##Changed();} \
+    Q_SIGNAL void name##Changed(); \
+    private: \
+    type m_##name = value;
+
+
+// Servo Addresses
 enum ServoA2Params
 {
     RW_ENABLE_DI_SI = 0x30C, // size 2 (bit0=DI1 and bit13=DI14, 1 == software, 0 == hardware)  (default = 3B0F) NOTE: send it when Servo drive power on
@@ -81,6 +109,15 @@ enum ServoA2Alarms
     CN5isBreakdown = 0x41,
     WarningOfServoDriveOverload = 0x044,
     AbsolutePositionLogs = 0x060
+};
+
+// PLC Addresses
+enum PLCAddr
+{
+    PLC_X_START = 0x400,
+    PLC_X_END = 0x4FF,
+    PLC_Y_START = 0x500,
+    PLC_Y_END = 0x5FF
 };
 
 #endif // ADDRESSES_H

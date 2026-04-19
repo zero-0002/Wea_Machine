@@ -5,14 +5,6 @@
 #include "ServoUnions.h"
 #include "Addresses.h"
 
-// Modbus declarative read-only property
-#define RO_MOD_PROP(type, name, assignment) \
-    Q_PROPERTY(type name READ name NOTIFY name##Changed) \
-    public: \
-        type name() const { return assignment; } \
-        Q_SIGNAL void name##Changed(); \
-    private:
-
 
 class ServoModbusDevice : public AbstractModbusDevice
 {
