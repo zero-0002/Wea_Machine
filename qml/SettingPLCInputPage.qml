@@ -29,23 +29,23 @@ Item {
             }
 
             PLCDevice {
-                id: plcDevice
+                id: pcDevice
                 anchors {
                     top: parent.top
                     right: parent.right
                 }
 
+                modelName: "PC Device"
                 height: inputModel.height
             }
 
             PLCDevice {
-                id: pcDevice
+                id: plcDevice
                 anchors {
                     top: parent.top
                     left: parent.left
                 }
 
-                modelName: "PC Device"
                 height: inputModel.height
             }
 
@@ -53,8 +53,8 @@ Item {
                 id: inputModel
 
                 anchors {
-                    left: pcDevice.right
-                    right: plcDevice.left
+                    left: plcDevice.right
+                    right: pcDevice.left
                 }
             }
         }
