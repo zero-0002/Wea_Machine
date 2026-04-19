@@ -53,6 +53,7 @@ CusPopup {
                         }
 
                         title: "PLC Serial"
+                        baudRateComboBox.currentIndex: 4
                     }
 
                     ShineLine {

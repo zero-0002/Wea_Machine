@@ -20,6 +20,7 @@ Item {
     property int fontSize: 14
 
     property alias title: titleLabel.text
+    property alias baudRateComboBox: cboxBaudRate
 
     signal openConnection
     signal closeConnection

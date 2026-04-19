@@ -113,15 +113,34 @@ Item {
 
     // Communications
     ModbusCom {
+        id: plcModbusCom
+        objectID: 400
+        objectName: "PLCCOM"
+        serialConn: comPopup.plcSerialConnection
+        threaded: false
+        devices: [plcDevice]
+    }
+
+    ModbusCom {
         id: servoModbusCom
         objectID: 300
         objectName: "SCOM"
         serialConn: comPopup.servoSerialConnection
-        threaded: true
+        threaded: false
         devices: [servoXDevice, servoYDevice]
     }
 
     /** Modbus Devices **/
+    PlcModbusDevice {
+        id: plcDevice
+        slaveAddress: 2
+        onEnabledChanged: {
+            if (comPopup.plcSerialConnection.connected) {
+                plcDevice.syncCoils();
+            }
+        }
+    }
+
     ServoModbusDevice {
         id: servoYDevice
         slaveAddress: 3
@@ -157,8 +176,12 @@ Item {
             servoModbusCom.closePort();
         }
 
-        plcSerialConfig.onOpenConnection: {}
-        plcSerialConfig.onCloseConnection: {}
+        plcSerialConfig.onOpenConnection: {
+            plcModbusCom.openPort();
+        }
+        plcSerialConfig.onCloseConnection: {
+            plcModbusCom.closePort();
+        }
     }
 
     // Overlay (Pop-up will enable this)
