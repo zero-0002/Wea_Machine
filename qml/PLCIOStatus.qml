@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
+import "GlobalUtils.js" as GlobalUtils
 import com.wearily.WeaQuick 1.0 as WeaQuick
 
 Item {
@@ -38,19 +39,21 @@ Item {
                     id: digitalInput
 
                     delegate: Compact {
-                        title: modelData.title
+                        title: modelData.displayName
                         titleHAlignment: Qt.AlignHCenter
                         spacing: 3
                         WeaQuick.StatusIndicator {
                             width: root.indicatorSize
                             height: width
 
-                            levelActive: 3
+                            // levelActive: modelData.activeFeedback ? modelData.active ? 3 : 4 : 4
+                            levelActive: GlobalUtils.getInputActiveLevel(modelData.active, modelData.activeFeedback)
 
                             borderWidth: 1
                             outerMargin: 2
 
-                            active: index % 2
+                            // active: plcDevice.inputs[index]
+                            active: modelData.activeFeedback || modelData.active
                         }
                     }
                 }
@@ -79,11 +82,12 @@ Item {
                     id: digitalOutput
 
                     delegate: Compact {
-                        title: modelData.title
+                        title: modelData.displayName
                         titleHAlignment: Qt.AlignHCenter
                         spacing: 3
                         Loader {
                             property int modelIndex: index
+                            property var modeldata: modelData
 
                             width: root.indicatorSize
                             height: width
@@ -100,20 +104,28 @@ Item {
                     borderWidth: 1
                     outerMargin: 3
 
-                    levelActive: 2
-                    active: modelIndex % 2
+                    // levelActive: 2
+                    // active: plcDevice.outputs[modelIndex]
+                    levelActive: modeldata.coilActive ? modeldata.activeFeedback ? 1 : 2 : 2
+                    active: modeldata.activeFeedback || modeldata.coilActive
                 }
             }
             Component {
                 id: compOutputButton
                 SunkenButton {
-                    enabled: manualActive
-                    checked: modelIndex % 2
-                    onEnabledChanged: {
-                        if (!enabled) {
-                            checked = false;
-                        }
+                    enabled: manualActive && modeldata.outputEnabled
+                    checkable: false
+                    checked: modeldata.activeFeedback
+                    onPressed: {
+                        // _plcIOModel.setCoilActive(modelIndex, !checked);
+                        _plcIOModel.setCoilActive(modelIndex, !modeldata.coilActive);
                     }
+
+                    // onEnabledChanged: {
+                    //     if (!enabled) {
+                    //         checked = false;
+                    //     }
+                    // }
                 }
             }
         }
