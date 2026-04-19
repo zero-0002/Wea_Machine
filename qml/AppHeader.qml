@@ -90,8 +90,7 @@ Item {
             {
                 name: "PLC Communication State",
                 iconName: "plug-circle-check",
-                levelActive: 0 // red
-                             ,
+                levelActive: plcModbusCom.serialConn.connected ? 2 : 0,
                 active: true,
                 blinking: false
             },
