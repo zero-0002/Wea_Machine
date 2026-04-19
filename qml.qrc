@@ -85,5 +85,6 @@
         <file>qml/PLCDevice.qml</file>
         <file>qml/PLCDigitalConfigModel.qml</file>
         <file>qml/PLCDelayConfig.qml</file>
+        <file>qml/GlobalUtils.js</file>
     </qresource>
 </RCC>

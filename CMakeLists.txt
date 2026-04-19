@@ -18,7 +18,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick Qml QuickContr
 file(GLOB_RECURSE PROJECT_HEADERS "include/*.h")
 file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp" "src/*.h")
 file(GLOB_RECURSE PROJECT_SCRIPTS "scripts/*.js")
-file(GLOB_RECURSE PROJECT_RESOURCES "qml/*.qrc")
+file(GLOB_RECURSE PROJECT_RESOURCES "qml/*.qrc" "qml/*.js")
 
 set(PROJECT_SOURCES
     main.cpp
