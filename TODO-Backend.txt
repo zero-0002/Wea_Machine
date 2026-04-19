@@ -8,7 +8,7 @@ R & D:
 	6- ModbusCom must be get single 'SerialConnection' + a list of AbstractModbusDevice(must include slaveID).
 
 
-	7- Link PLC with Application
+	7- Link PLC with Application -> DONE
 	8- Create Environment file for AppSettings and PLC I/O nums, Each communication init COM number...
 	9- Create General Setting page, which declares Emergency button as ComboBox, Step start button as ComboBox...
 	10- add Optional Clock/onDelay/offDelay for each output in PLC output setting page
@@ -16,3 +16,8 @@ R & D:
 	12- Complete record method for servos + model
 	13- Improve performance + Memory management
 	14- Add multi thread for serial communication
+
+	15- Add outputEnabled, activeFeedback, name, displayName, interruptTargets property for PlcIOItem.
+	16- Make Interrupts as flag
+	17- Complete interrupt logic
+	18- Complete PlcIOModel.
