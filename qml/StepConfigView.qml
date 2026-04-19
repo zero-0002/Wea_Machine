@@ -14,7 +14,11 @@ Flickable {
     property int controlWidth: 150
     property int controlHeight: 33
 
+    property alias displayByTag: swDisplayByTag.checked
+
     property alias spacing: layout.spacing
+
+    property alias gridIoCheckBox: gridIoCheckBox
 
     clip: true
     contentWidth: width
@@ -39,9 +43,43 @@ Flickable {
             placeholderText: "Step Name"
         }
 
+        RowCompact {
+            title: "Display by Tag: "
+            WeaQuick.Switch {
+                id: swDisplayByTag
+                anchors {
+                    right: parent.right
+                    rightMargin: parent.rightPadding
+                }
+
+                indicatorWidth: 45
+                indicatorHeight: 22
+                handleShape: WeaQuick.Handle.HandleShape.Circular
+                handleSize: 16
+                checked: true
+            }
+        }
+
         // Condition To Start
         Title {
             title: "Condition to Start"
+        }
+
+        RowCompact {
+            title: "Bitwise Condition Enable: "
+            WeaQuick.Switch {
+                id: swBitwiseCondtion
+                anchors {
+                    right: parent.right
+                    rightMargin: parent.rightPadding
+                }
+
+                indicatorWidth: 45
+                indicatorHeight: 22
+                handleShape: WeaQuick.Handle.HandleShape.Circular
+                handleSize: 16
+                checked: true
+            }
         }
 
         RowCompact {
@@ -52,6 +90,7 @@ Flickable {
                     right: parent.right
                     rightMargin: parent.rightPadding
                 }
+                enabled: swBitwiseCondtion.checked
                 width: controlWidth
                 model: ["AND", "OR", "XOR"]
             }
@@ -60,7 +99,27 @@ Flickable {
         IOsCheckBox {
             id: gridIoCheckBox
             width: parent.width
-            model: 28
+            enabled: swBitwiseCondtion.checked
+            model: {
+                var result = [];
+
+                const plciomodel = _plcIOModel;
+                const len = plciomodel.count;
+                for (var i = 0; i < len; ++i) {
+                    const role = displayByTag ? 259 : 258; // DisplayNameRole and NameRole
+                    const itemName = plciomodel.data(plciomodel.index(i, 0), role);
+                    result.push({
+                                    name: itemName,
+                                    checked: false && enabled,
+                                    enabled: enabled
+                                });
+                }
+                return result;
+            }
+
+            onModelChanged: {
+                refreshSize();
+            }
         }
 
         // X-Axis Servo
@@ -119,44 +178,8 @@ Flickable {
             controlWidth: root.controlWidth
             controlHeight: root.controlHeight
 
-            model: [
-                {
-                    name: "Blowpin"
-                },
-                {
-                    name: "Hydraulic UP"
-                },
-                {
-                    name: "Hydraulic DOWN"
-                },
-                {
-                    name: "Y3"
-                },
-                {
-                    name: "Y4"
-                },
-                {
-                    name: "Y5"
-                },
-                {
-                    name: "Y6"
-                },
-                {
-                    name: "Y7"
-                },
-                {
-                    name: "Y8"
-                },
-                {
-                    name: "Y9"
-                },
-                {
-                    name: "Y10"
-                },
-                {
-                    name: "Y11"
-                },
-            ]
+            displayByTag: swDisplayByTag.checked
+            model: _plcIOModel.outputs
         }
 
         // Spacer
