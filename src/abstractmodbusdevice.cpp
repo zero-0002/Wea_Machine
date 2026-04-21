@@ -41,7 +41,7 @@ bool AbstractModbusDevice::pushToWriteBuffer(const QModbusDataUnit& writeUnit)
 {
     if (!enabled())
     {
-        qWarning() << " ModbusDevice is disabled! slaveID: " << slaveAddress();
+        qWarning() << " ModbusDevice is disabled! slaveID: " << objectName() << slaveAddress();
         return false;
     }
     m_writeBuffer.append(writeUnit);
