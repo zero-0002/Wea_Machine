@@ -104,7 +104,7 @@ BorderRectangle {
             border.width: 1
             onClicked: {
                 servoXDevice.pushJogSpeed(speedXControl.value);
-                servoXDevice.pushJogSpeed(speedYControl.value);
+                servoYDevice.pushJogSpeed(speedYControl.value);
             }
         }
     }
