@@ -19,7 +19,8 @@ Item {
 
     ColumnLayout {
         id: columnLayout
-        spacing: 20
+        anchors.fill: parent
+        spacing: 15
 
         Compact {
             Layout.fillHeight: true
@@ -27,14 +28,15 @@ Item {
 
             title: "PLC Digital Inputs"
             titleSize: 15
+            spacing: 20
 
             Grid {
                 id: gridInputs
                 x: titleLabel.paintedHeight // margin
 
-                columns: 14
+                columns: 8
                 spacing: 10
-                columnSpacing: 25
+                columnSpacing: 30
                 Repeater {
                     id: digitalInput
 
@@ -61,7 +63,8 @@ Item {
         }
 
         ShineLine {
-            Layout.preferredWidth: parent.width - parent.width / 3
+            // Layout.preferredWidth: parent.width - parent.width / 3
+            Layout.fillWidth: true
             color: "orange"
         }
 
@@ -71,13 +74,14 @@ Item {
 
             title: "PLC Digital Outputs"
             titleSize: 15
+            spacing: 20
 
             Grid {
                 id: gridOutputs
                 x: titleLabel.paintedHeight // margin
-                columns: 10
+                columns: 8
                 spacing: 10
-                columnSpacing: 25
+                columnSpacing: 30
                 Repeater {
                     id: digitalOutput
 
@@ -104,8 +108,6 @@ Item {
                     borderWidth: 1
                     outerMargin: 3
 
-                    // levelActive: 2
-                    // active: plcDevice.outputs[modelIndex]
                     levelActive: modeldata.coilActive ? modeldata.activeFeedback ? 1 : 2 : 2
                     active: modeldata.activeFeedback || modeldata.coilActive
                 }
@@ -117,15 +119,8 @@ Item {
                     checkable: false
                     checked: modeldata.activeFeedback
                     onPressed: {
-                        // _plcIOModel.setCoilActive(modelIndex, !checked);
                         _plcIOModel.setCoilActive(modelIndex, !modeldata.coilActive);
                     }
-
-                    // onEnabledChanged: {
-                    //     if (!enabled) {
-                    //         checked = false;
-                    //     }
-                    // }
                 }
             }
         }

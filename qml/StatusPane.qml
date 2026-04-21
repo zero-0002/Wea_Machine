@@ -56,7 +56,8 @@ BorderRectangle {
         }
 
         ShineLine {
-            Layout.preferredWidth: parent.width - parent.width / 6
+            // Layout.preferredWidth: parent.width - parent.width / 6
+            Layout.fillWidth: true
             color: "orange"
         }
 
