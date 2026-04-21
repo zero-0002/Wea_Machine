@@ -203,6 +203,7 @@ Item {
             level: 2
             text: "Write"
             flat: false
+            delay: 400
             onActivated: {
                 writeRequest();
             }
