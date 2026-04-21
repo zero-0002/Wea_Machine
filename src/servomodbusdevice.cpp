@@ -2,6 +2,7 @@
 #include "../include/InjectionMolding/AlarmModel.h"
 
 #include <QDebug>
+#include <QTimer>
 
 ServoModbusDevice::ServoModbusDevice(QObject* parent)
     : AbstractModbusDevice{parent}
@@ -95,6 +96,23 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
         }
     });
 
+    // TPOS position reached
+    connect(this, &ServoModbusDevice::tposStateChanged, this, [ = ](bool edgeType)
+    {
+        if (edgeType)
+        {
+            qDebug() << "Rising Edge at TPOS (Position completed)" << enabled();
+            if (enabled())
+            {
+                emit positionCompleted();
+            }
+        }
+        else
+        {
+            qDebug() << "Falling Edge at TPOS (Positioning on Process" << enabled();
+        }
+    });
+
 }
 
 void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
@@ -106,6 +124,8 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
         case RW_DI:
             m_digitalInputs.value = value;
             emitDigitalInputs();
+
+            // Handlers for inputs
             break;
         case RW_DI + 1:
             break;
@@ -114,6 +134,9 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
         case RO_DO:
             m_digitalOutputs.value = value;
             emitDigitalOutputs();
+
+            // Handlers for outputs
+            updateTposState(m_digitalOutputs.do4);
             break;
         case RO_DO + 1:
             break;
@@ -349,15 +372,63 @@ void ServoModbusDevice::applyPos0()
 
 void ServoModbusDevice::triggerCTRG()
 {
+    // pushDi4(false);
+    // pushDi4(true);
+    // pushDi4(false);
+
+    qDebug() << "Disabling CTRG: " << ctrgActive();
     pushDi4(false);
-    pushDi4(true);
-    pushDi4(false);
+    QTimer::singleShot(m_triggerDelay, this, [ = ]()
+    {
+        qDebug() << "Enabling CTRG: " << ctrgActive();
+        pushDi4(true);
+    });
 }
 
 bool ServoModbusDevice::resetAlarms()
 {
     QVector<quint16> values = {0x00};
     return pushToWriteBuffer(RW_ALARMS, values);
+}
+
+bool ServoModbusDevice::gotoHome()
+{
+    if (availableToHome())
+    {
+        if (pushDi1(false))
+        {
+            // Requesting for Trigger...
+            triggerCTRG();
+            return true;
+        }
+        qCritical() << "Something went wrong at writing pushing on gotoHome!";
+        return false;
+    }
+    qCritical() << "Cannot apply GotoHome! : " << outputsStateStr();
+    return false;
+
+}
+
+bool ServoModbusDevice::gotoPosition(qint32 path)
+{
+    return gotoPosition(path, m_speedData0.value, m_rampData0.value);
+}
+
+bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
+{
+    if (availableToRun())
+    {
+        if (pushPathData1(path) && pushSpeed0(speed) && pushRamp0(ramp) && pushDi2(true))
+        {
+            // Requesting for Trigger...
+            triggerCTRG();
+            return true;
+        }
+        qCritical() << "Something went wrong at writing pushing on gotoPosition!";
+        return false;
+    }
+    qCritical() << "Cannot apply GotoPosition!: " << outputsStateStr();
+    return false;
 }
 
 QString ServoModbusDevice::getAlarmDesc(int code)
@@ -458,4 +529,35 @@ void ServoModbusDevice::emitDigitalOutputs()
     emit do3Changed();
     emit do4Changed();
     emit do5Changed();
+
+    // Other
+    emit homingCompleteChanged();
+    emit availableToHome();
+    emit availableToRun();
+}
+
+void ServoModbusDevice::updateTposState(bool currentState)
+{
+    if (!m_prevTposState && currentState)
+    {
+        // Rising Edge detection
+        emit tposStateChanged(true);
+    }
+    else if (m_prevTposState && !currentState)
+    {
+        // Falling Edge detection
+        emit tposStateChanged(false);
+    }
+
+    m_prevTposState = currentState;
+}
+
+QString ServoModbusDevice::outputsStateStr() const
+{
+    return QString("SRDY: %1, ZSPD: %2, HOME: %3, TPOS: %4, ALRM: %5")
+           .arg(m_digitalOutputs.do1)
+           .arg(m_digitalOutputs.do2)
+           .arg(m_digitalOutputs.do3)
+           .arg(m_digitalOutputs.do4)
+           .arg(m_digitalOutputs.do5);
 }

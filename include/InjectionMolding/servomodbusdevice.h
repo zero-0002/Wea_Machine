@@ -42,11 +42,21 @@ class ServoModbusDevice : public AbstractModbusDevice
         RO_MOD_PROP(bool, di7, m_digitalInputs.di7);
         RO_MOD_PROP(bool, di8, m_digitalInputs.di8);
 
-        RO_MOD_PROP(bool, do1, m_digitalOutputs.do1);
-        RO_MOD_PROP(bool, do2, m_digitalOutputs.do2);
-        RO_MOD_PROP(bool, do3, m_digitalOutputs.do3);
-        RO_MOD_PROP(bool, do4, m_digitalOutputs.do4);
-        RO_MOD_PROP(bool, do5, m_digitalOutputs.do5);
+        RO_MOD_PROP(bool, do1, m_digitalOutputs.do1); // SRDY
+        RO_MOD_PROP(bool, do2, m_digitalOutputs.do2); // ZSPD
+        RO_MOD_PROP(bool, do3, m_digitalOutputs.do3); // HOME
+        RO_MOD_PROP(bool, do4, m_digitalOutputs.do4); // TPOS
+        RO_MOD_PROP(bool, do5, m_digitalOutputs.do5); // ALRM
+
+        /** User friendly Props (using at Steps and automation) **/
+        W_PROP_HDEF(int, triggerDelay, TriggerDelay, 1000) // millisecond
+        // W_PROP_HDEF(int, triggerOffDelay, TriggerOffDelay, 250) // millisecond
+
+        RO_MOD_PROP(bool, ctrgActive, m_digitalInputs.di4);
+
+        RO_MOD_PROP(bool, homingComplete, m_digitalOutputs.do3);
+        RO_MOD_PROP(bool, availableToHome, (m_digitalOutputs.do1&& m_digitalOutputs.do5)); // ZSPD, TPOS, HOME are not included
+        RO_MOD_PROP(bool, availableToRun, (m_digitalOutputs.do1&& m_digitalOutputs.do3&& m_digitalOutputs.do4&& m_digitalOutputs.do5)); // ZSPD isn't included
 
         using TParams = ServoA2Params;
         using TAlarms = ServoA2Alarms;
@@ -80,13 +90,28 @@ class ServoModbusDevice : public AbstractModbusDevice
         Q_INVOKABLE void triggerCTRG();
         Q_INVOKABLE bool resetAlarms();
 
+        Q_INVOKABLE bool gotoHome();
+
+        Q_INVOKABLE bool gotoPosition(qint32 path);
+        Q_INVOKABLE bool gotoPosition(qint32 path, quint16 speed, quint16 ramp);
+
         /** Utils **/
         static QString getAlarmDesc(int code);
+
+    signals:
+        void tposStateChanged(bool edgeType); // True === rising edge, false === falling edge
+        void positionCompleted();
+
+
     protected:
         void emitDigitalInputs();
         void emitDigitalOutputs();
 
     private:
+        void updateTposState(bool currentState); // Rising/Falling edge trigger
+        QString outputsStateStr() const;
+
+
         /** Union Variables **/
         Torque m_torqueLimit;
 
@@ -108,6 +133,9 @@ class ServoModbusDevice : public AbstractModbusDevice
         Speed m_currentSpeed;
         Torque m_currentTorque;
         DigitalOutputs m_digitalOutputs;
+
+        /** Internal **/
+        bool m_prevTposState = true; // True because TPOS turns off when is running and we need rising edge trigger
 };
 
 #endif // SERVOMODBUSDEVICE_H
