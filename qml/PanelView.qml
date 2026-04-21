@@ -95,9 +95,9 @@ Flickable {
             }
         }
 
-        // ACC/DEC Panel
-        RampPanel {
-            id: rampPanel
+        // Speed Panel
+        SpeedPanel {
+            id: speedPanel
             width: parent.width
             manualActive: root.manualActive
         }
@@ -109,9 +109,9 @@ Flickable {
             manualActive: root.manualActive
         }
 
-        // Speed Panel
-        SpeedPanel {
-            id: speedPanel
+        // ACC/DEC Panel
+        RampPanel {
+            id: rampPanel
             width: parent.width
             manualActive: root.manualActive
         }
