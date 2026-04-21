@@ -133,6 +133,7 @@ Item {
     /** Modbus Devices **/
     PlcModbusDevice {
         id: plcDevice
+        objectName: "DVP28SA2"
         slaveAddress: 2
         onEnabledChanged: {
             if (comPopup.plcSerialConnection.connected) {
@@ -143,11 +144,13 @@ Item {
 
     ServoModbusDevice {
         id: servoYDevice
+        objectName: "Servo-Y"
         slaveAddress: 3
     }
 
     ServoModbusDevice {
         id: servoXDevice
+        objectName: "Servo-X"
         slaveAddress: 2
     }
 
