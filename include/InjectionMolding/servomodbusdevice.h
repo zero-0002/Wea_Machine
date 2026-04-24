@@ -49,12 +49,14 @@ class ServoModbusDevice : public AbstractModbusDevice
         RO_MOD_PROP(bool, do5, m_digitalOutputs.do5); // ALRM
 
         /** User friendly Props (using at Steps and automation) **/
-        W_PROP_HDEF(int, triggerDelay, TriggerDelay, 1000) // millisecond
+        W_PROP_HDEF(int, posActiveDelay, PosActiveDelay, 50) // millisecond
+        W_PROP_HDEF(int, triggerDelay, TriggerDelay, 150) // millisecond
         // W_PROP_HDEF(int, triggerOffDelay, TriggerOffDelay, 250) // millisecond
 
         RO_MOD_PROP(bool, ctrgActive, m_digitalInputs.di4);
 
         RO_MOD_PROP(bool, homingComplete, m_digitalOutputs.do3);
+        RO_MOD_PROP(bool, tposFeedback, m_digitalOutputs.do4);
         RO_MOD_PROP(bool, availableToHome, (m_digitalOutputs.do1&& m_digitalOutputs.do5)); // ZSPD, TPOS, HOME are not included
         RO_MOD_PROP(bool, availableToRun, (m_digitalOutputs.do1&& m_digitalOutputs.do3&& m_digitalOutputs.do4&& m_digitalOutputs.do5)); // ZSPD isn't included
 
@@ -100,6 +102,7 @@ class ServoModbusDevice : public AbstractModbusDevice
 
     signals:
         void tposStateChanged(bool edgeType); // True === rising edge, false === falling edge
+        void positionStarted();
         void positionCompleted();
 
 

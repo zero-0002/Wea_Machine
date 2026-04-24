@@ -51,9 +51,10 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
     // ReadOnce Buffer
     m_readOnceBuffer =
     {
-        QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_DI, 2),
-        QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_DO, 2),
-        QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_ALARMS, 2),
+        QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_MONITOR_STATUS0, 10),
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_DI, 2),
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_DO, 2),
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_ALARMS, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_JOG_SPD, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_JOG_ACC, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_JOG_DEC, 2),
@@ -75,10 +76,13 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
     // Read Buffer
     m_readBuffer =
     {
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_JOG_ACC, 2),
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_JOG_SPD, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_MONITOR_STATUS0, 10),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_DI, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RO_DO, 2),
         QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_ALARMS, 2),
+        // QModbusDataUnit(QModbusDataUnit::HoldingRegisters, RW_TORQUE_LIMIT_VAL, 2),
     };
 
     /** Connections **/
@@ -101,15 +105,19 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
     {
         if (edgeType)
         {
-            qDebug() << "Rising Edge at TPOS (Position completed)" << enabled();
             if (enabled())
             {
+                qDebug() << "Rising Edge at TPOS (Position completed)" << enabled();
                 emit positionCompleted();
             }
         }
         else
         {
-            qDebug() << "Falling Edge at TPOS (Positioning on Process" << enabled();
+            if (enabled())
+            {
+                qDebug() << "Falling Edge at TPOS (Positioning on Process" << enabled();
+                emit positionStarted();
+            }
         }
     });
 
@@ -126,6 +134,14 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
             emitDigitalInputs();
 
             // Handlers for inputs
+            if (m_digitalInputs.di4)
+            {
+                QTimer::singleShot(m_triggerDelay, this, [ = ]()
+                {
+                    pushDi4(false);
+                });
+            }
+
             break;
         case RW_DI + 1:
             break;
@@ -376,11 +392,11 @@ void ServoModbusDevice::triggerCTRG()
     // pushDi4(true);
     // pushDi4(false);
 
-    qDebug() << "Disabling CTRG: " << ctrgActive();
-    pushDi4(false);
-    QTimer::singleShot(m_triggerDelay, this, [ = ]()
+    // qDebug() << "Disabling CTRG: " << ctrgActive();
+    pushDi4(true);
+    QTimer::singleShot(m_posActiveDelay, this, [ = ]()
     {
-        qDebug() << "Enabling CTRG: " << ctrgActive();
+        //     qDebug() << "Enabling CTRG: " << ctrgActive();
         pushDi4(true);
     });
 }
@@ -395,14 +411,24 @@ bool ServoModbusDevice::gotoHome()
 {
     if (availableToHome())
     {
-        if (pushDi1(false))
+        pushDi2(false);
+        pushDi1(true);
+        QTimer::singleShot(m_posActiveDelay, this, [ = ]()
         {
-            // Requesting for Trigger...
+            pushDi1(true);
+            pushDi2(false);
             triggerCTRG();
-            return true;
-        }
-        qCritical() << "Something went wrong at writing pushing on gotoHome!";
-        return false;
+        });
+
+        // if (pushDi2(false))
+        // {
+        //     // Requesting for Trigger...
+        //     triggerCTRG();
+        //     return true;
+        // }
+        // qCritical() << "Something went wrong at writing pushing on gotoHome!";
+        // return false;
+        return true;
     }
     qCritical() << "Cannot apply GotoHome! : " << outputsStateStr();
     return false;
@@ -411,24 +437,38 @@ bool ServoModbusDevice::gotoHome()
 
 bool ServoModbusDevice::gotoPosition(qint32 path)
 {
-    return gotoPosition(path, m_speedData0.value, m_rampData0.value);
+    // return gotoPosition(path, m_speedData0.value, m_rampData0.value);
+    return gotoPosition(path, m_jogSpeed.value * 10, m_jogAcc.value);
 }
 
 bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
 {
-    if (availableToRun())
+    // if (availableToRun())
+    // {
+    pushPathData1(path);
+    pushSpeed0(speed);
+    pushRamp0(ramp);
+    pushDi2(true);
+    pushDi1(true);
+
+    QTimer::singleShot(m_posActiveDelay, this, [ = ]()
     {
-        if (pushPathData1(path) && pushSpeed0(speed) && pushRamp0(ramp) && pushDi2(true))
-        {
-            // Requesting for Trigger...
-            triggerCTRG();
-            return true;
-        }
-        qCritical() << "Something went wrong at writing pushing on gotoPosition!";
-        return false;
-    }
-    qCritical() << "Cannot apply GotoPosition!: " << outputsStateStr();
-    return false;
+        pushDi1(true);
+        pushDi2(true);
+        triggerCTRG();
+    });
+    // if ()
+    // {
+    return true;
+    // Requesting for Trigger...
+    // triggerCTRG();
+    // return true;
+    // }
+    // qCritical() << "Something went wrong at writing pushing on gotoPosition!";
+    // return false;
+    // }
+    // qCritical() << "Cannot apply GotoPosition!: " << outputsStateStr();
+    // return false;
 }
 
 QString ServoModbusDevice::getAlarmDesc(int code)
