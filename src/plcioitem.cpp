@@ -145,8 +145,6 @@ void PlcIOItem::applyStopInterrupt()
 
     for (auto& plcIoItem : m_interruptItems[InterruptType::StopInterrupt])
     {
-        qDebug() << plcIoItem->name() << plcIoItem->active() << plcIoItem->outputEnabled() << plcIoItem->coilActive() << plcIoItem->activeFeedback();
-
         if (m_stopMethod == ForceRst && m_active)
         {
             // Disable every coil

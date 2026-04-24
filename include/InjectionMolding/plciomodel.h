@@ -96,6 +96,9 @@ class  PlcIOModel : public QAbstractListModel
         /** Communication Interface **/
         void outputCoilChanged(int outputIndex, bool active);
 
+        void emergencyStop();
+        void stepStarted();
+
     protected:
         bool setInputData(int index, const QVariant& value, IORoles);
         bool setOutputData(int index, const QVariant& value, IORoles role);

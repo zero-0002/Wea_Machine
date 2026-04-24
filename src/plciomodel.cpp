@@ -221,10 +221,15 @@ bool PlcIOModel::addItem(PlcIOItem* item)
     connect(item, &PlcIOItem::stepStart, this, [ = ]()
     {
         qDebug() << "Step Start Signal: " << item->name();
+        emit stepStarted();
     });
     connect(item, &PlcIOItem::emergencyStop, this, [ = ]()
     {
         qDebug() << "Emergency STOP Signal: " << item->name();
+        if (item->name() == "X0")
+        {
+            emit emergencyStop();
+        }
     });
 
 
