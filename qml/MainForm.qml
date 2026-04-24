@@ -111,6 +111,325 @@ Item {
         }
     }
 
+    // Models
+    StepModel {
+        id: stepModel
+
+        enabled: true // plcDevice.enabled && servoXDevice.enabled && servoYDevice.enabled
+        plcModel: _plcIOModel
+        xServoDevice: servoXDevice
+        yServoDevice: servoYDevice
+
+        steps: [step0, step2, step3, step4, step41, step43, step44, step45, step47, step49, step5, step6, step7, step8,
+            step9, step10, step11, step12] //, step2, step3, step4]
+    }
+
+    StepItem {
+        id: step0
+        name: "Boot-up"
+        plcOutputTargets: [0, 1, 3, 6, 7]
+        delay: 5500
+    }
+
+    StepItem {
+        id: step1
+        name: "Homing Step"
+
+        xPosActive: true
+        xServoOn: true
+        xServoHome: true
+
+        yPosActive: true
+        yServoOn: true
+        yServoHome: true
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 500
+    }
+
+    StepItem {
+        id: step2
+        name: "POS-Blowpin"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 13556248
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 37698045
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 2000
+    }
+
+    StepItem {
+        id: step3
+        name: "Blowpin 45"
+
+        plcOutputTargets: [0, 1]
+        delay: 2000
+    }
+
+    StepItem {
+        id: step4
+        name: "Blowpin 90"
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 2000
+    }
+
+    StepItem {
+        id: step41
+        name: "Curve 1"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 13681155
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 33357654
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step42
+        name: "Curve 2"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 13856911
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 33367654
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step43
+        name: "Curve 3"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 14632165
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 18512929
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step44
+        name: "Curve 4"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 15385673
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 13361364
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step45
+        name: "Curve 5"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 16129710
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 8958818
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step46
+        name: "Curve 6"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 18424070
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 10636682
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step47
+        name: "Curve 7"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 28382820
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 10636682
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step48
+        name: "Curve 8"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 29213316
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 7886289
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step49
+        name: "Curve 9"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 29213316
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: -3509058
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 750
+    }
+
+    StepItem {
+        id: step5
+        name: "Blowpin 0"
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 2000
+    }
+
+    StepItem {
+        id: step6
+        name: "Cutter Active"
+        plcOutputTargets: [0, 1, 8, 7]
+        delay: 4000
+    }
+
+    StepItem {
+        id: step7
+        name: "Cutter Deactive"
+        plcOutputTargets: [0, 1, 7]
+        delay: 4000
+    }
+
+    StepItem {
+        id: step8
+        name: "POS-Pres"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 45332844
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 30716200
+
+        plcOutputTargets: [0, 1, 7]
+        delay: 2000
+    }
+
+    StepItem {
+        id: step9
+        name: "Z2-DOWN"
+
+        plcOutputTargets: [0, 1, 2, 7]
+        delay: 10000
+    }
+
+    StepItem {
+        id: step10
+        name: "Blow"
+
+        plcOutputTargets: [0, 1, 7, 5]
+        delay: 4500
+    }
+
+    StepItem {
+        id: step11
+
+        name: "Penet"
+
+        plcOutputTargets: [0, 1, 7, 6]
+        delay: 2500
+    }
+
+    StepItem {
+        id: step12
+        name: "Z2-UP"
+
+        plcOutputTargets: [0, 1, 7, 6, 3]
+        delay: 6500
+    }
+
+    // StepItem {
+    //     id: step13
+    //     name: "POS-0"
+
+    //     xPosActive: true
+    //     xServoOn: true
+    //     xServoPos: 0
+
+    //     yPosActive: true
+    //     yServoOn: true
+    //     yServoPos: 0
+
+    //     plcOutputTargets: [0, 1, 7, 8]
+    //     delay: 2000
+    // }
+
+    // StepItem {
+    //     id: step2
+    //     name: "Step 2"
+    //     plcOutputTargets: []
+    //     delay: 1000
+    // }
+
+    // StepItem {
+    //     id: step3
+    //     name: "Step 3"
+    //     plcOutputTargets: [0, 3]
+    //     delay: 3000
+    // }
+    // StepItem {
+    //     id: step4
+    //     name: "Step 4"
+    //     plcOutputTargets: []
+    //     delay: 0
+    // }
+
     // Communications
     ModbusCom {
         id: plcModbusCom
@@ -128,6 +447,7 @@ Item {
         serialConn: comPopup.servoSerialConnection
         threaded: false
         devices: [servoXDevice, servoYDevice]
+        refreshInterval: 300
     }
 
     /** Modbus Devices **/
