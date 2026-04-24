@@ -34,8 +34,8 @@ Flickable {
             id: homingPanel
             width: parent.width
             manualActive: root.manualActive
-            homingXControl.enabled: servoXDevice.availableToHome
-            homingYControl.enabled: servoYDevice.availableToHome
+            // homingXControl.enabled: servoXDevice.availableToHome
+            // homingYControl.enabled: servoYDevice.availableToHome
 
             // submitButton.mouseArea.onPressed: {
             //     // X Servo Homing
@@ -68,26 +68,26 @@ Flickable {
             id: gotoPosPanel
             width: parent.width
             manualActive: root.manualActive
-            gotoPosXControl.enabled: servoXDevice.availableToRun
-            gotoPosYControl.enabled: servoYDevice.availableToRun
+            // gotoPosXControl.enabled: servoXDevice.availableToRun
+            // gotoPosYControl.enabled: servoYDevice.availableToRun
 
-            // submitButton.mouseArea.onPressed: {
-            //     // X Servo Goto Position
-            //     if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
-            //         servoXDevice.pushPathData1(gotoPosPanel.gotoPosXControl.positionValue * 1000);
-            //         servoXDevice.pushSpeed0(speedPanel.speedXControl.value * 10);
-            //         servoXDevice.pushRamp0(rampPanel.rampXControl.accValue);
-            //         servoXDevice.pushDi2(true);
-            //     }
+            submitButton.mouseArea.onPressed: {
+                // X Servo Goto Position
+                if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled)
+                    // servoXDevice.pushPathData1(gotoPosPanel.gotoPosXControl.positionValue * 1000);
+                    // servoXDevice.pushSpeed0(speedPanel.speedXControl.value * 10);
+                    // servoXDevice.pushRamp0(rampPanel.rampXControl.accValue);
+                    // servoXDevice.pushDi2(true);
+                {}
 
-            //     // Y Servo Goto Position
-            //     if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled) {
-            //         servoYDevice.pushPathData1(gotoPosPanel.gotoPosYControl.positionValue * 1000);
-            //         servoYDevice.pushSpeed0(speedPanel.speedYControl.value * 10);
-            //         servoYDevice.pushRamp0(rampPanel.rampYControl.accValue);
-            //         servoYDevice.pushDi2(true);
-            //     }
-            // }
+                // Y Servo Goto Position
+                if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled)
+                    // servoYDevice.pushPathData1(gotoPosPanel.gotoPosYControl.positionValue * 1000);
+                    // servoYDevice.pushSpeed0(speedPanel.speedYControl.value * 10);
+                    // servoYDevice.pushRamp0(rampPanel.rampYControl.accValue);
+                    // servoYDevice.pushDi2(true);
+                {}
+            }
             submitButton.onActivated: {
                 // X Servo Goto Position
                 if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
