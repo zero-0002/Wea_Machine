@@ -18,6 +18,11 @@ PlcModbusDevice::PlcModbusDevice(QObject* parent)
 
     connect(&plcIOModel, &PlcIOModel::outputCoilChanged, this, [ = ](int index, bool active)
     {
+        if (!enabled())
+        {
+            return;
+        }
+
         if (active)
         {
             coilSet(index);
@@ -29,7 +34,7 @@ PlcModbusDevice::PlcModbusDevice(QObject* parent)
     });
 
     updateIOs(plcIOModel.inputsCount(), plcIOModel.outputsCount());
-    syncCoils();
+    // syncCoils();
 }
 
 void PlcModbusDevice::writeValuToProperty(int address, quint16 value)
@@ -51,6 +56,10 @@ void PlcModbusDevice::writeValuToProperty(int address, quint16 value)
 
 void PlcModbusDevice::syncCoils()
 {
+    if (!enabled())
+    {
+        return;
+    }
 
     // Wrte buffer should be update with output coils / depend on NC/NO type
     const auto& plcOutputs = PlcIOModel::getInstance().outputs();
