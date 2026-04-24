@@ -59,40 +59,15 @@ Item {
             currentIndex: -1
             boundsBehavior: Flickable.StopAtBounds
             spacing: 10
-            model: ListModel {
-                ListElement {
-                    title: "Step No.1"
-                    active: false
-                    running: false
-                }
-                ListElement {
-                    title: "Step No.2"
-                    active: false
-                    running: false
-                }
-                ListElement {
-                    title: "Step No.3"
-                    active: true
-                    running: false
-                }
-                ListElement {
-                    title: "Step No.4"
-                    active: false
-                    running: true
-                }
-                ListElement {
-                    title: "Step No.5"
-                    active: false
-                    running: false
-                }
-            }
+            model: stepModel
 
             delegate: StepItem {
                 width: listView.width
 
-                title: model.title
-                running: model.running
-                readyIndicator.active: model.active
+                // title: model.title
+                title: model.name
+                running: stepModel.currentRunning === index
+                // readyIndicator.active: model.active
                 autoDeselectSibling: true
                 onSelectedChanged: {
                     if (selected) {
@@ -142,13 +117,13 @@ Item {
             /** Objects && Functions **/
             function moveUp() {
                 if (listView.currentIndex > 0) {
-                    listView.model.move(listView.currentIndex, listView.currentIndex - 1, 1);
+                    listView.model.move(listView.currentIndex, listView.currentIndex - 1);
                 }
             }
 
             function moveDown() {
                 if (listView.currentIndex < listView.count - 1) {
-                    listView.model.move(listView.currentIndex, listView.currentIndex + 1, 1);
+                    listView.model.move(listView.currentIndex, listView.currentIndex + 1);
                 }
             }
 
@@ -165,7 +140,7 @@ Item {
                     listView.currentIndex = -1;
                 }
 
-                listView.model.remove(index, 1);
+                listView.model.remove(index);
             }
         }
     }
