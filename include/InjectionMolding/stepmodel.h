@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QTimer>
+#include <QJSValue>
 #include <QDebug>
 
 #include <WeaCore/utils.h>
@@ -34,27 +35,25 @@ class  StepModel : public QAbstractListModel
     public:
         enum StepRoles
         {
-            IdRole = Qt::UserRole + 1,
+            IdRole = Qt::UserRole + 1, // Item Index
             NameRole,
 
             BitwiseEnableRole,
             BitwiseMethodRole,
 
-            XPosActive,
+            XPosActiveRole,
             XServoONRole,
             XServoHomeRole,
             XServoPosRole,
             XServoSpdRole,
-            XServoTorqueRole,
             XServoAccRole, // Deactive yet
             XServoDecRole, // Deactive yet
 
-            YPosActive,
+            YPosActiveRole,
             YServoONRole,
             YServoHomeRole,
             YServoPosRole,
             YServoSpdRole,
-            YServoTorqueRole,
             YServoAccRole, // Deactive yet
             YServoDecRole, // Deactive yet
 
@@ -71,20 +70,29 @@ class  StepModel : public QAbstractListModel
         int rowCount(const QModelIndex& parent = QModelIndex()) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
         bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+        void setData(StepItem* step, const QVariant& value, int role);
         QHash<int, QByteArray> roleNames() const override;
 
+        void reverseRoleNames();
+        bool isJsValid(const QJSValue& jsValue);
+
         /** Model Helper **/
-        Q_INVOKABLE bool addItem(int id);
+        Q_INVOKABLE bool addItem(QJSValue jsItem); // JS Value should be an object key-based on roleNames
         Q_INVOKABLE bool addItem(StepItem* item);
+        Q_INVOKABLE bool editItem(int index, QJSValue jsItem); // JS Value should be an object key-based on roleNames
+        Q_INVOKABLE bool remove(int index);
+        Q_INVOKABLE bool removeItem(int index);
+
+        Q_INVOKABLE bool move(int from, int to);
+        Q_INVOKABLE bool moveUp(int index);
+        Q_INVOKABLE bool moveDown(int index);
+
+        Q_INVOKABLE QStringList stepNames() const;
 
         Q_INVOKABLE void updateAll();
-
         Q_INVOKABLE void clear();
-
         Q_INVOKABLE bool isEmpty() const;
-
         Q_INVOKABLE bool empty() const;
-
         Q_INVOKABLE int count() const;
 
         /** StepModel Specification **/
@@ -159,10 +167,13 @@ class  StepModel : public QAbstractListModel
         void makeYServoConnection();
 
     private:
+        void syncJsWithStepItem(const QJSValue& jsValue, StepItem* step);
+
         PlcIOModel* m_plcModel = nullptr;
         ServoModbusDevice* m_xServoDevice = nullptr;
         ServoModbusDevice* m_yServoDevice = nullptr;
 
+        QHash<QByteArray, int> m_roleNameToId; // Reverse of RoleNames
         QList<StepItem*> m_items; // All IO
 
         // QList<StepItem> m_steps;

@@ -8,7 +8,9 @@
 StepModel::StepModel(QObject* parent)
     : QAbstractListModel{parent}
 {
+    reverseRoleNames();
 
+    /** Connections **/
     connect(this, &StepModel::enabledChanged, this, [ = ]()
     {
         if (!m_enabled)
@@ -30,17 +32,163 @@ int StepModel::rowCount(const QModelIndex& parent) const
 
 QVariant StepModel::data(const QModelIndex& index, int role) const
 {
+    int idx = index.row();
+    if (!index.isValid() || idx < 0 || idx >= rowCount())
+    {
+        qWarning() << "Invalid index position: " << idx;
+        return QVariant();
+    }
+
+    auto* item = m_items[idx];
+    switch (role)
+    {
+        case IdRole:
+            return idx;
+        case NameRole:
+            return item->name();
+        case BitwiseEnableRole:
+            return item->bitwiseEnable();
+        case BitwiseMethodRole:
+            return item->bitwiseMethod();
+
+        case XPosActiveRole:
+            return item->xPosActive();
+        case XServoONRole:
+            return item->xServoOn();
+        case XServoHomeRole:
+            return item->xServoHome();
+        case XServoPosRole:
+            return item->xServoPos();
+        case XServoSpdRole:
+            return item->xServoSpeed();
+        case XServoAccRole:
+            return item->xServoAcc();
+        case XServoDecRole:
+            return item->xServoDec();
+
+        case YPosActiveRole:
+            return item->yPosActive();
+        case YServoONRole:
+            return item->yServoOn();
+        case YServoHomeRole:
+            return item->yServoHome();
+        case YServoPosRole:
+            return item->yServoPos();
+        case YServoSpdRole:
+            return item->yServoSpeed();
+        case YServoAccRole:
+            return item->yServoAcc();
+        case YServoDecRole:
+            return item->yServoDec();
+
+        case PlcOutputTargetsRole:
+            return item->plcOutputTargets();
+        case ConditionBitsRole:
+            return item->conditionBits();
+        case DelayRole:
+            return item->delay();
+
+    };
+
+    qWarning() << "Invalid Role argument!: " << role;
+
+    return QVariant();
 
 }
 
 bool StepModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+    int idx = index.row();
+    if (!index.isValid() || idx < 0 || idx >= rowCount())
+    {
+        qWarning() << "Invalid index position: " << idx;
+        return false;
+    }
 
+    auto* item = m_items[idx];
+    setData(item, value, role);
+
+    // FIXME: Check this correction
+    emit dataChanged(index, index);
+    return true;
+
+}
+
+void StepModel::setData(StepItem* item, const QVariant& value, int role)
+{
+    switch (role)
+    {
+        case IdRole:
+            break;
+        case NameRole:
+            item->setName(value.toString());
+            break;
+        case BitwiseEnableRole:
+            item->setBitwiseEnable(value.toBool());
+            break;
+        case BitwiseMethodRole:
+            item->setBitwiseMethod(value.toInt());
+            break;
+
+        case XPosActiveRole:
+            item->setXPosActive(value.toBool());
+            break;
+        case XServoONRole:
+            item->setXServoON(value.toBool());
+            break;
+        case XServoHomeRole:
+            item->setXServoHome(value.toBool());
+            break;
+        case XServoPosRole:
+            item->setXServoPos(value.toInt());
+            break;
+        case XServoSpdRole:
+            item->setXServoSpeed(value.toUInt());
+            break;
+        case XServoAccRole:
+            item->setXServoAcc(value.toUInt());
+            break;
+        case XServoDecRole:
+            item->setXServoDec(value.toUInt());
+            break;
+
+        case YPosActiveRole:
+            item->setYPosActive(value.toBool());
+            break;
+        case YServoONRole:
+            item->setYServoON(value.toBool());
+            break;
+        case YServoHomeRole:
+            item->setYServoHome(value.toBool());
+            break;
+        case YServoPosRole:
+            item->setYServoPos(value.toInt());
+            break;
+        case YServoSpdRole:
+            item->setYServoSpeed(value.toUInt());
+            break;
+        case YServoAccRole:
+            item->setYServoAcc(value.toUInt());
+            break;
+        case YServoDecRole:
+            item->setYServoDec(value.toUInt());
+            break;
+
+        case PlcOutputTargetsRole:
+            item->setPlcOutputsTargets(value.toList());
+            break;
+        case ConditionBitsRole:
+            item->setConditionBits(value.toList());
+            break;
+        case DelayRole:
+            item->setDelay(value.toInt());
+            break;
+    }
 }
 
 QHash<int, QByteArray> StepModel::roleNames() const
 {
-    return
+    static QHash<int, QByteArray> result =
     {
         { IdRole, "id"},
         { NameRole, "name"},
@@ -48,21 +196,19 @@ QHash<int, QByteArray> StepModel::roleNames() const
         { BitwiseEnableRole, "bitwiseenable"},
         { BitwiseMethodRole, "bitwisemethod"},
 
-        { XPosActive, "xposactive"},
+        { XPosActiveRole, "xposactive"},
         { XServoONRole, "xservoon"},
         { XServoHomeRole, "xservohome"},
         { XServoPosRole, "xservopos"},
         { XServoSpdRole, "xservospd"},
-        { XServoTorqueRole, "xservotorque"},
         { XServoAccRole, "xservoacc"},  // Deactive yet,
         { XServoDecRole, "xservodec"}, // Deactive yet,
 
-        { YPosActive, "yposactive"},
+        { YPosActiveRole, "yposactive"},
         { YServoONRole, "yservoon"},
         { YServoHomeRole, "yservohome"},
         { YServoPosRole, "yservopos"},
         { YServoSpdRole, "yservospd"},
-        { YServoTorqueRole, "yservotorque"},
         { YServoAccRole, "yservoacc"},  // Deactive yet,
         { YServoDecRole, "yservodec"}, // Deactive yet,
 
@@ -71,16 +217,149 @@ QHash<int, QByteArray> StepModel::roleNames() const
 
         { DelayRole, "delay" }
     };
+
+    return result;
 }
 
-bool StepModel::addItem(int id)
+void StepModel::reverseRoleNames()
 {
+    const auto& _roleNames = StepModel::roleNames();
 
+    for (auto it = _roleNames.begin(); it != _roleNames.end(); ++it)
+    {
+        m_roleNameToId[it.value()] = it.key();
+    }
+}
+
+bool StepModel::isJsValid(const QJSValue& jsValue)
+{
+    const auto names(m_roleNameToId.keys());
+    for (auto& name : qAsConst(names))
+    {
+        if (!jsValue.hasProperty(name))
+        {
+            qCritical() << "Invalid StepItem JS value! has no property: " << name;
+            return false;
+        }
+    }
+    return true;
+}
+
+bool StepModel::addItem(QJSValue jsItem)
+{
+    if (isJsValid(jsItem))
+    {
+        StepItem* stepItem = new StepItem(this); // Passing this makes auto deletion by StepModel
+        syncJsWithStepItem(jsItem, stepItem);
+        return addItem(stepItem);
+    }
+    return false;
 }
 
 bool StepModel::addItem(StepItem* item)
 {
+    if (!item || item == nullptr)
+    {
+        qCritical() << "NULL StepItem";
+        return false;
+    }
+    int insertLoc = count();
 
+    beginInsertRows(QModelIndex(), insertLoc, insertLoc);
+    m_items.append(item);
+    emit countChanged();
+    endInsertRows();
+
+    return true;
+}
+
+bool StepModel::editItem(int index, QJSValue jsItem)
+{
+    if (index < 0 || index >= m_items.count())
+    {
+        qCritical() << "Invalid index value!" << index << m_items.count();
+        return false;
+    }
+
+    if (isJsValid(jsItem))
+    {
+        auto* step = m_items[index];
+        syncJsWithStepItem(jsItem, step);
+        emit dataChanged(this->index(index), this->index(index));
+        return true;
+    }
+    return false;
+}
+
+bool StepModel::remove(int index)
+{
+    return removeItem(index);
+}
+
+bool StepModel::removeItem(int index)
+{
+    if (index < 0 || index >= m_items.count())
+    {
+        qCritical() << "Invalid index value!" << index << m_items.count();
+        return false;
+    }
+    beginRemoveRows(QModelIndex(), index, index);
+    m_items.removeAt(index);
+    qDebug() << "Removing StepItem: " << index << m_items.count() << stepNames();
+    emit countChanged();
+    endRemoveRows();
+    return true;
+}
+
+bool StepModel::move(int from, int to)
+{
+    if (from < 0 || from >= m_items.count())
+    {
+        qCritical() << "Invalid from value at move(): " << from << m_items.count();
+        return false;
+    }
+
+    if (to < 0 || to >= m_items.count())
+    {
+        qCritical() << "Invalid to value at move(): " << to << m_items.count();
+        return false;
+    }
+
+    // emit layoutAboutToBeChanged();
+
+    // Using beginMoveRows makes approve transitions on ListView.
+    int destChild = to > from ? to + 1 : to;
+    beginMoveRows(QModelIndex(), from, from, QModelIndex(), destChild);
+    auto beforeNames = stepNames();
+    m_items.move(from, to);
+    auto afterNames = stepNames();
+    qDebug() << "Before: " << beforeNames << "\nAfter: " << afterNames;
+    endMoveRows();
+
+    // changePersistentIndex(index(from), index(to));
+    // emit layoutChanged();
+
+    return true;
+}
+
+bool StepModel::moveUp(int index)
+{
+    return move(index, index - 1);
+}
+
+bool StepModel::moveDown(int index)
+{
+    return move(index, index + 1);
+}
+
+QStringList StepModel::stepNames() const
+{
+    QStringList result = {};
+    for (auto& item : qAsConst(m_items))
+    {
+        result.append(item->name());
+    }
+    return result;
 }
 
 void StepModel::updateAll()
@@ -119,7 +398,12 @@ int StepModel::count() const
 
 StepItem* StepModel::getItem(int index) const
 {
-
+    if (index < 0 || index >= m_items.count())
+    {
+        qCritical() << "Invalid index value!" << index << m_items.count();
+        return nullptr;
+    }
+    return m_items[index];
 }
 
 const QList<StepItem*>& StepModel::steps() const
@@ -518,4 +802,14 @@ void StepModel::makeYServoConnection()
 {
     connect(m_yServoDevice, &ServoModbusDevice::positionStarted, this, &StepModel::onYServoPosStarted);
     connect(m_yServoDevice, &ServoModbusDevice::positionCompleted, this, &StepModel::onYServoPosCompleted);
+}
+
+void StepModel::syncJsWithStepItem(const QJSValue& jsValue, StepItem* step)
+{
+    const auto names(m_roleNameToId.keys());
+    for (auto& name : qAsConst(names))
+    {
+        const auto& value = jsValue.property(static_cast<QString>(name)).toVariant();
+        setData(step, value, m_roleNameToId[name]);
+    }
 }
