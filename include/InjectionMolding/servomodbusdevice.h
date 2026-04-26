@@ -68,6 +68,19 @@ class ServoModbusDevice : public AbstractModbusDevice
 
         void writeValuToProperty(int address, quint16 value) override;
 
+        bool waitForServoOn(int timeout) const;
+        bool waitForServoOff(int timeout) const;
+
+        bool waitForPos0Enable(int timeout) const;
+        bool waitForPos0Disable(int timeout) const;
+
+        bool waitForCtrgOn(int timeout) const;
+
+        bool waitForPath1Set(int timeout, qint32 targetPos) const;
+        bool waitForSpeed0Set(int timeout, quint16 targetSpd) const;
+        bool waitForRamp0Set(int timeout, quint16 targetRamp) const;
+
+
         // Write
         Q_INVOKABLE bool pushTorqueLimit(qint16 value);
 

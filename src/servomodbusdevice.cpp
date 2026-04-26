@@ -262,6 +262,46 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
 
 }
 
+bool ServoModbusDevice::waitForServoOn(int timeout) const
+{
+    return waitForReply(this, m_digitalInputs.di1, &ServoModbusDevice::di1Changed, true, timeout);
+}
+
+bool ServoModbusDevice::waitForServoOff(int timeout) const
+{
+    return waitForReply(this, m_digitalInputs.di1, &ServoModbusDevice::di1Changed, false, timeout);
+}
+
+bool ServoModbusDevice::waitForPos0Enable(int timeout) const
+{
+    return waitForReply(this, m_digitalInputs.di2, &ServoModbusDevice::di2Changed, true, timeout);
+}
+
+bool ServoModbusDevice::waitForPos0Disable(int timeout) const
+{
+    return waitForReply(this, m_digitalInputs.di2, &ServoModbusDevice::di2Changed, false, timeout);
+}
+
+bool ServoModbusDevice::waitForCtrgOn(int timeout) const
+{
+    return waitForReply(this, m_digitalInputs.di4, &ServoModbusDevice::di4Changed, true, timeout);
+}
+
+bool ServoModbusDevice::waitForPath1Set(int timeout, qint32 targetPos) const
+{
+    return waitForReply(this, m_pathData1.value, &ServoModbusDevice::pathData1Changed, targetPos, timeout);
+}
+
+bool ServoModbusDevice::waitForSpeed0Set(int timeout, quint16 targetSpd) const
+{
+    return waitForReply(this, m_speedData0.value, &ServoModbusDevice::speedData0Changed, targetSpd, timeout);
+}
+
+bool ServoModbusDevice::waitForRamp0Set(int timeout, quint16 targetRamp) const
+{
+    return waitForReply(this, m_rampData0.value, &ServoModbusDevice::rampData0Changed, targetRamp, timeout);
+}
+
 bool ServoModbusDevice::pushTorqueLimit(qint16 value)
 {
     Torque v;
