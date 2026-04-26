@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariantList>
+#include <QJsonObject>
 #include <WeaCore/utils.h>
 
 class StepItem : public QObject
@@ -55,6 +56,8 @@ class StepItem : public QObject
         // Q_INVOKABLE void readFromSettings();
         // Q_INVOKABLE void writeToSettings() const;
 
+        QJsonObject toJson() const;
+        void fromJson(const QJsonObject& jsonObj);
     protected:
         void doCopy(const StepItem& other);
 
