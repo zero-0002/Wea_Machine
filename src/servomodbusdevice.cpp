@@ -99,6 +99,10 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
             AlarmModel::getInstance().removeByCodePrefix(QString("ServoID%2").arg(slaveAddress()));
         }
     });
+    connect(this, &ServoModbusDevice::errorOccured, this, [ = ](int code, const QString & msg)
+    {
+        AlarmModel::getInstance().addAlarm(AlarmItem(code + slaveAddress(), msg, QString("ServoID%2").arg(slaveAddress())));
+    });
 
     // TPOS position reached
     connect(this, &ServoModbusDevice::tposStateChanged, this, [ = ](bool edgeType)
@@ -287,19 +291,66 @@ bool ServoModbusDevice::waitForCtrgOn(int timeout) const
     return waitForReply(this, m_digitalInputs.di4, &ServoModbusDevice::di4Changed, true, timeout);
 }
 
-bool ServoModbusDevice::waitForPath1Set(int timeout, qint32 targetPos) const
+bool ServoModbusDevice::waitForPath1Set(qint32 targetPos, int timeout) const
 {
     return waitForReply(this, m_pathData1.value, &ServoModbusDevice::pathData1Changed, targetPos, timeout);
 }
 
-bool ServoModbusDevice::waitForSpeed0Set(int timeout, quint16 targetSpd) const
+bool ServoModbusDevice::waitForSpeed0Set(quint16 targetSpd, int timeout) const
 {
     return waitForReply(this, m_speedData0.value, &ServoModbusDevice::speedData0Changed, targetSpd, timeout);
 }
 
-bool ServoModbusDevice::waitForRamp0Set(int timeout, quint16 targetRamp) const
+bool ServoModbusDevice::waitForRamp0Set(quint16 targetRamp, int timeout) const
 {
     return waitForReply(this, m_rampData0.value, &ServoModbusDevice::rampData0Changed, targetRamp, timeout);
+}
+
+bool ServoModbusDevice::isPositionReached() const
+{
+    return m_digitalOutputs.do4 &&
+           ((m_pathData1.value + m_positionTolerance) >= encoderPUU() &&
+            encoderPUU() >= (m_pathData1.value - m_positionTolerance));
+}
+
+bool ServoModbusDevice::checkIfHasErrorOnMove()
+{
+    // If encoder PUU isn't equal with target(with tolerance also) and TPOS is ON it means we have an issue with moving
+    bool result = false;
+    if (m_digitalOutputs.do4 && !isPositionReached())
+    {
+        QEventLoop loop;
+        QTimer timeoutTmr;
+
+        timeoutTmr.setInterval(2000);
+
+        connect(&timeoutTmr, &QTimer::timeout, &loop, [&]()
+        {
+            if (m_digitalOutputs.do4 && !isPositionReached())
+            {
+                result = true;
+            }
+            loop.quit();
+        });
+
+        timeoutTmr.start();
+        loop.exec();
+    }
+    if (result)
+    {
+        emit errorOccured(250,
+                          QString("Error while servo moving, TPOS: %1 TargetPosition: %2 EncoderPUU: %2")
+                          .arg(m_digitalOutputs.do4)
+                          .arg(m_pathData1.value)
+                          .arg(m_encoderPUU.value)
+                         );
+    }
+    return result;
+}
+
+bool ServoModbusDevice::isHomeCompleted() const
+{
+    return m_digitalOutputs.do3;
 }
 
 bool ServoModbusDevice::pushTorqueLimit(qint16 value)
@@ -438,6 +489,10 @@ void ServoModbusDevice::triggerCTRG()
     {
         //     qDebug() << "Enabling CTRG: " << ctrgActive();
         pushDi4(true);
+        if (!waitForCtrgOn())
+        {
+            emit errorOccured(203, "Unable to Trigger CTRG");
+        }
     });
 }
 
@@ -447,18 +502,58 @@ bool ServoModbusDevice::resetAlarms()
     return pushToWriteBuffer(RW_ALARMS, values);
 }
 
+bool ServoModbusDevice::servoOn()
+{
+    pushDi1(true);
+    if (!waitForServoOn())
+    {
+        emit errorOccured(201, "Unable to make Servo ON !");
+        return false;
+    }
+    return true;
+}
+
+bool ServoModbusDevice::servoOff()
+{
+    pushDi1(false);
+    if (!waitForServoOff())
+    {
+        emit errorOccured(221, "Unable to make Servo OFF !");
+        return false;
+    }
+    return true;
+}
+
 bool ServoModbusDevice::gotoHome()
 {
     if (availableToHome())
     {
-        pushDi2(false);
         pushDi1(true);
+        if (!waitForServoOn())
+        {
+            emit errorOccured(201, "Unable to make Servo ON !");
+            return false;
+        }
+
+        pushDi2(false);
+        if (!waitForPos0Disable())
+        {
+            emit errorOccured(202, "Unable to disable POS0 !");
+            return false;
+        }
+
         QTimer::singleShot(m_posActiveDelay, this, [ = ]()
         {
             pushDi1(true);
             pushDi2(false);
             triggerCTRG();
         });
+
+        if (!waitForCtrgOn())
+        {
+            emit errorOccured(203, "Unable to Trigger CTRG");
+            return false;
+        }
 
         // if (pushDi2(false))
         // {
@@ -470,7 +565,7 @@ bool ServoModbusDevice::gotoHome()
         // return false;
         return true;
     }
-    qCritical() << "Cannot apply GotoHome! : " << outputsStateStr();
+    emit errorOccured(200, "Cannot apply GotoHome! : " +  outputsStateStr());
     return false;
 
 }
@@ -485,11 +580,40 @@ bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
 {
     // if (availableToRun())
     // {
-    pushPathData1(path);
-    pushSpeed0(speed);
-    pushRamp0(ramp);
-    pushDi2(true);
     pushDi1(true);
+    if (!waitForServoOn())
+    {
+        emit errorOccured(201, "Unable to make Servo ON !");
+        return false;
+    }
+
+    pushDi2(true);
+    if (!waitForPos0Enable())
+    {
+        emit errorOccured(202, "Unable to Enable POS0 !");
+        return false;
+    }
+
+    pushPathData1(path);
+    if (!waitForPath1Set(path))
+    {
+        emit errorOccured(210, QString("Unable to Set Position path1 value! %1").arg(path));
+        return false;
+    }
+
+    pushSpeed0(speed);
+    if (!waitForSpeed0Set(speed))
+    {
+        emit errorOccured(211, QString("Unable to Set Speed0 value! %1").arg(speed));
+        return false;
+    }
+
+    pushRamp0(ramp);
+    if (!waitForRamp0Set(ramp))
+    {
+        emit errorOccured(212, QString("Unable to Set Ramp0 value! %1").arg(ramp));
+        return false;
+    }
 
     QTimer::singleShot(m_posActiveDelay, this, [ = ]()
     {
@@ -497,8 +621,13 @@ bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
         pushDi2(true);
         triggerCTRG();
     });
-    // if ()
-    // {
+
+    if (!waitForCtrgOn())
+    {
+        emit errorOccured(203, "Unable to Trigger CTRG");
+        return false;
+    }
+
     return true;
     // Requesting for Trigger...
     // triggerCTRG();

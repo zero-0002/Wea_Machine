@@ -48,10 +48,12 @@ class ServoModbusDevice : public AbstractModbusDevice
         RO_MOD_PROP(bool, do4, m_digitalOutputs.do4); // TPOS
         RO_MOD_PROP(bool, do5, m_digitalOutputs.do5); // ALRM
 
+        // IMPORTANT PROPERTIES
         /** User friendly Props (using at Steps and automation) **/
         W_PROP_HDEF(int, posActiveDelay, PosActiveDelay, 50) // millisecond
         W_PROP_HDEF(int, triggerDelay, TriggerDelay, 150) // millisecond
         // W_PROP_HDEF(int, triggerOffDelay, TriggerOffDelay, 250) // millisecond
+        W_PROP_HDEF(qint32, positionTolerance, PositionTolerance, 1000) // pulse
 
         RO_MOD_PROP(bool, ctrgActive, m_digitalInputs.di4);
 
@@ -68,17 +70,21 @@ class ServoModbusDevice : public AbstractModbusDevice
 
         void writeValuToProperty(int address, quint16 value) override;
 
-        bool waitForServoOn(int timeout) const;
-        bool waitForServoOff(int timeout) const;
+        bool waitForServoOn(int timeout = 1500) const;
+        bool waitForServoOff(int timeout = 1500) const;
 
-        bool waitForPos0Enable(int timeout) const;
-        bool waitForPos0Disable(int timeout) const;
+        bool waitForPos0Enable(int timeout = 1500) const;
+        bool waitForPos0Disable(int timeout = 1500) const;
 
-        bool waitForCtrgOn(int timeout) const;
+        bool waitForCtrgOn(int timeout = 1500) const;
 
-        bool waitForPath1Set(int timeout, qint32 targetPos) const;
-        bool waitForSpeed0Set(int timeout, quint16 targetSpd) const;
-        bool waitForRamp0Set(int timeout, quint16 targetRamp) const;
+        bool waitForPath1Set(qint32 targetPos, int timeout = 2000) const;
+        bool waitForSpeed0Set(quint16 targetSpd, int timeout = 2000) const;
+        bool waitForRamp0Set(quint16 targetRamp, int timeout = 2000) const;
+
+        bool isPositionReached() const;
+        bool checkIfHasErrorOnMove();
+        bool isHomeCompleted() const;
 
 
         // Write
@@ -105,6 +111,9 @@ class ServoModbusDevice : public AbstractModbusDevice
         Q_INVOKABLE void triggerCTRG();
         Q_INVOKABLE bool resetAlarms();
 
+        Q_INVOKABLE bool servoOn();
+        Q_INVOKABLE bool servoOff();
+
         Q_INVOKABLE bool gotoHome();
 
         Q_INVOKABLE bool gotoPosition(qint32 path);
@@ -114,6 +123,8 @@ class ServoModbusDevice : public AbstractModbusDevice
         static QString getAlarmDesc(int code);
 
     signals:
+        void errorOccured(int code, const QString& message);
+
         void tposStateChanged(bool edgeType); // True === rising edge, false === falling edge
         void positionStarted();
         void positionCompleted();
