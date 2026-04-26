@@ -499,27 +499,27 @@ void StepModel::onStepFinished()
 
 void StepModel::onXServoPosStarted()
 {
-    m_xServoGotoPosOnDemand = true;
+    // m_xServoGotoPosOnDemand = true;
 }
 
 void StepModel::onXServoPosCompleted()
 {
-    m_xServoGotoPosOnDemand = false;
+    // m_xServoGotoPosOnDemand = false;
 }
 
 void StepModel::onYServoPosStarted()
 {
-    m_yServoGotoPosOnDemand = true;
+    // m_yServoGotoPosOnDemand = true;
 }
 
 void StepModel::onYServoPosCompleted()
 {
-    m_yServoGotoPosOnDemand = false;
+    // m_yServoGotoPosOnDemand = false;
 }
 
 void StepModel::onStepTrigger()
 {
-    if (!m_running || m_currentRunning < 0 || m_currentRunning >= m_items.count())
+    if (m_errorAtStep || !m_running || m_currentRunning < 0 || m_currentRunning >= m_items.count())
     {
         qWarning() << "Unavailable to starting step!" << m_running << m_currentRunning;
         qInfo() << "Stopping steps...";
@@ -548,6 +548,7 @@ void StepModel::onStepTrigger()
     }
 
     qDebug() << "Running Step: " << m_currentRunning << currentStep->name();
+
     applyServosStep(currentStep);
     applyPlcStep(currentStep);
 
@@ -556,7 +557,7 @@ void StepModel::onStepTrigger()
 
 void StepModel::applyServosStep(StepItem* step)
 {
-    if (m_processOnDemand)
+    if (m_processOnDemand || m_errorAtStep)
     {
         return;
     }
@@ -566,30 +567,35 @@ void StepModel::applyServosStep(StepItem* step)
     {
         if (step->xServoOn())
         {
-            if (!m_xServoDevice->di1())
+            if (!m_xServoDevice->servoOn())
             {
-                m_xServoDevice->pushDi1(true);
-                m_xServoDevice->pushDi1(true);
+                m_errorAtStep = true;
+                return;
             }
 
-            if (step->xServoHome())
+            if (step->xServoHome() && !m_xServoDevice->isHomeCompleted())
             {
-                m_xServoDevice->gotoHome();
-                m_xServoHomeOnDemand = true;
+                if (!m_xServoDevice->gotoHome())
+                {
+                    m_errorAtStep = true;
+                    return;
+                }
             }
             else
             {
-                m_xServoDevice->gotoPosition(step->xServoPos());
-                qDebug() << "Servo X gotoPosition: " << step->name();
-                m_xServoGotoPosOnDemand = true;
+                if (!m_xServoDevice->gotoPosition(step->xServoPos()))
+                {
+                    m_errorAtStep = true;
+                    return;
+                }
             }
         }
         else
         {
-            if (m_xServoDevice->di1())
+            if (!m_xServoDevice->servoOff())
             {
-                m_xServoDevice->pushDi1(false);
-                m_xServoDevice->pushDi1(false);
+                m_errorAtStep = true;
+                return;
             }
         }
     }
@@ -600,31 +606,35 @@ void StepModel::applyServosStep(StepItem* step)
     {
         if (step->yServoOn())
         {
-
-            if (!m_yServoDevice->di1())
+            if (!m_yServoDevice->servoOn())
             {
-                m_yServoDevice->pushDi1(true);
-                m_yServoDevice->pushDi1(true);
+                m_errorAtStep = true;
+                return;
             }
 
-            if (step->yServoHome())
+            if (step->yServoHome() && !m_yServoDevice->isHomeCompleted())
             {
-                m_yServoDevice->gotoHome();
-                m_yServoHomeOnDemand = true;
+                if (!m_yServoDevice->gotoHome())
+                {
+                    m_errorAtStep = true;
+                    return;
+                }
             }
             else
             {
-                m_yServoDevice->gotoPosition(step->yServoPos());
-                qDebug() << "Servo Y gotoPosition: " << step->name();
-                m_yServoGotoPosOnDemand = true;
+                if (!m_yServoDevice->gotoPosition(step->yServoPos()))
+                {
+                    m_errorAtStep = true;
+                    return;
+                }
             }
         }
         else
         {
-            if (m_yServoDevice->di1())
+            if (!m_yServoDevice->servoOff())
             {
-                m_yServoDevice->pushDi1(false);
-                m_yServoDevice->pushDi1(false);
+                m_errorAtStep = true;
+                return;
             }
         }
     }
@@ -642,7 +652,7 @@ void StepModel::applyServosStep(StepItem* step)
 
 void StepModel::applyPlcStep(StepItem* step)
 {
-    if (m_processOnDemand)
+    if (m_processOnDemand || m_errorAtStep)
     {
         return;
     }
@@ -672,14 +682,19 @@ bool StepModel::servosStepCompleted(StepItem* step)
 
             if (step->xServoHome())
             {
-                if (!m_xServoDevice->homingComplete())
+                if (!m_xServoDevice->isHomeCompleted())
                 {
                     return false;
                 }
             }
             else
             {
-                if (!m_xServoDevice->tposFeedback() || m_xServoGotoPosOnDemand)
+                if (m_xServoDevice->checkIfHasErrorOnMove()) // || m_xServoGotoPosOnDemand)
+                {
+                    m_errorAtStep = true;
+                    return false;
+                }
+                else if (!m_xServoDevice->isPositionReached())
                 {
                     return false;
                 }
@@ -706,14 +721,19 @@ bool StepModel::servosStepCompleted(StepItem* step)
 
             if (step->yServoHome())
             {
-                if (!m_yServoDevice->homingComplete())
+                if (!m_yServoDevice->isHomeCompleted())
                 {
                     return false;
                 }
             }
             else
             {
-                if (!m_yServoDevice->tposFeedback() || m_yServoGotoPosOnDemand)
+                if (m_yServoDevice->checkIfHasErrorOnMove()) // || m_yServoGotoPosOnDemand)
+                {
+                    m_errorAtStep = true;
+                    return false;
+                }
+                else if (!m_yServoDevice->isPositionReached())
                 {
                     return false;
                 }

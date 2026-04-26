@@ -183,13 +183,14 @@ class  StepModel : public QAbstractListModel
         QTimer m_stepsTimer;
         bool m_processOnDemand = false;
         bool m_waitForNextStep = false;
+        bool m_errorAtStep = false;
 
-        bool m_xServoHomeOnDemand = false;
-        bool m_xServoGotoPosOnDemand = false;
+        // bool m_xServoHomeOnDemand = false;
+        // bool m_xServoGotoPosOnDemand = false;
 
-        bool m_yServoHomeOnDemand = false;
-        bool m_yServoGotoPosOnDemand = false;
+        // bool m_yServoHomeOnDemand = false;
+        // bool m_yServoGotoPosOnDemand = false;
 
-        bool m_delayOnDemand = false;
+        // bool m_delayOnDemand = false;
 };
 #endif // STEPMODEL_H
