@@ -153,6 +153,7 @@ Item {
             bottom: parent.bottom
             margins: padding
         }
+        enabled: !stepModel.running
         width: parent.width
         height: 27
 
@@ -180,6 +181,32 @@ Item {
 
         deleteButton.onClicked: {
             listView.removeCurrent();
+        }
+
+        openButton.onPressed: {
+            stepModel.clear();
+        }
+        openButton.onClicked: {
+            openFileDialog.open();
+        }
+
+        saveButton.onClicked: {
+            saveFileDialog.open();
+        }
+    }
+
+    /** Other Connections **/
+    Connections {
+        target: openFileDialog
+        function onAccepted() {
+            stepModel.loadFromJsonFile(openFileDialog.currentFile);
+        }
+    }
+
+    Connections {
+        target: saveFileDialog
+        function onAccepted() {
+            stepModel.saveToJsonFile(saveFileDialog.currentFile);
         }
     }
 }

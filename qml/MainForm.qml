@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import Qt.labs.settings 1.1
+import Qt.labs.platform 1.1
 import com.wearily.WeaQuick 1.0 as WeaQuick
 import CustomItems 1.0
 
@@ -509,6 +510,18 @@ Item {
         plcSerialConfig.onCloseConnection: {
             plcModbusCom.closePort();
         }
+    }
+
+    FileDialog {
+        id: saveFileDialog
+        fileMode: FileDialog.SaveFile
+        defaultSuffix: "json"
+    }
+
+    FileDialog {
+        id: openFileDialog
+        fileMode: FileDialog.OpenFile
+        defaultSuffix: "json"
     }
 
     // Overlay (Pop-up will enable this)
