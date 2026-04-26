@@ -3,6 +3,8 @@
 
 #include <WeaCore/utils.h>
 #include <QHash>
+#include <QTimer>
+#include <QEventLoop>
 #include <QModbusDataUnit>
 
 class AbstractModbusDevice : public QObject
@@ -35,6 +37,45 @@ class AbstractModbusDevice : public QObject
         virtual const QList<QModbusDataUnit>& readBuffer() const;
 
     protected:
+
+        /*!
+         * \brief waitForReply Blocking method that wait for target value is set is equal with condition param
+         * \param target
+         * \param timeout
+         * \param condition
+         * \return true if target == condition else false
+         */
+        template <typename Target, typename SourceClass = AbstractModbusDevice, typename Signal, typename Condition>
+        inline bool waitForBoolReply(SourceClass* src,
+                                     const Target& target,
+                                     Signal targetSiganl,
+                                     Condition condition,
+                                     int timeout) const
+        {
+            bool result = false;
+
+            QEventLoop loop;
+            QTimer timeoutTmr;
+
+            timeoutTmr.setInterval(timeout);
+
+            connect(&timeoutTmr, &QTimer::timeout, &loop, &QEventLoop::quit);
+            connect(src, targetSiganl, &loop, [&]()
+            {
+                if (target == condition)
+                {
+                    result = true;
+                    loop.quit();
+                }
+            });
+
+            timeoutTmr.start();
+            loop.exec();
+
+            return result;
+        }
+
+
         QList<QModbusDataUnit> m_readOnceBuffer;
         QList<QModbusDataUnit> m_writeOnceBuffer;
         QList<QModbusDataUnit> m_writeBuffer;
