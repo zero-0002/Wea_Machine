@@ -305,7 +305,6 @@ bool StepModel::removeItem(int index)
     }
     beginRemoveRows(QModelIndex(), index, index);
     m_items.removeAt(index);
-    qDebug() << "Removing StepItem: " << index << m_items.count() << stepNames();
     emit countChanged();
     endRemoveRows();
     return true;
@@ -333,7 +332,6 @@ bool StepModel::move(int from, int to)
     auto beforeNames = stepNames();
     m_items.move(from, to);
     auto afterNames = stepNames();
-    qDebug() << "Before: " << beforeNames << "\nAfter: " << afterNames;
     endMoveRows();
 
     // changePersistentIndex(index(from), index(to));
