@@ -612,8 +612,8 @@ void ServoModbusDevice::emitDigitalOutputs()
 
     // Other
     emit homingCompleteChanged();
-    emit availableToHome();
-    emit availableToRun();
+    emit availableToHomeChanged();
+    emit availableToRunChanged();
 }
 
 void ServoModbusDevice::updateTposState(bool currentState)
