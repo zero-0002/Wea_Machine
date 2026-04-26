@@ -4,6 +4,10 @@
 #include "../include/InjectionMolding/plciomodel.h"
 #include "../include/InjectionMolding/servomodbusdevice.h"
 
+#include <QJsonArray>
+#include<QJsonDocument>
+#include <QFile>
+
 
 StepModel::StepModel(QObject* parent)
     : QAbstractListModel{parent}
@@ -372,7 +376,7 @@ void StepModel::clear()
 {
     beginResetModel();
 
-    qDeleteAll(m_items);
+    // qDeleteAll(m_items);
     m_items.clear();
     emit countChanged();
 
@@ -402,6 +406,88 @@ StepItem* StepModel::getItem(int index) const
         return nullptr;
     }
     return m_items[index];
+}
+
+bool StepModel::saveToJsonFile(const QString& f) const
+{
+    QString filePath = f;
+    filePath = filePath.replace("file:///", "");
+    auto items = m_items;
+    QJsonArray allItemsArray;
+    for (StepItem* item : items)
+    {
+        if (item)
+        {
+            allItemsArray.append(item->toJson()); // فراخوانی toJson برای هر StepItem
+        }
+    }
+
+    QJsonDocument doc(allItemsArray);
+    QByteArray data = doc.toJson(QJsonDocument::Indented); // فرمت بندی برای خوانایی
+
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly))
+    {
+        file.write(data);
+        file.close();
+        qDebug() << "Json saved successfully" << filePath;
+        return true;
+    }
+    else
+    {
+        qDebug() << "StepItem saveFile error: " << file.errorString();
+        return false;
+    }
+}
+
+bool StepModel::loadFromJsonFile(const QString& f)
+{
+    QString filePath = f;
+    filePath = filePath.replace("file:///", "");
+
+    qDebug() << "File Path is: " << filePath;
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "خطا در باز کردن فایل JSON برای بارگذاری:" << file.errorString();
+        return false; // برگرداندن لیست خالی
+    }
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+
+    if (doc.isNull() || !doc.isArray())
+    {
+        qDebug() << "فایل JSON معتبر نیست یا یک آرایه نیست.";
+        return false;
+    }
+
+    QJsonArray itemsArray = doc.array();
+    for (const QJsonValue& itemValue : itemsArray)
+    {
+        if (itemValue.isObject())
+        {
+            QJsonObject itemObj = itemValue.toObject();
+            StepItem* newItem = new StepItem(this); // ساخت یک StepItem جدید
+            newItem->fromJson(itemObj);       // فراخوانی fromJson برای پر کردن property ها
+
+            int insertLoc = count();
+            beginInsertRows(QModelIndex(), insertLoc, insertLoc);
+            m_items.append(newItem);
+            emit countChanged();
+            endInsertRows();
+
+        }
+        else
+        {
+            qWarning() << "یک آیتم در آرایه JSON یک شیء نیست.";
+        }
+    }
+
+    qDebug() << m_items.size() << "مورد StepItem از" << filePath << "بارگذاری شد.";
+    return true;
 }
 
 const QList<StepItem*>& StepModel::steps() const

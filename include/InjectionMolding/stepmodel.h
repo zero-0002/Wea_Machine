@@ -97,6 +97,8 @@ class  StepModel : public QAbstractListModel
 
         /** StepModel Specification **/
         Q_INVOKABLE StepItem* getItem(int index) const;
+        Q_INVOKABLE bool saveToJsonFile(const QString& filePath) const;
+        Q_INVOKABLE bool loadFromJsonFile(const QString& filePath);
 
         /** Properties **/
         // const QList<StepItem>& steps() const;
