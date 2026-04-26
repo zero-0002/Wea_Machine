@@ -45,12 +45,15 @@ class AbstractModbusDevice : public QObject
          * \param condition
          * \return true if target == condition else false
          */
-        template <typename Target, typename SourceClass = AbstractModbusDevice, typename Signal, typename Condition>
-        inline bool waitForBoolReply(SourceClass* src,
-                                     const Target& target,
-                                     Signal targetSiganl,
-                                     Condition condition,
-                                     int timeout) const
+        template <typename SourceClass = AbstractModbusDevice,
+                  typename Target,
+                  typename Signal,
+                  typename Condition>
+        inline bool waitForReply(SourceClass* src,
+                                 const Target& target,
+                                 Signal targetSiganl,
+                                 Condition condition,
+                                 int timeout) const
         {
             bool result = false;
 
@@ -59,7 +62,15 @@ class AbstractModbusDevice : public QObject
 
             timeoutTmr.setInterval(timeout);
 
-            connect(&timeoutTmr, &QTimer::timeout, &loop, &QEventLoop::quit);
+            connect(&timeoutTmr, &QTimer::timeout, &loop, [&]()
+            {
+                if (target == condition)
+                {
+                    result = true;
+                }
+                loop.quit();
+            });
+
             connect(src, targetSiganl, &loop, [&]()
             {
                 if (target == condition)
