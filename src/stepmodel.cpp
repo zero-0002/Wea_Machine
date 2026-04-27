@@ -418,12 +418,12 @@ bool StepModel::saveToJsonFile(const QString& f) const
     {
         if (item)
         {
-            allItemsArray.append(item->toJson()); // فراخوانی toJson برای هر StepItem
+            allItemsArray.append(item->toJson());
         }
     }
 
     QJsonDocument doc(allItemsArray);
-    QByteArray data = doc.toJson(QJsonDocument::Indented); // فرمت بندی برای خوانایی
+    QByteArray data = doc.toJson(QJsonDocument::Indented);
 
     QFile file(filePath);
     if (file.open(QIODevice::WriteOnly))
@@ -449,8 +449,8 @@ bool StepModel::loadFromJsonFile(const QString& f)
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "خطا در باز کردن فایل JSON برای بارگذاری:" << file.errorString();
-        return false; // برگرداندن لیست خالی
+        qDebug() << "Error while opening JSON" << file.errorString();
+        return false;
     }
 
     QByteArray data = file.readAll();
@@ -460,7 +460,7 @@ bool StepModel::loadFromJsonFile(const QString& f)
 
     if (doc.isNull() || !doc.isArray())
     {
-        qDebug() << "فایل JSON معتبر نیست یا یک آرایه نیست.";
+        qDebug() << "Invalid JSON Array doc!";
         return false;
     }
 
@@ -470,8 +470,8 @@ bool StepModel::loadFromJsonFile(const QString& f)
         if (itemValue.isObject())
         {
             QJsonObject itemObj = itemValue.toObject();
-            StepItem* newItem = new StepItem(this); // ساخت یک StepItem جدید
-            newItem->fromJson(itemObj);       // فراخوانی fromJson برای پر کردن property ها
+            StepItem* newItem = new StepItem(this);
+            newItem->fromJson(itemObj);
 
             int insertLoc = count();
             beginInsertRows(QModelIndex(), insertLoc, insertLoc);
@@ -482,11 +482,11 @@ bool StepModel::loadFromJsonFile(const QString& f)
         }
         else
         {
-            qWarning() << "یک آیتم در آرایه JSON یک شیء نیست.";
+            qWarning() << "ItemValue isn't a QJsonObject";
         }
     }
 
-    qDebug() << m_items.size() << "مورد StepItem از" << filePath << "بارگذاری شد.";
+    qDebug() << m_items.size() << "StepItem" << filePath << "has loaded";
     return true;
 }
 

@@ -36,23 +36,17 @@ QJsonObject StepItem::toJson() const
     for (int i = 0; i < metaObject->propertyCount(); ++i)
     {
         QMetaProperty metaProp = metaObject->property(i);
-        // فقط property هایی که Q_PROPERTY هستند و قابل خواندن هستند را در نظر می گیریم
         if (metaProp.isReadable())
         {
             QString propName = metaProp.name();
-            QVariant propValue = property(propName.toLatin1()); // خواندن مقدار property
+            QVariant propValue = property(propName.toLatin1());
 
-            // تبدیل QVariant به QJsonValue
-            // باید انواع داده خاص را هندل کنید، QVariant می تواند انواع مختلفی داشته باشد
-            // برای QVariantList نیاز به تبدیل به QJsonArray داریم
             if (propValue.type() == QVariant::List)
             {
                 QJsonArray jsonArray;
                 QVariantList list = propValue.toList();
                 for (const QVariant& item : list)
                 {
-                    // اگر آیتم های لیست خودشان QObject باشند، ممکن است بخواهید آنها را هم به JSON تبدیل کنید
-                    // در این مثال فرض می کنیم آیتم های ساده هستند
                     if (item.canConvert<QString>())
                     {
                         jsonArray.append(item.toString());
@@ -71,9 +65,6 @@ QJsonObject StepItem::toJson() const
                     }
                     else
                     {
-                        // برای انواع دیگر یا QObject های تو در تو، منطق بیشتری لازم است
-                        // در اینجا فعلا به صورت رشته تبدیل می کنیم یا نادیده می گیریم
-                        // jsonArray.append(item.toString()); // یا می توانید از QJsonValue(item) استفاده کنید اگر QVariant پشتیبانی شود
                         qWarning() << "Unsupported type in QVariantList for property:" << propName << "Type:" << item.typeName();
                     }
                 }
@@ -97,9 +88,6 @@ QJsonObject StepItem::toJson() const
             }
             else
             {
-                // برای انواع دیگر مانند QObject های تو در تو، منطق بیشتری لازم است
-                // می توانید از toVariant() استفاده کنید یا انواع خاص را هندل کنید
-                // jsonObj[propName] = QJsonValue(propValue); // اگر QJsonValue بتواند QVariant را مستقیماً هندل کند
                 qWarning() << "Unsupported type for property:" << propName << "Type:" << propValue.typeName();
             }
         }
@@ -113,7 +101,7 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
     for (int i = 0; i < metaObject->propertyCount(); ++i)
     {
         QMetaProperty metaProp = metaObject->property(i);
-        if (metaProp.isWritable())   // فقط property هایی که قابل نوشتن هستند
+        if (metaProp.isWritable())
         {
             QString propName = metaProp.name();
             if (jsonObj.contains(propName))
@@ -121,8 +109,6 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
                 QJsonValue jsonValue = jsonObj.value(propName);
                 QVariant propValue;
 
-                // تبدیل QJsonValue به QVariant
-                // باید انواع داده خاص را هندل کنید
                 if (jsonValue.isString())
                 {
                     propValue = jsonValue.toString();
@@ -137,13 +123,7 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
                 }
                 else if (jsonValue.isObject())
                 {
-                    // اگر مقدار JSON یک شیء باشد و property مربوطه هم بتواند QJsonObject را بپذیرد
-                    // در این مثال، فرض می کنیم property از نوع QJsonObject است یا باید با منطق خاصی تبدیل شود
-                    // jsonObj.value(propName).toObject() را مستقیماً set نمی کنیم چون QVariant می تواند انواع مختلفی را نگه دارد
-                    // شما باید مطمئن شوید که نوع property شما با نوع داده JSON مطابقت دارد
                     qWarning() << "JSON value is an object, requires specific handling for property:" << propName;
-                    // ممکن است نیاز به ساخت یک شیء جدید و فراخوانی fromJson روی آن داشته باشید
-                    // propValue = QVariant(jsonValue.toObject()); // اگر QVariant بتواند QJsonObject را نگه دارد
                 }
                 else if (jsonValue.isArray())
                 {
@@ -151,7 +131,6 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
                     QVariantList list;
                     for (const QJsonValue& item : jsonArray)
                     {
-                        // تبدیل آیتم های آرایه به QVariant
                         if (item.isString())
                         {
                             list.append(item.toString());
@@ -166,11 +145,8 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
                         }
                         else if (item.isObject())
                         {
-                            // اگر آیتم آرایه یک شیء باشد، می توانید یک StepItem جدید بسازید و fromJson را روی آن فراخوانی کنید
-                            // و سپس آن را به لیست اضافه کنید (اگر لیست از نوع StepItem* یا مشابه باشد)
-                            // در این مثال فرض می کنیم لیست حاوی مقادیر ساده است
                             qWarning() << "Array item is an object, requires specific handling for property:" << propName;
-                            // list.append(item.toObject()); // اگر QVariant بتواند QJsonObject را نگه دارد
+                            // list.append(item.toObject());
                         }
                         else
                         {
@@ -184,13 +160,8 @@ void StepItem::fromJson(const QJsonObject& jsonObj)
                     qWarning() << "Unsupported JSON value type for property:" << propName;
                 }
 
-                // تنظیم مقدار property اگر تبدیل موفق بود و نوع property پشتیبانی می شود
                 if (!propValue.isNull())
                 {
-                    // اطمینان حاصل کنید که نوع QVariant با نوع property مطابقت دارد یا قابل تبدیل است
-                    // metaProp.type() نوع داده property را برمی گرداند
-                    // شما می توانید بررسی کنید و در صورت نیاز تبدیل بیشتری انجام دهید
-                    // مثال: اگر propValue از نوع int است ولی property از نوع double انتظار دارد
                     if (propValue.canConvert(metaProp.userType()))
                     {
                         setProperty(propName.toLatin1(), propValue);
