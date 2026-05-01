@@ -27,7 +27,7 @@ class  StepModel : public QAbstractListModel
         Q_PROPERTY(ServoModbusDevice* yServoDevice READ yServoDevice WRITE setYServoDevice NOTIFY yServoDeviceChanged)
 
         W_PROP_HDEF(bool, enabled, Enabled, false)
-        W_PROP_HDEF(int, interval, Interval, 100)
+        W_PROP_HDEF(int, interval, Interval, 250)
         READ_PROP(bool, running) // isRunning
         READ_PROP(bool, ready) // isReady
 
@@ -194,5 +194,6 @@ class  StepModel : public QAbstractListModel
         // bool m_yServoGotoPosOnDemand = false;
 
         // bool m_delayOnDemand = false;
+        bool m_emergencyOccured = false;
 };
 #endif // STEPMODEL_H

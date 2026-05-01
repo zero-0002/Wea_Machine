@@ -50,10 +50,10 @@ class ServoModbusDevice : public AbstractModbusDevice
 
         // IMPORTANT PROPERTIES
         /** User friendly Props (using at Steps and automation) **/
-        W_PROP_HDEF(int, posActiveDelay, PosActiveDelay, 50) // millisecond
-        W_PROP_HDEF(int, triggerDelay, TriggerDelay, 150) // millisecond
+        W_PROP_HDEF(int, posActiveDelay, PosActiveDelay, 150) // millisecond
+        W_PROP_HDEF(int, triggerDelay, TriggerDelay, 1000) // millisecond
         // W_PROP_HDEF(int, triggerOffDelay, TriggerOffDelay, 250) // millisecond
-        W_PROP_HDEF(qint32, positionTolerance, PositionTolerance, 1000) // pulse
+        W_PROP_HDEF(qint32, positionTolerance, PositionTolerance, 2) // pulse
 
         RO_MOD_PROP(bool, ctrgActive, m_digitalInputs.di4);
 
@@ -70,17 +70,17 @@ class ServoModbusDevice : public AbstractModbusDevice
 
         void writeValuToProperty(int address, quint16 value) override;
 
-        bool waitForServoOn(int timeout = 1500) const;
-        bool waitForServoOff(int timeout = 1500) const;
+        bool waitForServoOn(int timeout = 50) const;
+        bool waitForServoOff(int timeout = 50) const;
 
-        bool waitForPos0Enable(int timeout = 1500) const;
-        bool waitForPos0Disable(int timeout = 1500) const;
+        bool waitForPos0Enable(int timeout = 50) const;
+        bool waitForPos0Disable(int timeout = 50) const;
 
-        bool waitForCtrgOn(int timeout = 1500) const;
+        bool waitForCtrgOn(int timeout = 50) const;
 
-        bool waitForPath1Set(qint32 targetPos, int timeout = 2000) const;
-        bool waitForSpeed0Set(quint16 targetSpd, int timeout = 2000) const;
-        bool waitForRamp0Set(quint16 targetRamp, int timeout = 2000) const;
+        bool waitForPath1Set(qint32 targetPos, int timeout = 50) const;
+        bool waitForSpeed0Set(quint16 targetSpd, int timeout = 50) const;
+        bool waitForRamp0Set(quint16 targetRamp, int timeout = 50) const;
 
         bool isPositionReached() const;
         bool checkIfHasErrorOnMove();
@@ -152,6 +152,7 @@ class ServoModbusDevice : public AbstractModbusDevice
         Ramp m_rampData1;
 
         DigitalInputs m_digitalInputs;
+        DigitalInputs m_prevDigitalInputs;
 
         quint16 m_alarms;
 

@@ -5,7 +5,7 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 CusPopup {
     id: root
 
-    property bool success: false
+    property bool success: true
     property bool currentFailed: false
     property int controlHeight: 40
 

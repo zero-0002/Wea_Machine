@@ -8,6 +8,7 @@ Grid {
     property int maxContentWidth: 1
     property int maxContentHeight: 1
 
+    property var plcOutputs: _plcIOModel.outputs
     property bool activeIndicators: false
     property int activeLevel: 3
 
@@ -33,7 +34,7 @@ Grid {
                     bottom: statusIndicator.top
                 }
 
-                text: "Y%1".arg(index)
+                text: plcOutputs[modelData].displayName
                 width: statusIndicator.width
                 wrapMode: Text.WordWrap
                 font.pixelSize: root.fontSize

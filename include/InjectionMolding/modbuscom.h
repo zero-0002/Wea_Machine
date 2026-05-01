@@ -54,6 +54,8 @@ class ModbusCom : public QModbusRtuSerialMaster, public QQmlParserStatus
     signals:
         void errorRaised(int errCode, QString erroMsg, int slaveAddress = -1);
 
+        void requestForSendWrite(AbstractModbusDevice* device, int slaveAddress);
+
     protected:
         bool applyConnectionSettings();
         void applyConfigs();
@@ -65,6 +67,8 @@ class ModbusCom : public QModbusRtuSerialMaster, public QQmlParserStatus
         void writeRequest(const QModbusDataUnit& unit, int slaveAddress);
         void readWriteRequest(const QModbusDataUnit& writeUnit, const QModbusDataUnit& readUnit, int slaveAddress);
         void readReady();
+
+        void sendWriteRequests(AbstractModbusDevice* device, int slaveAddress);
 
     private:
         QThread* m_thread = nullptr;

@@ -56,7 +56,8 @@ Item {
             controlHeight: root.controlHeight
             positionSwitch.enabled: manualActive
             /// FIXME:
-            positionValue: servoXDevice.pathData1 / 1000
+            // positionValue: servoXDevice.pathData1 / 1000
+            positionValue: 1000000 / 1000
             positionEditBox.textItem.onAccepted:
                 // console.log("Accepted: ");
                 // servoXDevice.pushPathData1(12345);
@@ -73,7 +74,8 @@ Item {
             controlHeight: root.controlHeight
             positionSwitch.enabled: manualActive
             /// FIXME:
-            positionValue: servoYDevice.pathData1 / 1000
+            // positionValue: servoYDevice.pathData1 / 1000
+            positionValue: 10000000 / 1000
             positionEditBox.textItem.onAccepted:
                 // console.log("Accepted: ");
                 // servoXDevice.pushPathData1(12345);

@@ -11,6 +11,10 @@
 ModbusCom::ModbusCom(QObject* parent)
     : QModbusRtuSerialMaster(parent)
 {
+
+    connect(this, &ModbusCom::requestForSendWrite, this, [ = ](AbstractModbusDevice * device, int slaveAddress)
+    {
+    });
 }
 
 ModbusCom::~ModbusCom()
@@ -275,6 +279,14 @@ void ModbusCom::updateFrame()
         {
             writeRequest(writeUnit, slaveAddress);
         }
+        // emit sendWriteRequests(device, slaveAddress);
+        // auto* thread = QThread::create([&]()
+        // {
+        //     sendWriteRequests(device, slaveAddress);
+        // });
+        // connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+        // thread->start();
+        // qDebug() << "Starting Thread:";
 
         // ReadOnce Requests (Only when an specified request is raised)
         if (device->writeBufferSize() > 0 || m_isFirstFrame[slaveAddress])
@@ -454,4 +466,17 @@ void ModbusCom::readReady()
     }
 
     reply->deleteLater();
+}
+
+void ModbusCom::sendWriteRequests(AbstractModbusDevice* device, int slaveAddress)
+{
+    qDebug() << "onSendWriteRequests: " << device->writeBuffer().count() << slaveAddress;
+    for (auto& writeUnit : qAsConst(device->writeBuffer()))
+    {
+        writeRequest(writeUnit, slaveAddress);
+    }
+
+    device->clearWriteBuffer();
+    qDebug() << "Device Buffer has cleared: " << device->writeBuffer().count() << slaveAddress;
+
 }

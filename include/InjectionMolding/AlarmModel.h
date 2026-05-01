@@ -92,7 +92,7 @@ class AlarmModel : public QAbstractListModel
 
             if (exists(code))
             {
-                qWarning() << "Alarm Code is already exist: " << code;
+                // qWarning() << "Alarm Code is already exist: " << code;
                 return false;
             }
 

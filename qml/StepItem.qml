@@ -5,6 +5,8 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 DropDown {
     id: root
 
+    property var modelItem: ({})
+
     property var arrayRunningBorderColor: ["gray", "green", "red", "orange", "cyan", "white", "black", "#888", "#444"]
 
     property bool running: false
@@ -59,6 +61,7 @@ DropDown {
             outerMargin: 2
 
             levelActive: 2 // green
+            active: root.running
         }
     }
 
@@ -75,12 +78,14 @@ DropDown {
             id: stepContentItem
             shineLineColor: root.shineLine.color
             titleSize: root.titleSize
+            modelItem: root.modelItem
         }
     }
 
     /** Animation When it is running **/
     SequentialAnimation on border.color {
-        running: root.running
+        // running: root.running
+        running: false
         loops: Animation.Infinite
         ColorAnimation {
             from: arrayBackgroundColor[level]

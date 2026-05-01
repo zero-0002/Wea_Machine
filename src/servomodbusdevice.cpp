@@ -8,6 +8,7 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
     : AbstractModbusDevice{parent}
 {
     /** Filling Constant values **/
+    m_prevDigitalInputs.value = 65000;
 
     // Addr To Size
     m_addrToSize =
@@ -101,7 +102,8 @@ ServoModbusDevice::ServoModbusDevice(QObject* parent)
     });
     connect(this, &ServoModbusDevice::errorOccured, this, [ = ](int code, const QString & msg)
     {
-        AlarmModel::getInstance().addAlarm(AlarmItem(code + slaveAddress(), msg, QString("ServoID%2").arg(slaveAddress())));
+        qDebug() << "ServoModbusErrorOccured: " << code + slaveAddress() << code << msg;
+        AlarmModel::getInstance().addAlarm(AlarmItem(400 + code + slaveAddress(), msg, QString("ServoID%2").arg(slaveAddress())));
     });
 
     // TPOS position reached
@@ -135,6 +137,11 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
         // Digital Inputs
         case RW_DI:
             m_digitalInputs.value = value;
+            if (m_prevDigitalInputs.value < 20000 && m_prevDigitalInputs.di2 != m_digitalInputs.di2)
+            {
+                pushDi4(true);
+            }
+
             emitDigitalInputs();
 
             // Handlers for inputs
@@ -145,6 +152,8 @@ void ServoModbusDevice::writeValuToProperty(int address, quint16 value)
                     pushDi4(false);
                 });
             }
+
+            m_prevDigitalInputs.value = value;
 
             break;
         case RW_DI + 1:
@@ -428,6 +437,7 @@ bool ServoModbusDevice::pushDi1(bool value)
 
 bool ServoModbusDevice::pushDi2(bool value)
 {
+    qDebug() << "Setting Pos0: " << value;
     DigitalInputs v;
     v.value = m_digitalInputs.value;
     v.di2 = value;
@@ -487,12 +497,12 @@ void ServoModbusDevice::triggerCTRG()
     pushDi4(true);
     QTimer::singleShot(m_posActiveDelay, this, [ = ]()
     {
-        //     qDebug() << "Enabling CTRG: " << ctrgActive();
+        qDebug() << "Enabling CTRG: " << ctrgActive();
         pushDi4(true);
-        if (!waitForCtrgOn())
-        {
-            emit errorOccured(203, "Unable to Trigger CTRG");
-        }
+        // if (!waitForCtrgOn())
+        // {
+        //     emit errorOccured(203, "Unable to Trigger CTRG");
+        // }
     });
 }
 
@@ -532,28 +542,31 @@ bool ServoModbusDevice::gotoHome()
         if (!waitForServoOn())
         {
             emit errorOccured(201, "Unable to make Servo ON !");
-            return false;
+            // return false;
         }
 
         pushDi2(false);
         if (!waitForPos0Disable())
         {
             emit errorOccured(202, "Unable to disable POS0 !");
-            return false;
+            // return false;
         }
 
         QTimer::singleShot(m_posActiveDelay, this, [ = ]()
         {
             pushDi1(true);
             pushDi2(false);
-            triggerCTRG();
+            if (!m_digitalInputs.di2)
+            {
+                triggerCTRG();
+            }
         });
 
-        if (!waitForCtrgOn())
-        {
-            emit errorOccured(203, "Unable to Trigger CTRG");
-            return false;
-        }
+        // if (!waitForCtrgOn())
+        // {
+        //     emit errorOccured(203, "Unable to Trigger CTRG");
+        //     return false;
+        // }
 
         // if (pushDi2(false))
         // {
@@ -573,7 +586,7 @@ bool ServoModbusDevice::gotoHome()
 bool ServoModbusDevice::gotoPosition(qint32 path)
 {
     // return gotoPosition(path, m_speedData0.value, m_rampData0.value);
-    return gotoPosition(path, m_jogSpeed.value * 10, m_jogAcc.value);
+    return gotoPosition(path, m_jogSpeed.value * 10 * 2, m_jogAcc.value);
 }
 
 bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
@@ -584,49 +597,52 @@ bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
     if (!waitForServoOn())
     {
         emit errorOccured(201, "Unable to make Servo ON !");
-        return false;
+        // return false;
     }
 
     pushDi2(true);
     if (!waitForPos0Enable())
     {
         emit errorOccured(202, "Unable to Enable POS0 !");
-        return false;
+        // return false;
     }
 
     pushPathData1(path);
     if (!waitForPath1Set(path))
     {
         emit errorOccured(210, QString("Unable to Set Position path1 value! %1").arg(path));
-        return false;
+        // return false;
     }
 
     pushSpeed0(speed);
     if (!waitForSpeed0Set(speed))
     {
         emit errorOccured(211, QString("Unable to Set Speed0 value! %1").arg(speed));
-        return false;
+        // return false;
     }
 
     pushRamp0(ramp);
     if (!waitForRamp0Set(ramp))
     {
         emit errorOccured(212, QString("Unable to Set Ramp0 value! %1").arg(ramp));
-        return false;
+        // return false;
     }
 
     QTimer::singleShot(m_posActiveDelay, this, [ = ]()
     {
         pushDi1(true);
         pushDi2(true);
-        triggerCTRG();
+        if (m_digitalInputs.di2)
+        {
+            triggerCTRG();
+        }
     });
 
-    if (!waitForCtrgOn())
-    {
-        emit errorOccured(203, "Unable to Trigger CTRG");
-        return false;
-    }
+    // if (!waitForCtrgOn())
+    // {
+    //     emit errorOccured(203, "Unable to Trigger CTRG");
+    //     return false;
+    // }
 
     return true;
     // Requesting for Trigger...
@@ -715,6 +731,7 @@ QString ServoModbusDevice::getAlarmDesc(int code)
 
 void ServoModbusDevice::emitDigitalInputs()
 {
+    // qDebug() << "Digital Inputs has Changed: " << m_digitalInputs.di1 << m_digitalInputs.di2 << m_digitalInputs.di4;
     emit di1Changed();
     emit di2Changed();
     emit di3Changed();

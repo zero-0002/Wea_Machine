@@ -559,6 +559,7 @@ void StepModel::setYServoDevice(ServoModbusDevice* value)
 void StepModel::onEmergencyStop()
 {
     restoreMemories();
+    // m_emergencyOccured = true;
 }
 
 void StepModel::onStepStarted()
@@ -571,7 +572,12 @@ void StepModel::onStepStarted()
 
     if (m_running || m_currentRunning > 0)
     {
-        qWarning() << "Steps is Already on Process!" << m_running << m_currentRunning;
+        if (m_emergencyOccured)
+        {
+            m_emergencyOccured = false;
+        }
+
+        qWarning() << "Steps is Already on Process!" << m_running << m_currentRunning << m_emergencyOccured;
         return;
     }
 
@@ -605,6 +611,11 @@ void StepModel::onYServoPosCompleted()
 
 void StepModel::onStepTrigger()
 {
+    // if (m_emergencyOccured)
+    // {
+    //     return;
+    // }
+
     if (m_errorAtStep || !m_running || m_currentRunning < 0 || m_currentRunning >= m_items.count())
     {
         qWarning() << "Unavailable to starting step!" << m_running << m_currentRunning;
@@ -655,24 +666,59 @@ void StepModel::applyServosStep(StepItem* step)
         {
             if (!m_xServoDevice->servoOn())
             {
-                m_errorAtStep = true;
-                return;
+                // m_errorAtStep = true;
+                // return;
             }
 
             if (step->xServoHome() && !m_xServoDevice->isHomeCompleted())
             {
                 if (!m_xServoDevice->gotoHome())
                 {
-                    m_errorAtStep = true;
-                    return;
+                    // m_errorAtStep = true;
+                    // return;
                 }
             }
             else
             {
-                if (!m_xServoDevice->gotoPosition(step->xServoPos()))
+                if (step->name() == "Curve 5")
                 {
-                    m_errorAtStep = true;
-                    return;
+                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 7000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 4")
+                {
+                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 7000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 3")
+                {
+                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 1500, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 2")
+                {
+                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 2000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else
+                {
+                    if (!m_xServoDevice->gotoPosition(step->xServoPos()))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
                 }
             }
         }
@@ -680,8 +726,8 @@ void StepModel::applyServosStep(StepItem* step)
         {
             if (!m_xServoDevice->servoOff())
             {
-                m_errorAtStep = true;
-                return;
+                // m_errorAtStep = true;
+                // return;
             }
         }
     }
@@ -694,24 +740,91 @@ void StepModel::applyServosStep(StepItem* step)
         {
             if (!m_yServoDevice->servoOn())
             {
-                m_errorAtStep = true;
-                return;
+                // m_errorAtStep = true;
+                // return;
             }
 
             if (step->yServoHome() && !m_yServoDevice->isHomeCompleted())
             {
                 if (!m_yServoDevice->gotoHome())
                 {
-                    m_errorAtStep = true;
-                    return;
+                    // m_errorAtStep = true;
+                    // return;
                 }
             }
             else
             {
-                if (!m_yServoDevice->gotoPosition(step->yServoPos()))
+                if (step->name() == "Curve 7")
                 {
-                    m_errorAtStep = true;
-                    return;
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 6")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 5")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 4")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 5000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 3")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 5500, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 2")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 15000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 1")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 25000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else if (step->name() == "Curve 0")
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 25000, 700))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
+                }
+                else
+                {
+                    if (!m_yServoDevice->gotoPosition(step->yServoPos()))
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
                 }
             }
         }
@@ -719,8 +832,8 @@ void StepModel::applyServosStep(StepItem* step)
         {
             if (!m_yServoDevice->servoOff())
             {
-                m_errorAtStep = true;
-                return;
+                // m_errorAtStep = true;
+                // return;
             }
         }
     }
@@ -775,12 +888,13 @@ bool StepModel::servosStepCompleted(StepItem* step)
             }
             else
             {
-                if (m_xServoDevice->checkIfHasErrorOnMove()) // || m_xServoGotoPosOnDemand)
-                {
-                    m_errorAtStep = true;
-                    return false;
-                }
-                else if (!m_xServoDevice->isPositionReached())
+                // if (m_xServoDevice->checkIfHasErrorOnMove()) // || m_xServoGotoPosOnDemand)
+                // {
+                //     m_errorAtStep = true;
+                //     return false;
+                // }
+                /*else*/
+                if (!m_xServoDevice->isPositionReached())
                 {
                     return false;
                 }
@@ -814,12 +928,13 @@ bool StepModel::servosStepCompleted(StepItem* step)
             }
             else
             {
-                if (m_yServoDevice->checkIfHasErrorOnMove()) // || m_yServoGotoPosOnDemand)
-                {
-                    m_errorAtStep = true;
-                    return false;
-                }
-                else if (!m_yServoDevice->isPositionReached())
+                // if (m_yServoDevice->checkIfHasErrorOnMove()) // || m_yServoGotoPosOnDemand)
+                // {
+                //     m_errorAtStep = true;
+                //     return false;
+                // }
+                /*else*/
+                if (!m_yServoDevice->isPositionReached())
                 {
                     return false;
                 }
@@ -849,6 +964,9 @@ void StepModel::readyMemories()
 
     m_stepsTimer.setInterval(m_interval);
     m_stepsTimer.start();
+
+    emit runningChanged();
+    emit currentRunningChanged();
 
     emit stepStarted();
 }

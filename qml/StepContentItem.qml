@@ -4,6 +4,8 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Item {
     id: root
 
+    property var modelItem: ({})
+
     property int titleSize: 17
     property int fontSize: 13
     property int titleVAlignment: Qt.AlignVCenter
@@ -45,7 +47,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: 1000
+                    value: modelItem.xServoPos / 1000
                 }
             }
 
@@ -60,7 +62,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: 10000
+                    value: modelItem.xServoSpeed
                 }
             }
 
@@ -75,7 +77,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: xPos.value
+                    value: modelItem.yServoPos / 1000
                 }
             }
 
@@ -90,7 +92,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: 10000
+                    value: modelItem.yServoSpeed
                 }
             }
         }
@@ -109,7 +111,7 @@ Item {
             id: stepSetCoilsGrid
             x: 5
             width: parent.width
-            model: 11
+            model: modelItem.plcOutputTargets
             activeIndicators: true
         }
 
@@ -121,13 +123,15 @@ Item {
 
         Title {
             title: "Coils to Be RST"
+            visible: false
         }
 
         StepCoilsGrid {
             id: stepRstCoilsGrid
+            visible: false
             x: 5
             width: parent.width
-            model: 12
+            model: modelItem.plcOutputTargets
         }
 
         // Delay
@@ -153,7 +157,7 @@ Item {
                 editable: false
                 wheelEnabled: false
 
-                value: 5.0
+                value: modelItem.delay / 1000
             }
             DelayEditBox {
                 id: delayCurrentEditBox

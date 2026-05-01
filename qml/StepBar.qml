@@ -67,6 +67,7 @@ Item {
                 // title: model.title
                 title: model.name
                 running: stepModel.currentRunning === index
+                modelItem: stepModel.steps[index]
                 // readyIndicator.active: model.active
                 autoDeselectSibling: true
                 onSelectedChanged: {

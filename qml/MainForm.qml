@@ -121,14 +121,14 @@ Item {
         xServoDevice: servoXDevice
         yServoDevice: servoYDevice
 
-        steps: [step0, step2, step3, step4, step41, step43, step44, step45, step47, step49, step5, step6, step7, step8,
-            step9, step10, step11, step12] //, step2, step3, step4]
+        steps: [step0, step2, stepExtruder, step40, step41, step3, step4290, step42, step43, step3_5, step44, step45, step46,
+            step47, step5, step6, step7, step8, step9, step10, step11, step12] //, step2, step3, step4]
     }
 
     StepItem {
         id: step0
         name: "Boot-up"
-        plcOutputTargets: [0, 1, 3, 6, 7]
+        plcOutputTargets: [0, 1, 3, 6]
         delay: 5500
     }
 
@@ -144,7 +144,7 @@ Item {
         yServoOn: true
         yServoHome: true
 
-        plcOutputTargets: [0, 1, 7]
+        plcOutputTargets: [0, 1]
         delay: 500
     }
 
@@ -154,30 +154,37 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 13556248
+        xServoPos: 13209423
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 37698045
-
-        plcOutputTargets: [0, 1, 7]
-        delay: 2000
-    }
-
-    StepItem {
-        id: step3
-        name: "Blowpin 45"
+        yServoPos: 42534326
 
         plcOutputTargets: [0, 1]
-        delay: 2000
+        delay: 300
+    }
+    StepItem {
+        id: stepExtruder
+        name: "Extruder BlowPin-45"
+
+        plcOutputTargets: [0, 1, 7, 9]
+        delay: 14000
     }
 
     StepItem {
-        id: step4
-        name: "Blowpin 90"
+        id: step40
+        name: "Curve 0"
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 2000
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 13550962
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 39724842
+
+        plcOutputTargets: [0, 1, 7, 9]
+        delay: 1000
     }
 
     StepItem {
@@ -186,14 +193,46 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 13681155
+        xServoPos: 13550962
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 33357654
+        yServoPos: 37243268
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 7, 9]
+        delay: 1000
+    }
+
+    StepItem {
+        id: step3
+        name: "Blowpin 90"
+
+        plcOutputTargets: [0, 1, 9]
+        delay: 400
+    }
+
+    // StepItem {
+    //     id: step4
+    //     name: "Blowpin 90"
+
+    //     plcOutputTargets: [0, 1, 7]
+    //     delay: 300
+    // }
+
+    StepItem {
+        id: step4290
+        name: "Curve 2-90"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 13889935
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 33639990
+
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
     }
 
     StepItem {
@@ -202,14 +241,14 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 13856911
+        xServoPos: 14350766
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 33367654
+        yServoPos: 17001242
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
     }
 
     StepItem {
@@ -218,14 +257,30 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 14632165
+        xServoPos: 15225956
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 18512929
+        yServoPos: 7817329
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
+    }
+
+    StepItem {
+        id: step3_5
+        name: "Curve 3.5"
+
+        xPosActive: true
+        xServoOn: true
+        xServoPos: 15225996
+
+        yPosActive: true
+        yServoOn: true
+        yServoPos: 11817329
+
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
     }
 
     StepItem {
@@ -234,14 +289,14 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 15385673
+        xServoPos: 27703422
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 13361364
+        yServoPos: 9258841
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
     }
 
     StepItem {
@@ -250,14 +305,14 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 16129710
+        xServoPos: 28942848
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 8958818
+        yServoPos: 16258841
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 300
     }
 
     StepItem {
@@ -266,14 +321,14 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 18424070
+        xServoPos: 29628150
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 10636682
+        yServoPos: 10571860
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 1100
     }
 
     StepItem {
@@ -282,68 +337,68 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 28382820
+        xServoPos: 29628150
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 10636682
+        yServoPos: 595070
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
+        plcOutputTargets: [0, 1, 9]
+        delay: 1000
     }
 
-    StepItem {
-        id: step48
-        name: "Curve 8"
+    // StepItem {
+    //     id: step48
+    //     name: "Curve 8"
 
-        xPosActive: true
-        xServoOn: true
-        xServoPos: 29213316
+    //     xPosActive: true
+    //     xServoOn: true
+    //     xServoPos: 29213316
 
-        yPosActive: true
-        yServoOn: true
-        yServoPos: 7886289
+    //     yPosActive: true
+    //     yServoOn: true
+    //     yServoPos: 7886289
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
-    }
+    //     plcOutputTargets: [0, 1, 7]
+    //     delay: 300
+    // }
 
-    StepItem {
-        id: step49
-        name: "Curve 9"
+    // StepItem {
+    //     id: step49
+    //     name: "Curve 9"
 
-        xPosActive: true
-        xServoOn: true
-        xServoPos: 29213316
+    //     xPosActive:
+    //     xServoOn: true
+    //     xServoPos: 29213316
 
-        yPosActive: true
-        yServoOn: true
-        yServoPos: -3509058
+    //     yPosActive: true
+    //     yServoOn: true
+    //     yServoPos: -3509058
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 750
-    }
+    //     plcOutputTargets: [0, 1, 7]
+    //     delay: 300
+    // }
 
     StepItem {
         id: step5
-        name: "Blowpin 0"
+        name: "Extruder OFF"
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 2000
+        plcOutputTargets: [0, 1]
+        delay: 3000
     }
 
     StepItem {
         id: step6
         name: "Cutter Active"
-        plcOutputTargets: [0, 1, 8, 7]
-        delay: 4000
+        plcOutputTargets: [0, 1, 8]
+        delay: 2000
     }
 
     StepItem {
         id: step7
         name: "Cutter Deactive"
-        plcOutputTargets: [0, 1, 7]
-        delay: 4000
+        plcOutputTargets: [0, 1]
+        delay: 750
     }
 
     StepItem {
@@ -352,21 +407,21 @@ Item {
 
         xPosActive: true
         xServoOn: true
-        xServoPos: 45332844
+        xServoPos: 45359434
 
         yPosActive: true
         yServoOn: true
-        yServoPos: 30716200
+        yServoPos: 34783363
 
-        plcOutputTargets: [0, 1, 7]
-        delay: 2000
+        plcOutputTargets: [0, 1]
+        delay: 700
     }
 
     StepItem {
         id: step9
         name: "Z2-DOWN"
 
-        plcOutputTargets: [0, 1, 2, 7]
+        plcOutputTargets: [0, 1, 2]
         delay: 10000
     }
 
@@ -374,8 +429,8 @@ Item {
         id: step10
         name: "Blow"
 
-        plcOutputTargets: [0, 1, 7, 5]
-        delay: 4500
+        plcOutputTargets: [0, 1, 5]
+        delay: 10000
     }
 
     StepItem {
@@ -383,7 +438,7 @@ Item {
 
         name: "Penet"
 
-        plcOutputTargets: [0, 1, 7, 6]
+        plcOutputTargets: [0, 1, 6]
         delay: 2500
     }
 
@@ -391,7 +446,7 @@ Item {
         id: step12
         name: "Z2-UP"
 
-        plcOutputTargets: [0, 1, 7, 6, 3]
+        plcOutputTargets: [0, 1, 6, 3]
         delay: 6500
     }
 
