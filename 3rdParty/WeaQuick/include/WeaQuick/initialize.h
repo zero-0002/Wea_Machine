@@ -22,6 +22,7 @@ static void initialize(QQmlApplicationEngine* engine)
     {
         engine->addImportPath(WeaQuick_INSTALL_QML_IMPORT_PATH);
         engine->addImportPath(WeaQuick_SOURCE_QML_IMPORT_PATH);
+        engine->addImportPath("3rdParty/WeaQuick/qml/");
     }
     /** Base Configurations **/
     QQuickStyle::setStyle("Material");
