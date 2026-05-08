@@ -12,6 +12,7 @@ class AbstractModbusDevice;
 class ModbusCom : public QModbusRtuSerialMaster, public QQmlParserStatus
 {
         Q_OBJECT
+        Q_INTERFACES(QQmlParserStatus)
         // Which Port and with which options should be open?
         W_PROP_HDEF(int, objectID, ObjectID, -1) // REQUIRED
         W_PROP_HDEF(SerialConnection*, serialConn, SerialConn, nullptr) // REQUIRED
