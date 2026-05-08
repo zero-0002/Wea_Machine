@@ -107,16 +107,22 @@ QtObject {
 
     /** Fonts **/
     property FontLoader defaultLightFontLoader: FontLoader {
-        source: wQuick.fontsDir + "FiraCode/FiraCode-Light.ttf"
+        source: Qt.resolvedUrl(wQuick.fontsDir + "FiraCode/FiraCode-Light.ttf")
     }
 
     property FontLoader defaultRegularFontLoader: FontLoader {
-        source: wQuick.fontsDir + "FiraCode/FiraCode-Regular.ttf"
+        source: Qt.resolvedUrl(wQuick.fontsDir + "FiraCode/FiraCode-Regular.ttf")
     }
 
     property FontLoader defaultMediumFontLoader: FontLoader {
-        source: wQuick.fontsDir + "FiraCode/FiraCode-Medium.ttf"
+        source: Qt.resolvedUrl(wQuick.fontsDir + "FiraCode/FiraCode-Medium.ttf")
     }
+
+    property FontLoader fontAwesomeLoader: FontLoader {
+        source: Qt.resolvedUrl(wQuick.fontsDir + "FontAwesome/Font Awesome 6 Pro-Solid-900.otf")
+    }
+
+    property string fontAwesomeFamily: fontAwesomeLoader.name
 
     /** By default font family is equal with FontLoader result **/
     property string defaultLightFontFamily: defaultLightFontLoader.name

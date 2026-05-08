@@ -6,11 +6,10 @@ Item {
 
     /** Important Properties **/
 
-
     /*
-      property name:
-          Referer: `FONT_MAP.js` for example see js/FontAwesome.js.
-          Note: Also  the name can be string hex like: "\uf06e"
+    property name:
+    Referer: `FONT_MAP.js` for example see js/FontAwesome.js.
+    Note: Also  the name can be string hex like: "\uf06e"
     */
     property string name: "play"
     property var iconMap: FontAwesome.icons
@@ -42,7 +41,7 @@ Item {
 
         level: root.level
         color: root.color
-        font.family: "Font Awesome 6 Pro Solid"
+        font.family: wQuick.theme.fontAwesomeFamily
         font.pixelSize: 11
         text: root.iconMap[root.name] === undefined ? root.name : root.iconMap[root.name]
 
