@@ -53,6 +53,8 @@ class StepItem : public QObject
         StepItem& operator=(const StepItem& other);
 
         /** Public Functions **/
+        Q_INVOKABLE bool containsPlcOutput(int outputNum) const;
+        Q_INVOKABLE bool containsConditionBits(int bitNum) const;
         // Q_INVOKABLE void readFromSettings();
         // Q_INVOKABLE void writeToSettings() const;
 

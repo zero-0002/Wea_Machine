@@ -29,6 +29,16 @@ StepItem& StepItem::operator=(const StepItem& other)
     return *this;
 }
 
+bool StepItem::containsPlcOutput(int outputNum) const
+{
+    return m_plcOutputTargets.contains(outputNum);
+}
+
+bool StepItem::containsConditionBits(int bitNum) const
+{
+    return m_conditionBits.contains(bitNum);
+}
+
 QJsonObject StepItem::toJson() const
 {
     QJsonObject jsonObj;
