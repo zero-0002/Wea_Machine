@@ -78,11 +78,6 @@ WeaQuick.Pane {
                 margins: 5
             }
 
-            Item {
-                id: topDelegate
-                anchors.fill: parent
-            }
-
             // Selecting
             MouseArea {
                 id: mouseArea
@@ -93,6 +88,11 @@ WeaQuick.Pane {
                 onClicked: {
                     selected = !selected;
                 }
+            }
+
+            Item {
+                id: topDelegate
+                anchors.fill: parent
             }
         }
     }
