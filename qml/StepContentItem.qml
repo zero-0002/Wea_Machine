@@ -119,6 +119,7 @@ Item {
         ShineLine {
             width: parent.width
             color: shineLineColor
+            visible: false
         }
 
         Title {
