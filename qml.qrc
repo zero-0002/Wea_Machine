@@ -88,5 +88,6 @@
         <file>qml/InterruptPopup.qml</file>
         <file>qml/InterruptConfigView.qml</file>
         <file>qml/GlobalUtils.js</file>
+        <file>qml/CircularButton.qml</file>
     </qresource>
 </RCC>
