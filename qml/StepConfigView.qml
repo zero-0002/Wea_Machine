@@ -5,6 +5,9 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Flickable {
     id: root
 
+    property int currentStepIndex: -1
+    property var currentStepItem: isIndexValid() ? stepModel.getItem(currentStepIndex) : undefined
+
     property int titleSize: 17
     property int fontSize: 15
     property int titleVAlignment: Qt.AlignVCenter
@@ -19,6 +22,18 @@ Flickable {
     property alias spacing: layout.spacing
 
     property alias gridIoCheckBox: gridIoCheckBox
+
+    property alias stepNameEdit: stepName
+    property alias bitwiseEnableSwitch: swBitwiseCondtion
+    property alias bitwiseMethodBox: conditionComboBox
+    property alias bitwiseCheckBoxes: gridIoCheckBox
+
+    property alias servoXStep: servoXStep
+    property alias servoYStep: servoYStep
+
+    property alias outputCoilsStep: coilsStep
+
+    property alias delayEditBox: delayEditBox
 
     clip: true
     contentWidth: width
@@ -41,6 +56,7 @@ Flickable {
             flat: false
 
             placeholderText: "Step Name"
+            text: isItemValid() ? currentStepItem.name : ""
         }
 
         RowCompact {
@@ -78,7 +94,7 @@ Flickable {
                 indicatorHeight: 22
                 handleShape: WeaQuick.Handle.HandleShape.Circular
                 handleSize: 16
-                checked: true
+                checked: isItemValid() ? currentStepItem.bitwiseEnable : false
             }
         }
 
@@ -93,6 +109,8 @@ Flickable {
                 enabled: swBitwiseCondtion.checked
                 width: controlWidth
                 model: ["AND", "OR", "XOR"]
+
+                currentIndex: isItemValid() ? currentStepItem.bitwiseMethod : 0
             }
         }
 
@@ -104,13 +122,15 @@ Flickable {
                 var result = [];
 
                 const plciomodel = _plcIOModel;
+                const stepitem = root.currentStepItem;
                 const len = plciomodel.count;
                 for (var i = 0; i < len; ++i) {
                     const role = displayByTag ? 259 : 258; // DisplayNameRole and NameRole
                     const itemName = plciomodel.data(plciomodel.index(i, 0), role);
+                    const isChecked = isItemValid() ? stepitem.containsConditionBits(i) : false;
                     result.push({
                                     name: itemName,
-                                    checked: false && enabled,
+                                    checked: isChecked && enabled,
                                     enabled: enabled
                                 });
                 }
@@ -139,6 +159,14 @@ Flickable {
             controlLevel: root.controlLevel
             controlWidth: root.controlWidth
             controlHeight: root.controlHeight
+
+            positionActiveSwitch.checked: isItemValid() ? currentStepItem.xPosActive : false
+            servoOnSwitch.checked: isItemValid() ? currentStepItem.xServoOn : true
+            homingSwitch.checked: isItemValid() ? currentStepItem.xServoHome : false
+            positionValue: isItemValid() ? currentStepItem.xServoPos : 0
+            speedValue: isItemValid() ? currentStepItem.xServoSpeed : 250
+            accValue: isItemValid() ? currentStepItem.xServoAcc : 200
+            decValue: isItemValid() ? currentStepItem.xServoDec : 200
         }
 
         // X-Axis Servo
@@ -158,6 +186,14 @@ Flickable {
             controlLevel: root.controlLevel
             controlWidth: root.controlWidth
             controlHeight: root.controlHeight
+
+            positionActiveSwitch.checked: isItemValid() ? currentStepItem.yPosActive : false
+            servoOnSwitch.checked: isItemValid() ? currentStepItem.yServoOn : true
+            homingSwitch.checked: isItemValid() ? currentStepItem.yServoHome : false
+            positionValue: isItemValid() ? currentStepItem.yServoPos : 0
+            speedValue: isItemValid() ? currentStepItem.yServoSpeed : 250
+            accValue: isItemValid() ? currentStepItem.yServoAcc : 200
+            decValue: isItemValid() ? currentStepItem.yServoDec : 200
         }
 
         // Coils
@@ -179,7 +215,24 @@ Flickable {
             controlHeight: root.controlHeight
 
             displayByTag: swDisplayByTag.checked
-            model: _plcIOModel.outputs
+            model: {
+                var result = [];
+
+                const plcoutputs = _plcIOModel.outputs;
+                var stepitem = root.currentStepItem;
+                const len = plcoutputs.length;
+                for (var i = 0; i < len; ++i) {
+                    const output = plcoutputs[i];
+                    const itemName = displayByTag ? output.displayName : output.name; // DisplayNameRole and NameRole
+                    const isChecked = isItemValid() ? stepitem.containsPlcOutput(i) : false;
+                    result.push({
+                                    name: itemName,
+                                    checked: isChecked && enabled,
+                                    enabled: enabled
+                                });
+                }
+                return result;
+            }
         }
 
         // Spacer
@@ -200,6 +253,9 @@ Flickable {
                 width: controlWidth
                 height: controlHeight
                 level: controlLevel
+
+                value: isItemValid() ? currentStepItem.delay : 0.0
+                spinBox.value: isItemValid() ? doubleToInt(currentStepItem.delay) : 0.0
             }
         }
 
@@ -274,5 +330,41 @@ Flickable {
     component Spacer: Item {
         width: 1
         height: 1
+    }
+
+    /** Functions **/
+    function getCurrentStepValues() {
+        return {
+            "id": stepModel.count,
+            "name": stepConfigView.stepNameEdit.text,
+            "bitwiseenable": stepConfigView.bitwiseEnableSwitch.checked,
+            "bitwisemethod": stepConfigView.bitwiseMethodBox.currentIndex,
+            "xposactive": stepConfigView.servoXStep.positionActiveSwitch.checked,
+            "xservoon": stepConfigView.servoXStep.servoOnSwitch.checked,
+            "xservohome": stepConfigView.servoXStep.homingSwitch.checked,
+            "xservopos": stepConfigView.servoXStep.positionEditBox.value,
+            "xservospd": stepConfigView.servoXStep.speedEditBox.value,
+            "xservoacc": stepConfigView.servoXStep.accelerationEditBox.value,
+            "xservodec": stepConfigView.servoXStep.decelerationEditBox.value,
+            "yposactive": stepConfigView.servoYStep.positionActiveSwitch.checked,
+            "yservoon": stepConfigView.servoYStep.servoOnSwitch.checked,
+            "yservohome": stepConfigView.servoYStep.homingSwitch.checked,
+            "yservopos": stepConfigView.servoYStep.positionEditBox.value,
+            "yservospd": stepConfigView.servoYStep.speedEditBox.value,
+            "yservoacc": stepConfigView.servoYStep.accelerationEditBox.value,
+            "yservodec": stepConfigView.servoYStep.decelerationEditBox.value,
+            "plcoutputtargets": stepConfigView.outputCoilsStep.resultModel,
+            "conditionbits": stepConfigView.bitwiseCheckBoxes.resultModel,
+            "delay": stepConfigView.delayEditBox.value
+        };
+    }
+
+    function isIndexValid() {
+        const cnt = stepModel.count;
+        return currentStepIndex >= 0 && currentStepIndex < cnt;
+    }
+
+    function isItemValid() {
+        return currentStepItem !== undefined && currentStepItem !== null;
     }
 }
