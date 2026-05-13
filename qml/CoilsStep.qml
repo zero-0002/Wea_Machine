@@ -17,17 +17,37 @@ Column {
 
     property alias model: repeater.model
     property alias repeater: repeater
+    property var resultModel: {
+        const cnt = repeater.count;
+        var result = [];
+        for (var i = 0; i < cnt; ++i) {
+            var it = repeater.itemAt(i);
+            const isChecked = it.coilSwitch.checked;
+            const isEnabled = it.coilSwitch.enabled;
+            if (isChecked && isEnabled) {
+                result.push(i);
+            }
+        }
+        return result;
+    }
 
     Repeater {
         id: repeater
 
         delegate: RowCompact {
-            title: displayByTag ? modelData.displayName : modelData.name
+
+            title: modelData.name
+
+            coilSwitch: swCoil
+
             WeaQuick.Switch {
+                id: swCoil
                 anchors {
                     right: parent.right
                     rightMargin: parent.rightPadding
                 }
+                enabled: modelData.enabled
+                checked: modelData.checked
 
                 indicatorWidth: 45
                 indicatorHeight: 22
@@ -46,6 +66,8 @@ Column {
         property alias titleVAlignment: titleLabelRow.verticalAlignment
         property alias titleHAlignment: titleLabelRow.horizontalAlignment
         property alias titleLabel: titleLabelRow
+
+        property var coilSwitch
 
         width: parent.width
         height: controlHeight
