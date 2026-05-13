@@ -4,6 +4,14 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 CusPopup {
     id: root
 
+    enum ConfigMethod {
+        Insert = 0,
+        Edit
+    }
+
+    property int configMethod: StepPopup.ConfigMethod.Insert
+    property int currentSelectedIndex: -1
+
     property int levelButton: 5
 
     property alias cancelButton: cancelButton
@@ -35,6 +43,7 @@ CusPopup {
             StepConfigView {
                 id: stepConfigView
                 anchors.fill: parent
+                currentStepIndex: root.currentSelectedIndex
             }
         }
 
@@ -73,5 +82,29 @@ CusPopup {
                 }
             }
         }
+    }
+
+    onOk: {
+        applyStepIntoModel();
+    }
+
+    /** Functions **/
+    function applyStepIntoModel() {
+        switch (configMethod) {
+        case StepPopup.ConfigMethod.Insert:
+            return appendStepIntoModel();
+        case StepPopup.ConfigMethod.Edit:
+            return editStepIntoModel(currentSelectedIndex);
+        default:
+            break;
+        }
+    }
+
+    function appendStepIntoModel() {
+        stepModel.addItem(stepConfigView.getCurrentStepValues());
+    }
+
+    function editStepIntoModel(index) {
+        stepModel.editItem(index, stepConfigView.getCurrentStepValues());
     }
 }
