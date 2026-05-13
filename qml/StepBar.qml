@@ -23,26 +23,6 @@ Item {
         }
         width: parent.width
 
-        level: root.level
-        // flat: false
-
-        // Component {
-        //     id: highlight
-        //     Rectangle {
-        //         width: 180
-        //         height: 40
-        //         color: "lightsteelblue"
-        //         radius: 5
-        //         y: listView.currentItem.y
-        //         Behavior on y {
-        //             SpringAnimation {
-        //                 spring: 3
-        //                 damping: 0.2
-        //             }
-        //         }
-        //     }
-        // }
-
         ListView {
             id: listView
 
@@ -164,6 +144,9 @@ Item {
 
         // Slots
         insertButton.onClicked: {
+            stepPopup.currentSelectedIndex = listView.currentIndex;
+            stepPopup.configMethod = StepPopup.ConfigMethod.Insert;
+
             stepPopup.open();
         }
 
@@ -176,7 +159,9 @@ Item {
         }
 
         editButton.onClicked: {
-            // TODO: update Modal with currentItem data
+            stepPopup.currentSelectedIndex = listView.currentIndex;
+            stepPopup.configMethod = StepPopup.ConfigMethod.Edit;
+
             stepPopup.open();
         }
 
@@ -184,9 +169,6 @@ Item {
             listView.removeCurrent();
         }
 
-        openButton.onPressed: {
-            stepModel.clear();
-        }
         openButton.onClicked: {
             openFileDialog.open();
         }
