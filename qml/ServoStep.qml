@@ -12,6 +12,12 @@ Column {
     property int controlWidth: 150
     property int controlHeight: 33
 
+    property double positionValue: 0.0
+    property double speedValue: 200.0
+    property double accValue: 200
+    property double decValue: 200
+
+    property alias positionActiveSwitch: swPosActive
     property alias servoOnSwitch: swServoOn
     property alias homingSwitch: swHoming
     property alias positionEditBox: editBoxPos
@@ -20,6 +26,25 @@ Column {
     property alias decelerationEditBox: editBoxDec
 
     spacing: 10
+
+    // Position Active
+    RowCompact {
+        title: "Positioning Active: "
+
+        WeaQuick.Switch {
+            id: swPosActive
+            anchors {
+                right: parent.right
+                rightMargin: parent.rightPadding
+            }
+
+            indicatorWidth: 45
+            indicatorHeight: 22
+            handleShape: WeaQuick.Handle.HandleShape.Circular
+            handleSize: 16
+            checked: true
+        }
+    }
 
     // ServoON
     RowCompact {
@@ -32,6 +57,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
+            enabled: swPosActive.checked
             indicatorWidth: 45
             indicatorHeight: 22
             handleShape: WeaQuick.Handle.HandleShape.Circular
@@ -51,7 +77,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
-            enabled: swServoOn.checked
+            enabled: swServoOn.checked && swServoOn.enabled
             indicatorWidth: 45
             indicatorHeight: 22
             handleShape: WeaQuick.Handle.HandleShape.Circular
@@ -130,6 +156,12 @@ Column {
             height: controlHeight
         }
     }
+
+    /** Slots **/
+    onPositionValueChanged: positionEditBox.spinBox.value = positionEditBox.doubleToInt(positionValue)
+    onSpeedValueChanged: speedEditBox.spinBox.value = speedEditBox.doubleToInt(speedValue)
+    onAccValueChanged: accelerationEditBox.spinBox.value = accelerationEditBox.doubleToInt(accValue)
+    onDecValueChanged: decelerationEditBox.spinBox.value = decelerationEditBox.doubleToInt(decValue)
 
     // Object & Inline-Components
     component RowCompact: Item {
