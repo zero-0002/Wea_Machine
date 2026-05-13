@@ -5,6 +5,9 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 DropDown {
     id: root
 
+    signal playRequest
+    signal pauseRequest
+
     property var modelItem: ({})
 
     property var arrayRunningBorderColor: ["gray", "green", "red", "orange", "cyan", "white", "black", "#888", "#444"]
@@ -18,13 +21,15 @@ DropDown {
 
     property alias titleLabel: titleLabel
 
-    property alias readyIndicator: readyIndicator
+    property alias playStepButton: playStepButton
 
     contentHeight: loaderContentItem.height + topContentHeight
 
     level: 1
     flat: false
     shineLine.color: running ? arrayRunningBorderColor[level] : selected ? arraySelectedBorderColor[level] : "white"
+    border.color: selectable && selected ? arraySelectedBorderColor[level] : running ? arrayRunningBorderColor[level] :
+                                                                                       arrayBorderColor[level]
 
     // Top Content Item
     topDelegate: RowLayout {
@@ -46,22 +51,24 @@ DropDown {
 
         // Ready Label
         WeaQuick.Label {
-            text: "Ready"
+            text: playStepButton.checked ? "Stop" : "Run"
             font.pixelSize: 14
             verticalAlignment: Qt.AlignVCenter
         }
 
         // Ready Indicator
-        WeaQuick.StatusIndicator {
-            id: readyIndicator
+        CircularButton {
+            id: playStepButton
             Layout.rightMargin: 10
 
-            width: 24
-            height: width
-            outerMargin: 2
-
-            levelActive: 2 // green
-            active: root.running
+            checked: root.running
+            onClicked: {
+                if (!checked) {
+                    playRequest();
+                } else {
+                    pauseRequest();
+                }
+            }
         }
     }
 
@@ -79,23 +86,6 @@ DropDown {
             shineLineColor: root.shineLine.color
             titleSize: root.titleSize
             modelItem: root.modelItem
-        }
-    }
-
-    /** Animation When it is running **/
-    SequentialAnimation on border.color {
-        // running: root.running
-        running: false
-        loops: Animation.Infinite
-        ColorAnimation {
-            from: arrayBackgroundColor[level]
-            to: arrayRunningBorderColor[level]
-            duration: 750
-        }
-        ColorAnimation {
-            from: arrayRunningBorderColor[level]
-            to: arrayBackgroundColor[level]
-            duration: 750
         }
     }
 }
