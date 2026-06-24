@@ -594,6 +594,10 @@ Item {
         id: wQuick
     }
 
+    GlobalConfig {
+        id: globalConfig
+    }
+
     // AppSetting
     Settings {
         id: settings
