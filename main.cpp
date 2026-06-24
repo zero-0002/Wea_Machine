@@ -5,6 +5,7 @@
 
 #include <WeaQuick/initialize.h>
 
+#include "InjectionMolding/Utils.h"
 #include "InjectionMolding/Engine.h"
 #include "InjectionMolding/AlarmModel.h"
 #include "InjectionMolding/plciomodel.h"
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
     // qputenv("QT_ENABLE_HIGHDPI_SCALING", "1");
     // qputenv("QT_FONT_DPI", "96");
     // qputenv("QT_SCALE_FACTOR", "1.25");
-    qSetMessagePattern(DEBUG_MESSAGE_PATTERN); // qputenv("QT_MESSAGE_PATTERN", DEBUG_MESSAGE_PATTERN);
+    qInstallMessageHandler(logMessageHandler);
     qputenv("QML_DISABLE_DISK_CACHE", "1");
     // qputenv("QT_ASSUME_STDERR_HAS_CONSOLE", "1");
     // qputenv("QSG_INFO", "1");
