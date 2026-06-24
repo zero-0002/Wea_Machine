@@ -1,7 +1,5 @@
 import QtQuick 2.12
 
-// TODO: Add enable Disable for Edit/Remove Buttons
-
 Item {
     id: root
 

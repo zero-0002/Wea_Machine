@@ -63,8 +63,12 @@ Item {
                     // Helper for single StepRunning
                     stepModel.currentSelected = listView.currentIndex;
                 }
-                onPlayRequest: {}
-                onPauseRequest: {}
+                onPlayRequest:
+                    // TODO: Add StepModel Single StepRunning request HERE
+                {}
+                onPauseRequest:
+                    // TODO: Add StepModel Single StepStopping request HERE
+                {}
             }
 
             /** Animation && Transitions **/
