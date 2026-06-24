@@ -47,6 +47,7 @@ Item {
                 // title: model.title
                 title: model.name
                 running: stepModel.currentRunning === index
+                playStepButton.enabled: index === stepModel.currentSelected
                 modelItem: stepModel.steps[index]
                 // readyIndicator.active: model.active
                 autoDeselectSibling: true
@@ -58,7 +59,12 @@ Item {
                             listView.currentIndex = -1;
                         }
                     }
+
+                    // Helper for single StepRunning
+                    stepModel.currentSelected = listView.currentIndex;
                 }
+                onPlayRequest: {}
+                onPauseRequest: {}
             }
 
             /** Animation && Transitions **/
