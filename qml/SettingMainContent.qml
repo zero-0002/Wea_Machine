@@ -5,7 +5,7 @@ WeaQuick.Pane {
     id: root
 
     property int currentIndex: 0
-    property var settingPages: [plcInputSettingPage, plcOutputSettingPage, servoXSettingPage, servoYSettingPage]
+    property var settingPages: [plcInputSettingPage, plcOutputSettingPage, generalSettingPage]
 
     Component {
         id: plcInputSettingPage
@@ -16,25 +16,10 @@ WeaQuick.Pane {
         id: plcOutputSettingPage
         SettingPLCOuputPage {}
     }
+
     Component {
-        id: servoXSettingPage
-        Item {
-            WeaQuick.Label {
-                anchors.centerIn: parent
-                font.pixelSize: 25
-                text: "X-Axis Servo Setting"
-            }
-        }
-    }
-    Component {
-        id: servoYSettingPage
-        Item {
-            WeaQuick.Label {
-                anchors.centerIn: parent
-                font.pixelSize: 25
-                text: "Y-Axis Servo Setting"
-            }
-        }
+        id: generalSettingPage
+        SettingGeneralPage {}
     }
 
     Loader {

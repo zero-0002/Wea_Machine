@@ -90,5 +90,6 @@
         <file>qml/GlobalUtils.js</file>
         <file>qml/CircularButton.qml</file>
         <file>qml/GlobalConfig.qml</file>
+        <file>qml/SettingGeneralPage.qml</file>
     </qresource>
 </RCC>
