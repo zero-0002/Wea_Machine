@@ -58,6 +58,7 @@ Item {
             /// FIXME:
             // positionValue: servoXDevice.pathData1 / 1000
             positionValue: 1000000 / 1000
+            positionEditBox.axisConfig: globalConfig.xAxisConfig
             positionEditBox.textItem.onAccepted:
                 // console.log("Accepted: ");
                 // servoXDevice.pushPathData1(12345);
@@ -76,6 +77,7 @@ Item {
             /// FIXME:
             // positionValue: servoYDevice.pathData1 / 1000
             positionValue: 10000000 / 1000
+            positionEditBox.axisConfig: globalConfig.yAxisConfig
             positionEditBox.textItem.onAccepted:
                 // console.log("Accepted: ");
                 // servoXDevice.pushPathData1(12345);

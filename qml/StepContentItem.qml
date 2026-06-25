@@ -46,8 +46,9 @@ Item {
                     width: controlWidth
                     height: controlHeight
                     border.width: 0
+                    axisConfig: globalConfig.xAxisConfig
                     color: "transparent"
-                    value: modelItem.xServoPos / 1000
+                    value: axisConfig.toUnit(modelItem.xServoPos)
                 }
             }
 
@@ -77,7 +78,8 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: modelItem.yServoPos / 1000
+                    axisConfig: globalConfig.yAxisConfig
+                    value: axisConfig.toUnit(modelItem.yServoPos)
                 }
             }
 

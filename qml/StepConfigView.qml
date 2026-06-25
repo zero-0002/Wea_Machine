@@ -160,6 +160,7 @@ Flickable {
             controlWidth: root.controlWidth
             controlHeight: root.controlHeight
 
+            positionEditBox.axisConfig: globalConfig.xAxisConfig
             positionActiveSwitch.checked: isItemValid() ? currentStepItem.xPosActive : false
             servoOnSwitch.checked: isItemValid() ? currentStepItem.xServoOn : true
             homingSwitch.checked: isItemValid() ? currentStepItem.xServoHome : false
@@ -187,6 +188,7 @@ Flickable {
             controlWidth: root.controlWidth
             controlHeight: root.controlHeight
 
+            positionEditBox.axisConfig: globalConfig.yAxisConfig
             positionActiveSwitch.checked: isItemValid() ? currentStepItem.yPosActive : false
             servoOnSwitch.checked: isItemValid() ? currentStepItem.yServoOn : true
             homingSwitch.checked: isItemValid() ? currentStepItem.yServoHome : false
