@@ -13,6 +13,7 @@
 #include "servomodbusdevice.h"
 #include "stepitem.h"
 #include "stepmodel.h"
+#include "axisconfig.h"
 
 #define QT_REGISTER_METATYPE(type) \
     qRegisterMetaType<type>(#type)
@@ -53,6 +54,9 @@ static void registerTypes()
     QTQML_REGISTER_TYPE("CustomItems", SerialGlobal);
     QTQML_REGISTER_TYPE("CustomItems", SerialConnection);
     QTQML_REGISTER_TYPE("CustomItems", ModbusCom);
+
+    // Configurations
+    QTQML_REGISTER_TYPE("CustomItems", AxisConfig);
 }
 
 Q_COREAPP_STARTUP_FUNCTION(registerTypes)
