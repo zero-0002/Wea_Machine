@@ -92,5 +92,6 @@
         <file>qml/GlobalConfig.qml</file>
         <file>qml/SettingGeneralPage.qml</file>
         <file>qml/AxisConfigPanel.qml</file>
+        <file>qml/StepSettingPanel.qml</file>
     </qresource>
 </RCC>
