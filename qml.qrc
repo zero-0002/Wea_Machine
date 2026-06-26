@@ -91,5 +91,6 @@
         <file>qml/CircularButton.qml</file>
         <file>qml/GlobalConfig.qml</file>
         <file>qml/SettingGeneralPage.qml</file>
+        <file>qml/AxisConfigPanel.qml</file>
     </qresource>
 </RCC>
