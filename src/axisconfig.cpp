@@ -42,7 +42,7 @@ void AxisConfig::setScale(qint64 numerator, qint64 denominator)
 
 void AxisConfig::applyMaxDecimals()
 {
-    double resolution = static_cast<double>(m_numerator) / static_cast<double>(m_denominator);
+    double resolution = static_cast<double>(m_denominator) / static_cast<double>(m_numerator);
 
     int d = 0;
 
