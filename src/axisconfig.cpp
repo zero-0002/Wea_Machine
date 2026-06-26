@@ -40,6 +40,20 @@ void AxisConfig::setScale(qint64 numerator, qint64 denominator)
     emit gearRatioChanged();
 }
 
+void AxisConfig::syncronize(AxisConfig* other)
+{
+    m_numerator = other->m_numerator;
+    m_denominator = other->m_denominator;
+    m_zeroPUU = other->m_zeroPUU;
+    m_maxDecimals = other->m_maxDecimals;
+    m_decimals = other->m_decimals;
+    m_unitName = other->m_unitName;
+
+    emit unitNameChanged();
+    emit decimalsChanged();
+    emit gearRatioChanged();
+}
+
 void AxisConfig::applyMaxDecimals()
 {
     double resolution = static_cast<double>(m_denominator) / static_cast<double>(m_numerator);
