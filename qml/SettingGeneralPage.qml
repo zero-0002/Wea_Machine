@@ -43,10 +43,8 @@ Item {
                         right: parent.right
                     }
                     title: "X-Axis Configuration"
+                    targetAxisConfig: globalConfig.xAxisConfig
                     spliterVisible: false
-                    onWriteRequest: {
-                        applyConfigs(globalConfig.xAxisConfig);
-                    }
                 }
 
                 AxisConfigPanel {
@@ -56,9 +54,7 @@ Item {
                         right: parent.right
                     }
                     title: "Y-Axis Configuration"
-                    onWriteRequest: {
-                        applyConfigs(globalConfig.yAxisConfig);
-                    }
+                    targetAxisConfig: globalConfig.yAxisConfig
                 }
 
                 StepSettingPanel {

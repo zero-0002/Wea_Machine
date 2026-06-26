@@ -7,6 +7,9 @@ import com.wearily.WeaQuick 1.0 as WeaQuick
 Item {
     id: root
 
+    // REQUIRED
+    property AxisConfig targetAxisConfig
+
     property int controlHeight: 33
     property real spliterScale: 1.0
     property int titleSize: 22
@@ -119,6 +122,7 @@ Item {
 
                             ConfigEditBox {
                                 id: editBoxN
+                                value: helper.axisConfig.numerator
                                 onValueChanged: {
                                     helper.axisConfig.setScale(editBoxN.value, editBoxD.value);
                                 }
@@ -131,6 +135,7 @@ Item {
 
                             ConfigEditBox {
                                 id: editBoxD
+                                value: helper.axisConfig.denominator
                                 onValueChanged: {
                                     helper.axisConfig.setScale(editBoxN.value, editBoxD.value);
                                 }
@@ -144,7 +149,7 @@ Item {
                             ConfigEditBox {
                                 id: editBoxZeroOffset
                                 from: -Math.pow(2, 32) / 2
-                                value: 0
+                                value: helper.axisConfig.zeroPUU
                                 onValueChanged: {
                                     helper.axisConfig.setZeroPUU(value);
                                 }
@@ -158,7 +163,7 @@ Item {
                             ConfigEditBox {
                                 id: editBoxDecimalCnt
                                 from: 0
-                                value: 0
+                                value: helper.axisConfig.decimals
                                 to: helper.maxDecimals
                             }
                         }
@@ -180,7 +185,7 @@ Item {
                                 level: 2
                                 font.pixelSize: 15
                                 placeholderText: "mm, cm, inch, ..."
-                                text: "mm"
+                                text: helper.axisConfig.unitName
                                 horizontalAlignment: Qt.AlignHCenter
                                 selectByMouse: true
                             }
@@ -329,6 +334,21 @@ Item {
         }
     }
 
+    // Slots
+    onWriteRequest: {
+        writeConfigs(targetAxisConfig);
+    }
+
+    Component.onCompleted: {
+        const targetName = targetAxisConfig.objectName;
+        if (targetName === undefined || targetName === null || targetName === "") {
+            console.warn("targetAxisConfigObjectName cannot be empty!", targetName);
+            Qt.quit();
+        }
+
+        readConfigs(targetAxisConfig);
+    }
+
     // Helper
     QtObject {
         id: helper
@@ -336,6 +356,7 @@ Item {
         property int maxDecimals: 0
 
         property AxisConfig axisConfig: AxisConfig {
+            objectName: targetAxisConfig.objectName
             unitName: lineEditUnit.text
             decimals: editBoxDecimalCnt.value
             onGearRatioChanged: {
@@ -363,8 +384,17 @@ Item {
     }
 
     /** functions **/
-    function applyConfigs(otherAxisConfig) {
+    function writeConfigs(otherAxisConfig) {
         otherAxisConfig.syncronize(helper.axisConfig);
+    }
+
+    function readConfigs(otherAxisConfig) {
+        editBoxN.value = otherAxisConfig.numerator;
+        editBoxD.value = otherAxisConfig.denominator;
+        editBoxZeroOffset.value = otherAxisConfig.zeroPUU;
+        helper.maxDecimals = otherAxisConfig.maxDecimals;
+        editBoxDecimalCnt.value = otherAxisConfig.decimals;
+        lineEditUnit.text = otherAxisConfig.unitName;
     }
 
     /** inline **/
