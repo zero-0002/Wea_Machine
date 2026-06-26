@@ -18,6 +18,23 @@ WeaQuick.EditBox {
     value: 0.0
     suffix: " " + axisConfig.unitName
 
+    /** Connections **/
+    onDecimalsChanged: {
+        refresh();
+    }
+
+    onSuffixChanged: {
+        refresh();
+    }
+
+    Connections {
+        target: axisConfig
+        ignoreUnknownSignals: true
+        function onGearRatioChanged() {
+            refresh();
+        }
+    }
+
     /** functions **/
     function setValueByUnit(unit) {
         spinBox.value = doubleToInt(unit);
@@ -25,5 +42,11 @@ WeaQuick.EditBox {
 
     function setValueByPUU(puu) {
         setValueByUnit(axisConfig.toUnit(puu));
+    }
+
+    function refresh() {
+        var tmp = spinBox.value;
+        spinBox.value = Number.POSITIVE_INFINITY;
+        spinBox.value = tmp;
     }
 }
