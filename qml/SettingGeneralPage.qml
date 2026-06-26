@@ -34,13 +34,18 @@ Item {
                     left: parent.left
                     right: parent.right
                 }
-                spacing: 10
+                spacing: 0
 
                 AxisConfigPanel {
                     id: panelXAxisConfig
                     anchors {
                         left: parent.left
                         right: parent.right
+                    }
+                    title: "X-Axis Configuration"
+                    spliterVisible: false
+                    onWriteRequest: {
+                        applyConfigs(globalConfig.xAxisConfig);
                     }
                 }
 
@@ -49,6 +54,10 @@ Item {
                     anchors {
                         left: parent.left
                         right: parent.right
+                    }
+                    title: "Y-Axis Configuration"
+                    onWriteRequest: {
+                        applyConfigs(globalConfig.yAxisConfig);
                     }
                 }
 
