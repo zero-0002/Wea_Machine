@@ -32,8 +32,8 @@ void AxisConfig::setZeroPUU(qint32 zeroPUU)
 
 void AxisConfig::setScale(qint64 numerator, qint64 denominator)
 {
-    m_numerator = qMin(numerator, 1LL);
-    m_denominator = qMin(denominator, 1LL);
+    m_numerator = qMax(numerator, 1LL);
+    m_denominator = qMax(denominator, 1LL);
 
     applyMaxDecimals();
 
