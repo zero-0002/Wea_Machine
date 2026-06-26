@@ -93,5 +93,6 @@
         <file>qml/SettingGeneralPage.qml</file>
         <file>qml/AxisConfigPanel.qml</file>
         <file>qml/StepSettingPanel.qml</file>
+        <file>qml/NumLabel.qml</file>
     </qresource>
 </RCC>
