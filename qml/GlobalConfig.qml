@@ -6,6 +6,10 @@ QtObject {
 
     /** Properties **/
     property bool optimizeMode: false
-    property AxisConfig xAxisConfig: AxisConfig {}
-    property AxisConfig yAxisConfig: AxisConfig {}
+    property AxisConfig xAxisConfig: AxisConfig {
+        objectName: "X_AXIS_CONFIG" // REQUIRED for AppSettings
+    }
+    property AxisConfig yAxisConfig: AxisConfig {
+        objectName: "Y_AXIS_CONFIG" // REQUIRED for AppSettings
+    }
 }

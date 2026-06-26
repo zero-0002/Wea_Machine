@@ -2,8 +2,9 @@
 #define AXISCONFIG_H
 
 #include <WeaCore/utils.h>
+#include <QQmlParserStatus>
 
-class AxisConfig : public QObject
+class AxisConfig : public QObject, public QQmlParserStatus
 {
         Q_OBJECT
         W_PROP_HDEF(QString, unitName, UnitName, "PUU")
@@ -15,6 +16,8 @@ class AxisConfig : public QObject
     public:
         explicit AxisConfig(QObject* parent = nullptr);
 
+        void classBegin() override;
+        void componentComplete() override;
 
         /** Slots **/
         Q_INVOKABLE double toUnit(qint32 puu) const;
@@ -28,6 +31,12 @@ class AxisConfig : public QObject
     signals:
         void gearRatioChanged();
 
+    protected:
+        void updateAll();
+
+        /** Settings Storage **/
+        void readFromSettings();
+        void writeToSettings() const;
 
     private:
         void applyMaxDecimals();
