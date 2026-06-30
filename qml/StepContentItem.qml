@@ -63,7 +63,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: modelItem.xServoSpeed
+                    value: (modelItem.xServoSpeed / 10).toFixed(1)
                 }
             }
 
@@ -94,7 +94,7 @@ Item {
                     height: controlHeight
                     border.width: 0
                     color: "transparent"
-                    value: modelItem.yServoSpeed
+                    value: (modelItem.yServoSpeed / 10.0).toFixed(1)
                 }
             }
         }

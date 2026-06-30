@@ -12,10 +12,10 @@ Column {
     property int controlWidth: 150
     property int controlHeight: 33
 
-    property double positionValue: 0.0
-    property double speedValue: 200.0
-    property double accValue: 200
-    property double decValue: 200
+    property int positionValue: 0
+    property int speedValue: 200
+    property int accValue: 200
+    property int decValue: 200
 
     property alias positionActiveSwitch: swPosActive
     property alias servoOnSwitch: swServoOn
@@ -114,6 +114,7 @@ Column {
                 rightMargin: parent.rightPadding
             }
 
+            value: speedValue / 10.0
             enabled: !swHoming.checked && swHoming.enabled
             level: controlLevel
             width: controlWidth
@@ -158,10 +159,10 @@ Column {
     }
 
     /** Slots **/
-    onPositionValueChanged: positionEditBox.spinBox.value = positionEditBox.doubleToInt(positionValue)
-    onSpeedValueChanged: speedEditBox.spinBox.value = speedEditBox.doubleToInt(speedValue)
-    onAccValueChanged: accelerationEditBox.spinBox.value = accelerationEditBox.doubleToInt(accValue)
-    onDecValueChanged: decelerationEditBox.spinBox.value = decelerationEditBox.doubleToInt(decValue)
+    onPositionValueChanged: positionEditBox.setValueByPUU(positionValue)
+    onSpeedValueChanged: speedEditBox.spinBox.value = speedValue
+    onAccValueChanged: accelerationEditBox.spinBox.value = accValue
+    onDecValueChanged: decelerationEditBox.spinBox.value = decValue
 
     // Object & Inline-Components
     component RowCompact: Item {

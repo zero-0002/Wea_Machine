@@ -248,6 +248,9 @@ Flickable {
             title: "Wait for next step:"
             DelayEditBox {
                 id: delayEditBox
+
+                property int mSecDelay: isItemValid() ? currentStepItem.delay : 100
+
                 anchors {
                     right: parent.right
                     rightMargin: parent.rightPadding
@@ -256,8 +259,10 @@ Flickable {
                 height: controlHeight
                 level: controlLevel
 
-                value: isItemValid() ? currentStepItem.delay : 0.0
-                spinBox.value: isItemValid() ? doubleToInt(currentStepItem.delay) : 0.0
+                onMSecDelayChanged: spinBox.value = mSecDelay / 10
+                Component.onCompleted: {
+                    value = mSecDelay / 1000;
+                }
             }
         }
 
@@ -344,20 +349,20 @@ Flickable {
             "xposactive": stepConfigView.servoXStep.positionActiveSwitch.checked,
             "xservoon": stepConfigView.servoXStep.servoOnSwitch.checked,
             "xservohome": stepConfigView.servoXStep.homingSwitch.checked,
-            "xservopos": stepConfigView.servoXStep.positionEditBox.value,
-            "xservospd": stepConfigView.servoXStep.speedEditBox.value,
-            "xservoacc": stepConfigView.servoXStep.accelerationEditBox.value,
-            "xservodec": stepConfigView.servoXStep.decelerationEditBox.value,
+            "xservopos": stepConfigView.servoXStep.positionEditBox.puuValue,
+            "xservospd": stepConfigView.servoXStep.speedEditBox.spinBox.value,
+            "xservoacc": stepConfigView.servoXStep.accelerationEditBox.spinBox.value,
+            "xservodec": stepConfigView.servoXStep.decelerationEditBox.spinBox.value,
             "yposactive": stepConfigView.servoYStep.positionActiveSwitch.checked,
             "yservoon": stepConfigView.servoYStep.servoOnSwitch.checked,
             "yservohome": stepConfigView.servoYStep.homingSwitch.checked,
-            "yservopos": stepConfigView.servoYStep.positionEditBox.value,
-            "yservospd": stepConfigView.servoYStep.speedEditBox.value,
-            "yservoacc": stepConfigView.servoYStep.accelerationEditBox.value,
-            "yservodec": stepConfigView.servoYStep.decelerationEditBox.value,
+            "yservopos": stepConfigView.servoYStep.positionEditBox.puuValue,
+            "yservospd": stepConfigView.servoYStep.speedEditBox.spinBox.value,
+            "yservoacc": stepConfigView.servoYStep.accelerationEditBox.spinBox.value,
+            "yservodec": stepConfigView.servoYStep.decelerationEditBox.spinBox.value,
             "plcoutputtargets": stepConfigView.outputCoilsStep.resultModel,
             "conditionbits": stepConfigView.bitwiseCheckBoxes.resultModel,
-            "delay": stepConfigView.delayEditBox.value
+            "delay": stepConfigView.delayEditBox.spinBox.value * 10
         };
     }
 
