@@ -94,5 +94,6 @@
         <file>qml/AxisConfigPanel.qml</file>
         <file>qml/StepSettingPanel.qml</file>
         <file>qml/NumLabel.qml</file>
+        <file>qml/TcpConfig.qml</file>
     </qresource>
 </RCC>

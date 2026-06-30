@@ -6,12 +6,9 @@ import CustomItems 1.0
 Item {
     id: root
 
-	property SerialConnection connection: SerialConnection {
-        portName: cboxPorts.currentText
-        baudRate: serialGlobal.mapToBaudRate(cboxBaudRate.currentValue)
-        parity: serialGlobal.mapToParity(cboxParity.currentValue)
-        stopBits: serialGlobal.mapToStopBits(cboxStopBits.currentValue)
-        dataBits: serialGlobal.mapToDataBits(labelDataBits.text)
+    property TcpConnection connection: TcpConnection {
+        host: lineEditHost.text
+        port: editBoxPort.value
     }
 
     readonly property int controlPreferredWidth: 150
@@ -19,8 +16,8 @@ Item {
 
     property int fontSize: 14
 
+    property alias defaultPort: editBoxPort.value
     property alias title: titleLabel.text
-    property alias baudRateComboBox: cboxBaudRate
 
     signal openConnection
     signal closeConnection
@@ -50,88 +47,37 @@ Item {
         spacing: 20
 
         Compact {
+            tagName: "Host: "
+
+            WeaQuick.LineEdit {
+                id: lineEditHost
+                anchors.right: parent.right
+                width: controlPreferredWidth
+                text: "192.168.1.1"
+                level: 2
+                placeholderText: "0.0.0.0"
+                font.pixelSize: root.fontSize
+                horizontalAlignment: Qt.AlignHCenter
+            }
+        }
+
+        Compact {
             tagName: "Port: "
 
-            CusComboBox {
-                id: cboxPorts
+            WeaQuick.EditBox {
+                id: editBoxPort
                 anchors.right: parent.right
                 width: controlPreferredWidth
-                model: serialGlobal.availablePorts
-            }
-        }
-
-        Compact {
-            tagName: "BaudRate: "
-
-            CusComboBox {
-                id: cboxBaudRate
-                anchors.right: parent.right
-                width: controlPreferredWidth
-
-                model: serialGlobal.baudRates
-                currentIndex: model.length - 1
-            }
-        }
-
-        Compact {
-            tagName: "DataBits: "
-
-            WeaQuick.Label {
-                id: labelDataBits
-                anchors.right: parent.right
-                height: controlPreferredHeight
-                width: controlPreferredWidth
-
+                from: 0
+                to: 65535
+                value: 502
+                decimals: 0
+                stepSize: 1
+                level: 2
+                flat: false
                 font.pixelSize: root.fontSize
-                verticalAlignment: Qt.AlignVCenter
-                text: "8"
             }
         }
-
-        Compact {
-            tagName: "Parity: "
-
-            CusComboBox {
-                id: cboxParity
-                anchors.right: parent.right
-                width: controlPreferredWidth
-
-                model: serialGlobal.parities
-                currentIndex: 1
-            }
-        }
-
-        Compact {
-            tagName: "StopBits: "
-
-            CusComboBox {
-                id: cboxStopBits
-                anchors.right: parent.right
-                width: controlPreferredWidth
-
-                model: serialGlobal.stopBits
-            }
-        }
-
-        // Compact {
-        //     tagName: "Slave Address: "
-
-        //     WeaQuick.EditBox {
-        //         id: editBoxSlaveAddr
-        //         anchors.right: parent.right
-        //         width: controlPreferredWidth
-
-        //         level: 0
-        //         flat: false
-        //         font.pixelSize: root.fontSize
-
-        //         from: 1
-        //         to: 127
-        //         decimals: 0
-        //         stepSize: 1
-        //         value: 1
-        //     }
-        // }
 
         // Connect/Disconnect Buttons
 
@@ -141,7 +87,7 @@ Item {
             WeaQuick.Button {
                 id: connectButton
 
-				enabled: !connection.connected
+                enabled: !connection.connected
 
                 level: 5
                 width: 110
@@ -157,7 +103,7 @@ Item {
             WeaQuick.Button {
                 id: disconnectButton
 
-				enabled: connection.connected
+                enabled: connection.connected
 
                 level: 5
                 width: 115

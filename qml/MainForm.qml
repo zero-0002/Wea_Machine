@@ -552,6 +552,9 @@ Item {
             serialGlobal.refreshPorts();
         }
 
+        /** Tcp **/
+
+        /** Serial **/
         servoSerialConfig.onOpenConnection: {
             servoModbusCom.openPort();
         }
