@@ -123,11 +123,20 @@ Item {
                 // Forward
                 servoXDevice.pushDi9(false);
             }
+            joystickLeft.onCanceled: {
+                // Forward
+                servoXDevice.pushDi9(false);
+            }
+
             joystickRight.onPressed: {
                 // Reverse
                 servoXDevice.pushDi10(true);
             }
             joystickRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+            }
+            joystickRight.onCanceled: {
                 // Reverse
                 servoXDevice.pushDi10(false);
             }
@@ -141,11 +150,20 @@ Item {
                 // Forward
                 servoYDevice.pushDi9(false);
             }
+            joystickTop.onCanceled: {
+                // Forward
+                servoYDevice.pushDi9(false);
+            }
+
             joystickDown.onPressed: {
                 // Reverse
                 servoYDevice.pushDi10(true);
             }
             joystickDown.onReleased: {
+                // Reverse
+                servoYDevice.pushDi10(false);
+            }
+            joystickDown.onCanceled: {
                 // Reverse
                 servoYDevice.pushDi10(false);
             }
@@ -161,6 +179,12 @@ Item {
                 servoXDevice.pushDi9(false);
                 servoYDevice.pushDi9(false);
             }
+            joystickTopLeft.onCanceled: {
+                // Forward
+                servoXDevice.pushDi9(false);
+                servoYDevice.pushDi9(false);
+            }
+
             joystickTopRight.onPressed: {
                 // Reverse
                 servoXDevice.pushDi10(true);
@@ -168,6 +192,12 @@ Item {
                 servoYDevice.pushDi9(true);
             }
             joystickTopRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+                // Forward
+                servoYDevice.pushDi9(false);
+            }
+            joystickTopRight.onCanceled: {
                 // Reverse
                 servoXDevice.pushDi10(false);
                 // Forward
@@ -186,12 +216,24 @@ Item {
                 // Reverse
                 servoYDevice.pushDi10(false);
             }
+            joystickDownLeft.onCanceled: {
+                // Forward
+                servoXDevice.pushDi9(false);
+                // Reverse
+                servoYDevice.pushDi10(false);
+            }
+
             joystickDownRight.onPressed: {
                 // Reverse
                 servoXDevice.pushDi10(true);
                 servoYDevice.pushDi10(true);
             }
             joystickDownRight.onReleased: {
+                // Reverse
+                servoXDevice.pushDi10(false);
+                servoYDevice.pushDi10(false);
+            }
+            joystickDownRight.onCanceled: {
                 // Reverse
                 servoXDevice.pushDi10(false);
                 servoYDevice.pushDi10(false);
