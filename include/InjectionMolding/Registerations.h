@@ -6,6 +6,7 @@
 
 #include "SerialGlobal.h"
 #include "SerialConnection.h"
+#include "TcpConnection.h"
 #include "modbuscom.h"
 #include "plcmodbusdevice.h"
 #include "plciomodel.h"
@@ -53,6 +54,7 @@ static void registerTypes()
     QTQML_REGISTER_TYPE("CustomItems", ServoModbusDevice);
     QTQML_REGISTER_TYPE("CustomItems", SerialGlobal);
     QTQML_REGISTER_TYPE("CustomItems", SerialConnection);
+    QTQML_REGISTER_TYPE("CustomItems", TcpConnection);
     QTQML_REGISTER_TYPE("CustomItems", ModbusCom);
 
     // Configurations
