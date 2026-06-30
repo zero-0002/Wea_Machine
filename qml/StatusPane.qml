@@ -30,27 +30,28 @@ BorderRectangle {
             Layout.preferredHeight: 25
 
             // Indices should be same as analogModel
-            values: [servoXDevice.encoderPUU, servoYDevice.encoderPUU, servoXDevice.encoderPUU, servoYDevice.encoderPUU]
+            values: [servoXDevice.encoderPUU, servoYDevice.encoderPUU, globalConfig.xAxisConfig.toUnit(
+                    servoXDevice.encoderPUU), globalConfig.yAxisConfig.toUnit(servoYDevice.encoderPUU)]
             analogModel: [
                 {
                     title: "X-Axis Encoder PUU: ",
                     decimals: 0,
-                    suffix: " pulse"
+                    suffix: " PUU"
                 },
                 {
                     title: "Y-Axis Encoder PUU: ",
                     decimals: 0,
-                    suffix: " pulse"
+                    suffix: " PUU"
                 },
                 {
                     title: "X-Axis Distance: ",
-                    decimals: 3,
-                    suffix: " mm"
+                    decimals: globalConfig.xAxisConfig.decimals,
+                    suffix: " " + globalConfig.xAxisConfig.unitName
                 },
                 {
                     title: "Y-Axis Distance: ",
-                    decimals: 3,
-                    suffix: " mm"
+                    decimals: globalConfig.yAxisConfig.decimals,
+                    suffix: " " + globalConfig.yAxisConfig.unitName
                 }
             ]
         }

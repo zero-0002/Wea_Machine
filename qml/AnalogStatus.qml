@@ -59,10 +59,11 @@ Item {
                     decimals: modelData.decimals
                     suffix: modelData.suffix
                     color: "transparent"
+                    layer.enabled: false
                     font.pixelSize: 12
 
-                    from: intToDouble(-2147483000)
-                    to: intToDouble(2147483000)
+                    from: -2147483647 / Math.pow(10, decimals)
+                    to: 2147483647 / Math.pow(10, decimals)
                     textItem.text: "%1".arg(textFromValue(root.values[index], Qt.locale()))
                 }
             }
