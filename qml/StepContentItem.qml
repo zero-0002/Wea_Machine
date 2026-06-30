@@ -12,7 +12,7 @@ Item {
     property int titleHAlignment: Qt.AlignLeft
 
     property int controlLevel: 2
-    property int controlWidth: 107
+    property int controlWidth: 150
     property int controlHeight: 30
 
     property color shineLineColor: "white"

@@ -57,13 +57,13 @@ Item {
                     targetAxisConfig: globalConfig.yAxisConfig
                 }
 
-                StepSettingPanel {
-                    id: panelStepSetting
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                }
+                // StepSettingPanel {
+                //     id: panelStepSetting
+                //     anchors {
+                //         left: parent.left
+                //         right: parent.right
+                //     }
+                // }
             }
         }
     }

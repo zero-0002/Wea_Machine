@@ -57,6 +57,6 @@ Item {
             bottom: parent.bottom
             right: parent.right
         }
-        width: 380
+        width: 430
     }
 }
