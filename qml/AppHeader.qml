@@ -90,7 +90,8 @@ Item {
             {
                 name: "PLC Communication State",
                 iconName: "plug-circle-check",
-                levelActive: plcModbusCom.serialConn.connected ? 2 : 0,
+                levelActive: (comPopup.communicationType === 0 ? plcModbusCom.serialConn.connected :
+                                                                 plcModbusTcp.tcpConn.connected) ? 2 : 0,
                 active: true,
                 blinking: false
             },
@@ -99,7 +100,9 @@ Item {
                 // iconName: "plug-circle-exclamation",
                 name: "Servo Communication State",
                 iconName: "plug-circle-check",
-                levelActive: servoModbusCom.serialConn.connected ? 2 : 0,
+                levelActive: (comPopup.communicationType === 0 ? servoModbusCom.serialConn.connected : (
+                                                                     servoXModbusTcp.tcpConn.connected
+                                                                     && servoYModbusTcp.tcpConn.connected)) ? 2 : 0,
                 active: true,
                 blinking: false
             }

@@ -506,13 +506,43 @@ Item {
         refreshInterval: 300
     }
 
+    ModbusTcp {
+        id: plcModbusTcp
+        objectID: 400
+        objectName: "PLCTCP"
+        tcpConn: comPopup.plcTcpConnection
+        threaded: false
+        devices: [plcDevice]
+        refreshInterval: 100
+    }
+
+    ModbusTcp {
+        id: servoXModbusTcp
+        objectID: 400
+        objectName: "STCPX"
+        tcpConn: comPopup.servoTcpConnectionX
+        threaded: false
+        devices: [servoXDevice]
+        refreshInterval: 300
+    }
+
+    ModbusTcp {
+        id: servoYModbusTcp
+        objectID: 400
+        objectName: "STCPY"
+        tcpConn: comPopup.servoTcpConnectionY
+        threaded: false
+        devices: [servoYDevice]
+        refreshInterval: 300
+    }
+
     /** Modbus Devices **/
     PlcModbusDevice {
         id: plcDevice
         objectName: "DVP28SA2"
         slaveAddress: 2
         onEnabledChanged: {
-            if (comPopup.plcSerialConnection.connected) {
+            if (comPopup.plcSerialConnection.connected || comPopup.plcTcpConnection.connected) {
                 plcDevice.syncCoils();
             }
         }
@@ -553,6 +583,25 @@ Item {
         }
 
         /** Tcp **/
+        servoTcpConfigX.onOpenConnection: {
+            servoXModbusTcp.openPort();
+        }
+        servoTcpConfigX.onCloseConnection: {
+            servoXModbusTcp.closePort();
+        }
+        servoTcpConfigY.onOpenConnection: {
+            servoYModbusTcp.openPort();
+        }
+        servoTcpConfigY.onCloseConnection: {
+            servoYModbusTcp.closePort();
+        }
+
+        plcTcpConfig.onOpenConnection: {
+            plcModbusTcp.openPort();
+        }
+        plcTcpConfig.onCloseConnection: {
+            plcModbusTcp.closePort();
+        }
 
         /** Serial **/
         servoSerialConfig.onOpenConnection: {
