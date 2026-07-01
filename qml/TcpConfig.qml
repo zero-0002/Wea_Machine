@@ -53,7 +53,7 @@ Item {
                 id: lineEditHost
                 anchors.right: parent.right
                 width: controlPreferredWidth
-                text: "192.168.1.1"
+                text: "192.168.1.200"
                 level: 2
                 placeholderText: "0.0.0.0"
                 font.pixelSize: root.fontSize
