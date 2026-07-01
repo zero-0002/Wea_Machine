@@ -4,10 +4,28 @@
 #include <QAbstractListModel>
 #include <QTimer>
 #include <QJSValue>
+#include <QElapsedTimer>
 #include <QDebug>
 
 #include <WeaCore/utils.h>
 #include "Addresses.h"
+
+enum ExecutionState
+{
+    Idle,
+    Dispatching,
+    WaitingMotion,
+    WaitingDelay,
+    Finished,
+    Emergency,
+    Error
+};
+
+enum RunMode
+{
+    Sequence,
+    SingleStep
+};
 
 class ServoModbusDevice;
 class PlcIOModel;
@@ -16,8 +34,8 @@ class  StepModel : public QAbstractListModel
 {
         Q_OBJECT
         Q_PROPERTY(int count READ count NOTIFY countChanged)
-        Q_PROPERTY(int currentSelected MEMBER m_currentSelected NOTIFY currentSelectedChanged) // Index
-        Q_PROPERTY(int currentRunning MEMBER m_currentRunning NOTIFY currentRunningChanged) // Index
+        W_PROP_HDEF(int, currentSelected, CurrentSelected, -1) // Index
+        W_PROP_HDEF(int, currentRunning, CurrentRunning, -1) // Index
 
         // Q_PROPERTY(QList<StepItem> steps READ steps WRITE setSteps NOTIFY stepsChanged)
         Q_PROPERTY(QList<StepItem*> steps READ steps WRITE setSteps NOTIFY stepsChanged)
@@ -100,6 +118,14 @@ class  StepModel : public QAbstractListModel
         Q_INVOKABLE bool saveToJsonFile(const QString& filePath) const;
         Q_INVOKABLE bool loadFromJsonFile(const QString& filePath);
 
+
+        /** StepModel Logic handlers **/
+        Q_INVOKABLE bool start();
+        Q_INVOKABLE bool runSelected();
+        Q_INVOKABLE bool runStep(int index);
+        Q_INVOKABLE void stop();
+        Q_INVOKABLE void emergencyStop();
+
         /** Properties **/
         // const QList<StepItem>& steps() const;
         // void setSteps(const QList<StepItem>& value);
@@ -123,8 +149,6 @@ class  StepModel : public QAbstractListModel
 
     signals:
         void countChanged();
-        void currentSelectedChanged();
-        void currentRunningChanged();
 
         void stepsChanged();
 
@@ -140,15 +164,14 @@ class  StepModel : public QAbstractListModel
         void onStepStarted();
         void onStepFinished();
 
-        void onXServoPosStarted();
-        void onXServoPosCompleted();
-
-        void onYServoPosStarted();
-        void onYServoPosCompleted();
-
         void onStepTrigger();
 
     protected:
+        void dispatchCurrentStep();
+        void updateRunningState();
+        void updateDelay();
+        void finishExecution();
+
         virtual void applyServosStep(StepItem* step);
         // virtual void applyServoHoming(ServoModbusDevice* servo);
         // virtual void applyServoGotoPosition(ServoModbusDevice* servo, StepItem* step);
@@ -162,13 +185,13 @@ class  StepModel : public QAbstractListModel
         virtual void readyMemories();
         virtual void restoreMemories();
         virtual bool currentStepCompleted(StepItem* step);
-        virtual void nextStep();
 
         void makePlcModelConnection();
         void makeXServoConnection();
         void makeYServoConnection();
 
     private:
+        StepItem* current();
         void syncJsWithStepItem(const QJSValue& jsValue, StepItem* step);
 
         PlcIOModel* m_plcModel = nullptr;
@@ -179,21 +202,15 @@ class  StepModel : public QAbstractListModel
         QList<StepItem*> m_items; // All IO
 
         // QList<StepItem> m_steps;
-
-        int m_currentSelected = -1, m_currentRunning = -1; // -1 is Stop until stepStart active
-
         QTimer m_stepsTimer;
-        bool m_processOnDemand = false;
-        bool m_waitForNextStep = false;
-        bool m_errorAtStep = false;
 
-        // bool m_xServoHomeOnDemand = false;
-        // bool m_xServoGotoPosOnDemand = false;
+        StepItem* m_currentStep = nullptr;
+        QElapsedTimer m_delayTimer;
 
-        // bool m_yServoHomeOnDemand = false;
-        // bool m_yServoGotoPosOnDemand = false;
+        ExecutionState m_state = ExecutionState::Idle;
+        RunMode m_runMode = RunMode::Sequence;
 
-        // bool m_delayOnDemand = false;
-        bool m_emergencyOccured = false;
+        bool m_servosCompleted = false;
+        bool m_plcCompleted = false;
 };
 #endif // STEPMODEL_H

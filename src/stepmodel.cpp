@@ -26,6 +26,10 @@ StepModel::StepModel(QObject* parent)
     connect(this, &StepModel::stepFinished, this, &StepModel::onStepFinished);
 
     connect(&m_stepsTimer, &QTimer::timeout, this, &StepModel::onStepTrigger);
+
+    m_stepsTimer.setInterval(250);
+    m_stepsTimer.start();
+
 }
 
 int StepModel::rowCount(const QModelIndex& parent) const
@@ -490,6 +494,66 @@ bool StepModel::loadFromJsonFile(const QString& f)
     return true;
 }
 
+bool StepModel::start()
+{
+    setCurrentRunning(0);
+
+    m_runMode = Sequence;
+
+    m_state = Dispatching;
+
+    return true;
+}
+
+bool StepModel::runSelected()
+{
+    return runStep(m_currentSelected);
+}
+
+bool StepModel::runStep(int index)
+{
+    if (m_running || m_currentRunning >= 0)
+    {
+        qCritical() << "Step is Already running: " << m_currentRunning << m_running;
+        return false;
+    }
+    if (index < 0 || index >= m_items.size())
+    {
+        return false;
+    }
+
+    setCurrentRunning(index);
+
+    m_runMode = SingleStep;
+    m_state = Dispatching;
+
+    return true;
+}
+
+void StepModel::stop()
+{
+    // m_stepsTimer.stop();
+
+    restoreMemories();
+
+    setCurrentRunning(-1);
+
+    m_state = Idle;
+
+    m_servosCompleted = false;
+
+    m_plcCompleted = false;
+
+    emit currentRunningChanged();
+}
+
+void StepModel::emergencyStop()
+{
+    stop();
+
+    m_state = Emergency;
+}
+
 const QList<StepItem*>& StepModel::steps() const
 {
     return m_items;
@@ -558,8 +622,7 @@ void StepModel::setYServoDevice(ServoModbusDevice* value)
 
 void StepModel::onEmergencyStop()
 {
-    restoreMemories();
-    // m_emergencyOccured = true;
+    emergencyStop();
 }
 
 void StepModel::onStepStarted()
@@ -572,93 +635,154 @@ void StepModel::onStepStarted()
 
     if (m_running || m_currentRunning > 0)
     {
-        if (m_emergencyOccured)
-        {
-            m_emergencyOccured = false;
-        }
-
-        qWarning() << "Steps is Already on Process!" << m_running << m_currentRunning << m_emergencyOccured;
+        qWarning() << "Steps is Already on Process!" << m_running << m_currentRunning;
         return;
     }
 
-    readyMemories();
+    start();
 }
 
 void StepModel::onStepFinished()
 {
-    restoreMemories();
-}
-
-void StepModel::onXServoPosStarted()
-{
-    // m_xServoGotoPosOnDemand = true;
-}
-
-void StepModel::onXServoPosCompleted()
-{
-    // m_xServoGotoPosOnDemand = false;
-}
-
-void StepModel::onYServoPosStarted()
-{
-    // m_yServoGotoPosOnDemand = true;
-}
-
-void StepModel::onYServoPosCompleted()
-{
-    // m_yServoGotoPosOnDemand = false;
+    // restoreMemories();
 }
 
 void StepModel::onStepTrigger()
 {
-    // if (m_emergencyOccured)
-    // {
-    //     return;
-    // }
-
-    if (m_errorAtStep || !m_running || m_currentRunning < 0 || m_currentRunning >= m_items.count())
+    switch (m_state)
     {
-        qWarning() << "Unavailable to starting step!" << m_running << m_currentRunning;
-        qInfo() << "Stopping steps...";
-        emit stepFinished();
+        case Idle:
+            m_currentStep = nullptr;
+            break;
+
+        case Dispatching:
+
+            dispatchCurrentStep();
+
+            break;
+
+        case WaitingMotion:
+
+            updateRunningState();
+
+            break;
+
+        case WaitingDelay:
+
+            updateDelay();
+
+            break;
+
+        case Finished:
+
+            finishExecution();
+
+            break;
+
+        default:
+            m_currentStep = nullptr;
+            break;
+    };
+}
+
+void StepModel::dispatchCurrentStep()
+{
+    StepItem* step = getItem(m_currentRunning);
+    m_currentStep = step;
+    if (!step)
+    {
+        m_state = ExecutionState::Error;
         return;
     }
 
-    if (m_waitForNextStep)
+    // New execution context
+    m_servosCompleted = false;
+    m_plcCompleted    = false;
+    m_delayTimer.invalidate();
+
+    applyServosStep(step);
+    applyPlcStep(step);
+
+    m_state = ExecutionState::WaitingMotion;
+}
+
+void StepModel::updateRunningState()
+{
+    StepItem* step = current();
+
+    if (servosStepCompleted(step))
     {
-        qDebug() << "Waiting for nextStep";
+        m_servosCompleted = true;
+    }
+
+    if (plcStepCompleted(step))
+    {
+        m_plcCompleted = true;
+    }
+
+    if (!m_servosCompleted)
+    {
         return;
     }
 
-    auto& currentStep = m_items[m_currentRunning];
-
-    if (m_processOnDemand)
+    if (!m_plcCompleted)
     {
-        // wait For step finished
-        if (currentStepCompleted(currentStep))
-        {
-            // Delay
-            m_waitForNextStep = true;
-            QTimer::singleShot(currentStep->delay() + 50, this, &StepModel::nextStep);
-        }
         return;
     }
 
-    qDebug() << "Running Step: " << m_currentRunning << currentStep->name();
+    if (step->delay() > 0)
+    {
+        m_delayTimer.restart();
 
-    applyServosStep(currentStep);
-    applyPlcStep(currentStep);
+        m_state = WaitingDelay;
+    }
+    else
+    {
+        m_state = Finished;
+    }
+}
 
-    m_processOnDemand = true;
+void StepModel::updateDelay()
+{
+    if (m_delayTimer.elapsed() < current()->delay())
+    {
+        return;
+    }
+
+    m_state = Finished;
+}
+
+void StepModel::finishExecution()
+{
+    restoreMemories();
+
+    emit stepFinished();
+
+    switch (m_runMode)
+    {
+        case Sequence:
+            if (m_currentRunning + 1 < count())
+            {
+                setCurrentRunning(m_currentRunning + 1);
+                m_state = Dispatching;
+            }
+            else
+            {
+                stop();
+            }
+            break;
+
+        case SingleStep:
+            stop();
+            break;
+        default:
+            qCritical() << "Invalid Run Mode at: " << __FUNCTION__ << m_runMode;
+            break;
+    }
 }
 
 void StepModel::applyServosStep(StepItem* step)
 {
-    if (m_processOnDemand || m_errorAtStep)
-    {
-        return;
-    }
-
     // X Axis
     if (step->xPosActive())
     {
@@ -753,11 +877,6 @@ void StepModel::applyServosStep(StepItem* step)
 
 void StepModel::applyPlcStep(StepItem* step)
 {
-    if (m_processOnDemand || m_errorAtStep)
-    {
-        return;
-    }
-
     for (int i(0); i < m_plcModel->outputsCount(); ++i)
     {
         bool active = step->plcOutputTargets().contains(i);
@@ -861,53 +980,33 @@ bool StepModel::plcStepCompleted(StepItem* step)
 
 void StepModel::readyMemories()
 {
-    m_running = true;
-    m_currentRunning = 0;
+    /*    m_running = true;
+        m_currentRunning = 0;
 
-    m_stepsTimer.setInterval(m_interval);
-    m_stepsTimer.start();
+        // m_stepsTimer.setInterval(m_interval);
+        // m_stepsTimer.start();
 
-    emit runningChanged();
-    emit currentRunningChanged();
+        emit runningChanged();
+        emit currentRunningChanged();
 
-    emit stepStarted();
+        emit stepStarted()*/
+
+    restoreMemories();
 }
 
 void StepModel::restoreMemories()
 {
-    m_running = false;
-    m_processOnDemand = false;
-    m_waitForNextStep = false;
-    m_currentRunning = -1;
-
-    m_stepsTimer.stop();
-
-    emit runningChanged();
-    emit currentRunningChanged();
-
-    qDebug() << "restoringMemories..." << m_running << m_processOnDemand << m_waitForNextStep << m_currentRunning;
+    // Clear internal flags
+    m_servosCompleted = false;
+    m_plcCompleted = false;
+    m_delayTimer.invalidate();
+    qDebug() << "restoringMemories..." << m_running <<  m_currentRunning << m_currentSelected;
 }
 
 bool StepModel::currentStepCompleted(StepItem* step)
 {
 
     return servosStepCompleted(step) && plcStepCompleted(step);
-}
-
-void StepModel::nextStep()
-{
-    m_currentRunning += 1;
-    m_waitForNextStep = false;
-    m_processOnDemand = false;
-
-    if (m_currentRunning >= m_items.count())
-    {
-        qDebug() << "All Steps has Completed!";
-        emit stepFinished();
-        return;
-    }
-
-    emit currentRunningChanged();
 }
 
 void StepModel::makePlcModelConnection()
@@ -918,14 +1017,19 @@ void StepModel::makePlcModelConnection()
 
 void StepModel::makeXServoConnection()
 {
-    connect(m_xServoDevice, &ServoModbusDevice::positionStarted, this, &StepModel::onXServoPosStarted);
-    connect(m_xServoDevice, &ServoModbusDevice::positionCompleted, this, &StepModel::onXServoPosCompleted);
+    // connect(m_xServoDevice, &ServoModbusDevice::positionStarted, this, &StepModel::onXServoPosStarted);
+    // connect(m_xServoDevice, &ServoModbusDevice::positionCompleted, this, &StepModel::onXServoPosCompleted);
 }
 
 void StepModel::makeYServoConnection()
 {
-    connect(m_yServoDevice, &ServoModbusDevice::positionStarted, this, &StepModel::onYServoPosStarted);
-    connect(m_yServoDevice, &ServoModbusDevice::positionCompleted, this, &StepModel::onYServoPosCompleted);
+    // connect(m_yServoDevice, &ServoModbusDevice::positionStarted, this, &StepModel::onYServoPosStarted);
+    // connect(m_yServoDevice, &ServoModbusDevice::positionCompleted, this, &StepModel::onYServoPosCompleted);
+}
+
+StepItem* StepModel::current()
+{
+    return m_currentStep;
 }
 
 void StepModel::syncJsWithStepItem(const QJSValue& jsValue, StepItem* step)

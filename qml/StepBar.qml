@@ -65,10 +65,14 @@ Item {
                 }
                 onPlayRequest:
                     // TODO: Add StepModel Single StepRunning request HERE
-                {}
+                {
+                    stepModel.runSelected();
+                }
                 onPauseRequest:
                     // TODO: Add StepModel Single StepStopping request HERE
-                {}
+                {
+                    stepModel.stop();
+                }
             }
 
             /** Animation && Transitions **/

@@ -182,6 +182,8 @@ Item {
         yPosActive: true
         yServoOn: true
         yServoPos: 39724842
+        yServoSpeed: 25000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 7, 9]
         delay: 1000
@@ -198,6 +200,8 @@ Item {
         yPosActive: true
         yServoOn: true
         yServoPos: 37243268
+        yServoSpeed: 25000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 7, 9]
         delay: 1000
@@ -242,10 +246,14 @@ Item {
         xPosActive: true
         xServoOn: true
         xServoPos: 14350766
+        xServoSpeed: 2000
+        xServoAcc: 700
 
         yPosActive: true
         yServoOn: true
         yServoPos: 17001242
+        yServoSpeed: 15000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 300
@@ -258,10 +266,14 @@ Item {
         xPosActive: true
         xServoOn: true
         xServoPos: 15225956
+        xServoSpeed: 1500
+        xServoAcc: 700
 
         yPosActive: true
         yServoOn: true
         yServoPos: 7817329
+        yServoSpeed: 5500
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 300
@@ -290,10 +302,14 @@ Item {
         xPosActive: true
         xServoOn: true
         xServoPos: 27703422
+        xServoSpeed: 7000
+        xServoAcc: 700
 
         yPosActive: true
         yServoOn: true
         yServoPos: 9258841
+        yServoSpeed: 5000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 300
@@ -306,10 +322,13 @@ Item {
         xPosActive: true
         xServoOn: true
         xServoPos: 28942848
+        xServoSpeed: 7000
 
         yPosActive: true
         yServoOn: true
         yServoPos: 16258841
+        yServoSpeed: 9000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 300
@@ -326,6 +345,8 @@ Item {
         yPosActive: true
         yServoOn: true
         yServoPos: 10571860
+        yServoSpeed: 9000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 1100
@@ -342,6 +363,8 @@ Item {
         yPosActive: true
         yServoOn: true
         yServoPos: 595070
+        yServoSpeed: 9000
+        yServoAcc: 700
 
         plcOutputTargets: [0, 1, 9]
         delay: 1000
