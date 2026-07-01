@@ -680,45 +680,12 @@ void StepModel::applyServosStep(StepItem* step)
             }
             else
             {
-                if (step->name() == "Curve 5")
+                if (!m_xServoDevice->gotoPosition(step->xServoPos(),
+                                                  step->xServoSpeed(),
+                                                  step->xServoAcc()))
                 {
-                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 7000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 4")
-                {
-                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 7000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 3")
-                {
-                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 1500, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 2")
-                {
-                    if (!m_xServoDevice->gotoPosition(step->xServoPos(), 2000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else
-                {
-                    if (!m_xServoDevice->gotoPosition(step->xServoPos()))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
+                    // m_errorAtStep = true;
+                    // return;
                 }
             }
         }
@@ -754,77 +721,12 @@ void StepModel::applyServosStep(StepItem* step)
             }
             else
             {
-                if (step->name() == "Curve 7")
+                if (!m_yServoDevice->gotoPosition(step->yServoPos(),
+                                                  step->yServoSpeed(),
+                                                  step->yServoAcc()))
                 {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 6")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 5")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 9000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 4")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 5000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 3")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 5500, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 2")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 15000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 1")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 25000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else if (step->name() == "Curve 0")
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos(), 25000, 700))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
-                }
-                else
-                {
-                    if (!m_yServoDevice->gotoPosition(step->yServoPos()))
-                    {
-                        // m_errorAtStep = true;
-                        // return;
-                    }
+                    // m_errorAtStep = true;
+                    // return;
                 }
             }
         }
