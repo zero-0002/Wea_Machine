@@ -17,14 +17,14 @@ class StepItem : public QObject
         W_PROP_HDEF(int, stepId, StepId, -1)
 
         W_PROP_HDEF(qint32, xServoPos, XServoPos, 0)
-        W_PROP_HDEF(quint16, xServoSpeed, XServoSpeed, 250) // 0.1 rpm
-        W_PROP_HDEF(quint16, xServoAcc, XServoAcc, 200) // ms
-        W_PROP_HDEF(quint16, xServoDec, XServoDec, 200) // ms
+        W_PROP_HDEF(qint32, xServoSpeed, XServoSpeed, 250) // 0.1 rpm
+        W_PROP_HDEF(qint32, xServoAcc, XServoAcc, 200) // ms
+        W_PROP_HDEF(qint32, xServoDec, XServoDec, 200) // ms
 
         W_PROP_HDEF(qint32, yServoPos, YServoPos, 0)
-        W_PROP_HDEF(quint16, yServoSpeed, YServoSpeed, 250) // 0.1 rpm
-        W_PROP_HDEF(quint16, yServoAcc, YServoAcc, 200) // ms
-        W_PROP_HDEF(quint16, yServoDec, YServoDec, 200) // ms
+        W_PROP_HDEF(qint32, yServoSpeed, YServoSpeed, 250) // 0.1 rpm
+        W_PROP_HDEF(qint32, yServoAcc, YServoAcc, 200) // ms
+        W_PROP_HDEF(qint32, yServoDec, YServoDec, 200) // ms
 
         W_PROP_HDEF(int, delay, Delay, 0)
         W_PROP_HDEF(int, bitwiseMethod, BitwiseMethod, BitwiseAND)
