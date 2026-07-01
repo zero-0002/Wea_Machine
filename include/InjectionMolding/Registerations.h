@@ -8,6 +8,7 @@
 #include "SerialConnection.h"
 #include "TcpConnection.h"
 #include "modbuscom.h"
+#include "modbustcp.h"
 #include "plcmodbusdevice.h"
 #include "plciomodel.h"
 #include "plcioitem.h"
@@ -56,6 +57,7 @@ static void registerTypes()
     QTQML_REGISTER_TYPE("CustomItems", SerialConnection);
     QTQML_REGISTER_TYPE("CustomItems", TcpConnection);
     QTQML_REGISTER_TYPE("CustomItems", ModbusCom);
+    QTQML_REGISTER_TYPE("CustomItems", ModbusTcp);
 
     // Configurations
     QTQML_REGISTER_TYPE("CustomItems", AxisConfig);
