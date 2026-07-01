@@ -589,6 +589,11 @@ bool ServoModbusDevice::gotoPosition(qint32 path)
     return gotoPosition(path, m_jogSpeed.value * 10 * 2, m_jogAcc.value);
 }
 
+bool ServoModbusDevice::gotoPosition(qint32 path, qint32 speed, qint32 ramp)
+{
+    return gotoPosition(path, static_cast<quint16>(speed), static_cast<quint16>(ramp));
+}
+
 bool ServoModbusDevice::gotoPosition(qint32 path, quint16 speed, quint16 ramp)
 {
     // if (availableToRun())
