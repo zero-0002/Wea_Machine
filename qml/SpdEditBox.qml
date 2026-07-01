@@ -7,7 +7,7 @@ WeaQuick.EditBox {
     decimals: 1
     stepSize: 0.1
     from: 0
-    to: 1500
+    to: 3000
     value: 100.0
     suffix: " rpm"
 }
