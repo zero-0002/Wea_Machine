@@ -382,6 +382,7 @@ void StepModel::clear()
 
     // qDeleteAll(m_items);
     m_items.clear();
+    emit stepsChanged();
     emit countChanged();
 
     endResetModel();
@@ -794,12 +795,15 @@ void StepModel::applyServosStep(StepItem* step)
                 // return;
             }
 
-            if (step->xServoHome() && !m_xServoDevice->isHomeCompleted())
+            if (step->xServoHome())
             {
-                if (!m_xServoDevice->gotoHome())
+                if (!m_xServoDevice->isHomeCompleted())
                 {
-                    // m_errorAtStep = true;
-                    // return;
+                    if (!m_xServoDevice->gotoHome())
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
                 }
             }
             else
@@ -835,12 +839,15 @@ void StepModel::applyServosStep(StepItem* step)
                 // return;
             }
 
-            if (step->yServoHome() && !m_yServoDevice->isHomeCompleted())
+            if (step->yServoHome())
             {
-                if (!m_yServoDevice->gotoHome())
+                if (!m_yServoDevice->isHomeCompleted())
                 {
-                    // m_errorAtStep = true;
-                    // return;
+                    if (!m_yServoDevice->gotoHome())
+                    {
+                        // m_errorAtStep = true;
+                        // return;
+                    }
                 }
             }
             else
