@@ -184,6 +184,7 @@ Item {
         }
 
         openButton.onClicked: {
+            stepModel.clear();
             openFileDialog.open();
         }
 
