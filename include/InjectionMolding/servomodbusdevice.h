@@ -54,6 +54,7 @@ class ServoModbusDevice : public AbstractModbusDevice
         W_PROP_HDEF(int, triggerDelay, TriggerDelay, 1000) // millisecond
         // W_PROP_HDEF(int, triggerOffDelay, TriggerOffDelay, 250) // millisecond
         W_PROP_HDEF(qint32, positionTolerance, PositionTolerance, 2) // pulse
+        W_PROP_HDEF(qint32, homingTolerance, HomingTolerance, 10000) // pulse
 
         RO_MOD_PROP(bool, ctrgActive, m_digitalInputs.di4);
 

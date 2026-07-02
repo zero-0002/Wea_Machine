@@ -359,7 +359,7 @@ bool ServoModbusDevice::checkIfHasErrorOnMove()
 
 bool ServoModbusDevice::isHomeCompleted() const
 {
-    return m_digitalOutputs.do3;
+    return (m_digitalOutputs.do3 && m_digitalOutputs.do4) && encoderPUU() <= m_homingTolerance && encoderPUU() >= -m_homingTolerance;
 }
 
 bool ServoModbusDevice::pushTorqueLimit(qint16 value)
@@ -515,7 +515,11 @@ bool ServoModbusDevice::resetAlarms()
 bool ServoModbusDevice::servoOn()
 {
     pushDi1(true);
-    if (!waitForServoOn())
+    if (m_digitalInputs.di1)
+    {
+        return true;
+    }
+    if (!waitForServoOn(250))
     {
         emit errorOccured(201, "Unable to make Servo ON !");
         return false;
