@@ -165,7 +165,7 @@ Flickable {
             servoOnSwitch.checked: isItemValid() ? currentStepItem.xServoOn : true
             homingSwitch.checked: isItemValid() ? currentStepItem.xServoHome : false
             positionValue: isItemValid() ? currentStepItem.xServoPos : 0
-            speedValue: isItemValid() ? currentStepItem.xServoSpeed : 250
+            speedValue: isItemValid() ? currentStepItem.xServoSpeed : 800
             accValue: isItemValid() ? currentStepItem.xServoAcc : 200
             decValue: isItemValid() ? currentStepItem.xServoDec : 200
         }
@@ -193,7 +193,7 @@ Flickable {
             servoOnSwitch.checked: isItemValid() ? currentStepItem.yServoOn : true
             homingSwitch.checked: isItemValid() ? currentStepItem.yServoHome : false
             positionValue: isItemValid() ? currentStepItem.yServoPos : 0
-            speedValue: isItemValid() ? currentStepItem.yServoSpeed : 250
+            speedValue: isItemValid() ? currentStepItem.yServoSpeed : 800
             accValue: isItemValid() ? currentStepItem.yServoAcc : 200
             decValue: isItemValid() ? currentStepItem.yServoDec : 200
         }
