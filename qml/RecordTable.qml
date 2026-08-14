@@ -48,7 +48,7 @@ BorderRectangle {
             title: "Y-Axis Position (mm)"
             width: 220
         }
-        model: libraryModel
+        model: _recordModel
     }
 
     RecordFooter {
@@ -64,33 +64,16 @@ BorderRectangle {
 
         removeButton.enabled: tableView.currentRow > -1
         cleanButton.enabled: tableView.rowCount > 0
+        shotButton.enabled: recordFooter.recordButton.checked
 
-        /** Slots **/
-        removeButton.onClicked: {
-            tableView.removeCurrent();
-        }
+        removeButton.onClicked: tableView.removeCurrent()
+        cleanButton.onClicked: tableView.removeAll()
 
-        cleanButton.onClicked: {
-            tableView.removeAll();
-        }
-    }
-
-    ListModel {
-        id: libraryModel
-        ListElement {
-            no: "1"
-            xpos: "6,127.000"
-            ypos: "200.123"
-        }
-        ListElement {
-            no: "2"
-            xpos: "8,964.000"
-            ypos: "1,542.001"
-        }
-        ListElement {
-            no: "3"
-            xpos: "10,000.71"
-            ypos: "555.555"
+        shotButton.onClicked: {
+            // Capture current servo encoder positions (PUU → mm display units)
+            const xMm = servoXDevice.encoderPUU / 1000.0;
+            const yMm = servoYDevice.encoderPUU / 1000.0;
+            _recordModel.addRecord(xMm, yMm);
         }
     }
 }

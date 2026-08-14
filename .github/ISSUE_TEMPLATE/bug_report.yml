@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a defect in WeaMachine
+labels: ["bug", "maintenance"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps, including Manual vs Automatic mode
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: "OS, Qt version, Modbus RTU/TCP, hardware if relevant"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true

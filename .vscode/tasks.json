@@ -1,33 +1,36 @@
 {
   "version": "2.0.0",
-  "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run My Project",
-      "console": "",
-      "internalConsoleOptions": "openOnSessionStart"
-    }
-  ],
   "tasks": [
     {
-      "label": "eslint-check",
+      "label": "CMake: configure",
       "type": "shell",
-      "command": "(command -v node >/dev/null 2>&1 && node ./public/fonts/fa-solid-400.woff2) || (where node >nul 2>&1 && node ./public/fonts/fa-solid-400.woff2) || echo ''", 
-      "problemMatcher": [],
-      "isBackground": true,
-      "hide": true,
-      "presentation": {
-        "reveal": "never",
-        "panel": "dedicated",
-        "focus": false,
-        "clear": false,
-        "echo": false,
-        "close": true
+      "command": "cmake -S . -B build",
+      "options": {
+        "cwd": "${workspaceFolder}"
       },
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
+      "problemMatcher": []
     },
+    {
+      "label": "CMake: build",
+      "type": "shell",
+      "command": "cmake --build build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Python: protocol tests",
+      "type": "shell",
+      "command": "python -m pytest scripts/tests -q",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
   ]
 }

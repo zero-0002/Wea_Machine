@@ -71,36 +71,19 @@ Flickable {
             // gotoPosXControl.enabled: servoXDevice.availableToRun
             // gotoPosYControl.enabled: servoYDevice.availableToRun
 
-            submitButton.mouseArea.onPressed: {
-                // X Servo Goto Position
-                if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled)
-                    // servoXDevice.pushPathData1(gotoPosPanel.gotoPosXControl.positionValue * 1000);
-                    // servoXDevice.pushSpeed0(speedPanel.speedXControl.value * 10);
-                    // servoXDevice.pushRamp0(rampPanel.rampXControl.accValue);
-                    // servoXDevice.pushDi2(true);
-                {}
-
-                // Y Servo Goto Position
-                if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled)
-                    // servoYDevice.pushPathData1(gotoPosPanel.gotoPosYControl.positionValue * 1000);
-                    // servoYDevice.pushSpeed0(speedPanel.speedYControl.value * 10);
-                    // servoYDevice.pushRamp0(rampPanel.rampYControl.accValue);
-                    // servoYDevice.pushDi2(true);
-                {}
-            }
             submitButton.onActivated: {
-                // X Servo Goto Position
-                if (gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
-                    // servoXDevice.triggerCTRG();
+                if (gotoPosPanel.gotoPosXControl.positionActive
+                        && gotoPosPanel.gotoPosXControl.positionEditBox.enabled) {
                     servoXDevice.gotoPosition(gotoPosPanel.gotoPosXControl.positionValue * 1000,
-                                              speedPanel.speedXControl.value * 10, rampPanel.rampXControl.accValue);
+                                              speedPanel.speedXControl.value * 10,
+                                              rampPanel.rampXControl.accValue);
                 }
 
-                // Y Servo Goto Position
-                if (gotoPosPanel.gotoPosYControl.positionEditBox.enabled) {
-                    // servoYDevice.triggerCTRG();
+                if (gotoPosPanel.gotoPosYControl.positionActive
+                        && gotoPosPanel.gotoPosYControl.positionEditBox.enabled) {
                     servoYDevice.gotoPosition(gotoPosPanel.gotoPosYControl.positionValue * 1000,
-                                              speedPanel.speedYControl.value * 10, rampPanel.rampYControl.accValue);
+                                              speedPanel.speedYControl.value * 10,
+                                              rampPanel.rampYControl.accValue);
                 }
             }
         }

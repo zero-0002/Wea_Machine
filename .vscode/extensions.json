@@ -1,7 +1,8 @@
 {
-    "recommendations": [
-        "myml.vscode-markdown-plantuml-preview",
-        "esbenp.prettier-vscode",
-        "jebbs.plantuml"
-    ]
+  "recommendations": [
+    "ms-vscode.cmake-tools",
+    "ms-vscode.cpptools",
+    "theqtcompany.qt",
+    "ms-python.python"
+  ]
 }
