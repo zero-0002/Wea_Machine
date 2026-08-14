@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  protocol-python:
+    name: Protocol helpers (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: python -m pip install -r scripts/requirements.txt
+      - name: Validate register map
+        run: python scripts/protocol_map.py
+      - name: Run unit tests
+        working-directory: scripts
+        run: PYTHONPATH=. python -m pytest tests -q
+
+  cmake-lint-structure:
+    name: CMake project structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required files
+        run: |
+          test -f CMakeLists.txt
+          test -f main.cpp
+          test -f main.qml
+          test -f LICENSE
+          test -f README.md
+          test -d include/InjectionMolding
+          test -d src
+          test -d qml
+          grep -q "project(InjectionMolding" CMakeLists.txt
+          ! grep -q "find_package(Qt5 REQUIRED COMPONENTS Core)" CMakeLists.txt
