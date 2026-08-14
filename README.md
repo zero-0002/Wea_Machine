@@ -1,5 +1,8 @@
 # WeaMachine
 
+[![CI](https://github.com/zero-0002/Wea_Machine/actions/workflows/ci.yml/badge.svg)](https://github.com/zero-0002/Wea_Machine/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 > A configurable industrial automation framework for PLC-controlled machinery, motion systems, and custom manufacturing equipment.
 
 WeaMachine is a runtime-configurable machine control platform built with C++, Qt, and QML. It combines PLC integration, servo motion control, step-based automation, recipe management, and operator-friendly machine configuration into a unified application.
@@ -12,6 +15,7 @@ Instead of hardcoding machine behavior inside PLC ladder logic or application so
 
 - [Overview](#overview)
 - [Screenshots](#screenshots)
+- [Getting Started](#getting-started)
 - [Core Features](#core-features)
 - [Runtime PLC Configuration](#runtime-plc-configuration)
 - [Motion Control](#motion-control)
@@ -24,6 +28,8 @@ Instead of hardcoding machine behavior inside PLC ladder logic or application so
 - [Technology Stack](#technology-stack)
 - [Design Goals](#design-goals)
 - [Project Status](#project-status)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -74,6 +80,40 @@ Typical use cases include:
 
 
 ![](docs/images/Emergency-Interrupt2.png)
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- CMake **3.16+**
+- C++17 compiler (MSVC, MinGW, or Clang)
+- Qt **5.15+** or Qt **6** with: Core, Quick, Qml, QuickControls2, SerialBus, SerialPort
+- Python **3.9+** (optional, for Modbus protocol helpers)
+
+### Build
+
+```bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH=<path-to-Qt>
+cmake --build build
+```
+
+On Windows with an installed Qt kit, point `CMAKE_PREFIX_PATH` at the kit root (for example `C:/Qt/6.7.0/msvc2019_64`).
+
+### Run
+
+Launch the `InjectionMolding` target from the build directory. QML is currently loaded from the source tree via `PROJECT_SOURCE_DIR` (convenient for development).
+
+Default operator login is stored in QSettings under `OperatorAuth` (defaults: `admin` / `changeme`). Change these on the target machine; do not commit production credentials.
+
+### Protocol helpers
+
+```bash
+python -m pip install -r scripts/requirements.txt
+python scripts/protocol_map.py
+PYTHONPATH=scripts python -m pytest scripts/tests -q
+```
 
 ---
 
@@ -337,6 +377,20 @@ Planned improvements include:
 - Additional diagnostics
 - Enhanced visualization
 - Machine simulation mode
+
+Tracked work lives in [GitHub Issues](https://github.com/zero-0002/Wea_Machine/issues). Historical notes remain in `TODO.txt`.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, PR expectations, and issue templates.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 

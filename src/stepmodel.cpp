@@ -5,8 +5,9 @@
 #include "../include/InjectionMolding/servomodbusdevice.h"
 
 #include <QJsonArray>
-#include<QJsonDocument>
+#include <QJsonDocument>
 #include <QFile>
+#include <QVector>
 
 
 StepModel::StepModel(QObject* parent)
@@ -116,8 +117,7 @@ bool StepModel::setData(const QModelIndex& index, const QVariant& value, int rol
     auto* item = m_items[idx];
     setData(item, value, role);
 
-    // FIXME: Check this correction
-    emit dataChanged(index, index);
+    emit dataChanged(index, index, QVector<int>{role});
     return true;
 
 }

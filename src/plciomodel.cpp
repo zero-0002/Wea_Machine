@@ -2,6 +2,7 @@
 
 #include <QGuiApplication>
 #include <QSettings>
+#include <QVector>
 
 PlcIOModel::PlcIOModel(QObject* parent)
     : QAbstractListModel(parent)
@@ -143,8 +144,7 @@ bool PlcIOModel::setData(const QModelIndex& index, const QVariant& value, int ro
 
     };
 
-    // FIXME: Check this correction
-    emit dataChanged(index, index);
+    emit dataChanged(index, index, QVector<int>{role});
     return true;
 }
 
