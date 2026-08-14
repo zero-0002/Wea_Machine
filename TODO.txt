@@ -1,8 +1,11 @@
+# Backlog mirror
+# Prefer GitHub Issues for tracking. Keep this file as a quick local checklist.
+
 UI TODO list:
 
 1. Complete StepItem & StepPopup such as Delay scaling, Run/Stop button, current running indicating. Also Add Profiles into the Steps (QC/QA all).
 2. Manual GroupBoxes should be enable only when its servo ON and Manual mode is ON.
-3. Complete Record Table and model.
+3. Complete Record Table and model.  [DONE: RecordModel + shot capture]
 4. replace Step Start Interrupt with RADIO Button [ Step Start, Step Stop ]
 5. Remove X-Axis Servo Setting Page, Y-Axis Servo Setting Page
 6. Add 'General' Setting Page with these sections: [ Axes Configuration, Step Configuration ]
@@ -34,9 +37,16 @@ Backend TODO list:
 4. ADD Conditions Checker for IOS on Steps & Servo HOME/TPOS, .etc.
 5. ADD Always ON coils while Step is Running
 6. ADD Single StepItem running/pausing execution.
-7. ADD RecordTable model logic.
+7. ADD RecordTable model logic.  [DONE: RecordModel]
 8. DEL hardcoded things of Steps at Cpp/Qml.
 9. ADD Alarm for when a specific Step cannot be execute or is freezing.
 10. REFACTOR modbus & servomodbus classes with new logic (if needed use multi-threading)
 11. ADD ModbusTCP and an environment at .ini setting for Choosing ModbusRTU or ModbusTCP.
 12. ADD Counter register for when Step flow is done.
+
+Maintenance recently completed:
+- GotoPosPanel path bindings + Go button axis enable
+- Model dataChanged emits role vector (PlcIOModel / StepModel)
+- CMake duplicate Qt5 link removal
+- OperatorAuth via QSettings (no hardcoded production password in logic)
+- LICENSE, CI, CONTRIBUTING, protocol Python helpers

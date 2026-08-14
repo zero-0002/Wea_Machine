@@ -16,6 +16,7 @@
 #include "stepitem.h"
 #include "stepmodel.h"
 #include "axisconfig.h"
+#include "RecordModel.h"
 
 #define QT_REGISTER_METATYPE(type) \
     qRegisterMetaType<type>(#type)

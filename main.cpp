@@ -8,6 +8,7 @@
 #include "InjectionMolding/Utils.h"
 #include "InjectionMolding/Engine.h"
 #include "InjectionMolding/AlarmModel.h"
+#include "InjectionMolding/RecordModel.h"
 #include "InjectionMolding/plciomodel.h"
 #include "InjectionMolding/Registerations.h"
 
@@ -75,6 +76,7 @@ int main(int argc, char* argv[])
     // Engine Property Contexts
     engine.addEngineContextProperty();
     engine.rootContext()->setContextProperty("_alarmModel", &AlarmModel::getInstance());
+    engine.rootContext()->setContextProperty("_recordModel", &RecordModel::getInstance());
     engine.rootContext()->setContextProperty("_plcIOModel", &PlcIOModel::getInstance());
 
     engine.load(url);

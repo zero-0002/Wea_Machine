@@ -65,13 +65,19 @@ CMakeLists.txt.user*
 *.Debug
 *.Release
 
-# Python byte code
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
 
 # Binaries
 # --------
 *.dll
 *.exe
+!scripts/**
 
 # Directories with generated files
 .moc/
@@ -80,6 +86,17 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+/out/
+/cmake-build-*/
+
+# Local / editor
+.idea/
+*.user
+*.user.*
+
+# Local secrets / machine-specific settings
+*.local.ini
+auth.ini
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat

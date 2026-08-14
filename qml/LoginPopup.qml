@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
+import Qt.labs.settings 1.0
 import com.wearily.WeaQuick 1.0 as WeaQuick
 
 CusPopup {
@@ -8,6 +9,15 @@ CusPopup {
     property bool success: true
     property bool currentFailed: false
     property int controlHeight: 40
+
+    // Credentials live in QSettings (OperatorAuth). Change them on-device;
+    // do not ship production passwords in source.
+    Settings {
+        id: authSettings
+        category: "OperatorAuth"
+        property string username: "admin"
+        property string password: "changeme"
+    }
 
     titleSize: 18
     title: "Login"
@@ -121,7 +131,7 @@ CusPopup {
     }
 
     function checkLoginCorrect(username, password) {
-        return username === "admin" && password === "qazqwe";
+        return username === authSettings.username && password === authSettings.password;
     }
 
     function focusOnUsername() {
